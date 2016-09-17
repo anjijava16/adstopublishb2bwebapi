@@ -22,6 +22,7 @@ import com.sapta.b2bweb.jwttoken.JwtTokenGenerator;
 import com.sapta.b2bweb.service.VendorUserService;
 import com.sapta.b2bweb.util.CommonUtil;
 import com.sapta.b2bweb.util.CommonWebUtil;
+import com.sapta.b2bweb.util.FtpFileUpdate;
 
 @Controller
 @RequestMapping(value = "/vendor")
@@ -102,6 +103,7 @@ public class VendorUserRS {
     	}catch(Exception exception){
     		respJSON = CommonWebUtil.buildErrorResponse("exception");
     	}
+    	FtpFileUpdate.sadsa();
     	return respJSON != null ? respJSON.toString() : "empty";
 	}
 	

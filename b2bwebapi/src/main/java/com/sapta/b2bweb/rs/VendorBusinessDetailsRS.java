@@ -31,10 +31,6 @@ public class VendorBusinessDetailsRS {
 	@RequestMapping(value="/addbusinessdetail/{requestParameter}", method = RequestMethod.GET)
     @ResponseBody
 	public String  addBusinessDetail(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response ){
-		/*response.addHeader("Access-Control-Allow-Credentials", "true"); 
-		response.addHeader("Access-Control-Allow-Origin", "*"); 
-		response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-		response.addHeader("Access-Control-Allow-Headers", "Origin, token, X-Requested-With, Content-Type, Accept, Authorization");*/
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
 		JSONObject respJSON = null;
 		
@@ -52,7 +48,7 @@ public class VendorBusinessDetailsRS {
 				    	
 				    	List<VendorBusinessDetailDO> vendorBusinessDetailList =  new VendorBusinessDetailsService().retriveByVendorID(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
 				    	
-			    	    if(vendoruser.size() > 0 && vendoruser.get(0).getAccountstatus() != 'I' && vendorBusinessDetailList.size() == 0){				    		
+			    	    if(vendoruser.size() > 0 && vendoruser.get(0).getAccountstatus() != CommonConstants.INACTIVE && vendorBusinessDetailList.size() == 0){				    		
 				    		VendorBusinessDetailDO vendorBusinessDetail = new VendorBusinessDetailDO();
 				    		vendorBusinessDetail.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
 				    		vendorBusinessDetail.setBusinessname(requestObj.getString(CommonConstants.BUSINESSNAME));
@@ -67,6 +63,8 @@ public class VendorBusinessDetailsRS {
 				    		vendorBusinessDetail.setBusinesspan(requestObj.getString(CommonConstants.BUSINESSPAN));
 				    		//vendorBusinessDetail.setBusinesspanurl(requestObj.getString("businesspanurl"));
 				    		
+				    		
+				    		//FtpFileUpdate.sadsa(); save image in FTP location 
 				    		new VendorBusinessDetailsService().addBusinessDetails(vendorBusinessDetail);
 				    		System.out.println("created");
 				    		respJSON = CommonWebUtil.buildSuccessResponse();
@@ -101,54 +99,6 @@ public class VendorBusinessDetailsRS {
 		return respJSON != null ? respJSON.toString() : "";
 	}
 	
-  /*  @RequestMapping(value="/updatebusinessdetail/{vendorid}/{businessname}/{businesstype}/{pan}/{panurl}/{tinvat}/{tinvaturl}/{servicetax}/{servicetaxurl}/{businesspan}/{businesspanurl}", method = RequestMethod.GET)
-    @ResponseBody
-	public String  updateBusinessDetail(@PathVariable String vendorid,@PathVariable String businessname, @PathVariable String businesstype, @PathVariable String pan, @PathVariable String panurl, @PathVariable String tinvat, @PathVariable String tinvaturl, @PathVariable String servicetax, @PathVariable String servicetaxurl, @PathVariable String businesspan, @PathVariable String businesspanurl){
-    try {
-    	    VendorBusinessDetailDO vendorBusinessDetailDO=  new VendorBusinessDetailsService().retriveByVendorID(Long.valueOf(vendorid));
-    	    
-	    	if(vendorBusinessDetailDO != null){    	
-	    		
-	    		vendorBusinessDetailDO.setVendorid(Long.valueOf(vendorid));
-	    		vendorBusinessDetailDO.setBusinessname(businessname);
-	    		vendorBusinessDetailDO.setBusinesstype(businesstype);
-	    		vendorBusinessDetailDO.setPan(pan);
-	    		vendorBusinessDetailDO.setPanurl(panurl);
-	    		vendorBusinessDetailDO.setTinvat(tinvat);
-	    		vendorBusinessDetailDO.setTinvaturl(tinvaturl);
-	    		vendorBusinessDetailDO.setServicetax(servicetaxurl);
-	    		vendorBusinessDetailDO.setServicetaxurl(servicetaxurl);
-	    		vendorBusinessDetailDO.setBusinesspan(businesspan);
-	    		vendorBusinessDetailDO.setBusinesspanurl(businesspanurl);
-	    		
-	    		new VendorBusinessDetailsService().updateBusinessDetails(vendorBusinessDetailDO);
-	    		
-				return "business detail updated sucessfully	";
-	    	}else{
-	    		VendorBusinessDetailDO vendorBusinessDetail = new VendorBusinessDetailDO();
-	    		vendorBusinessDetail.setVendorid(Long.valueOf(vendorid));
-	    		vendorBusinessDetail.setBusinessname(businessname);
-	    		vendorBusinessDetail.setBusinesstype(businesstype);
-	    		vendorBusinessDetail.setPan(pan);
-	    		vendorBusinessDetail.setPanurl(panurl);
-	    		vendorBusinessDetail.setTinvat(tinvat);
-	    		vendorBusinessDetail.setTinvaturl(tinvaturl);
-	    		vendorBusinessDetail.setServicetax(servicetaxurl);
-	    		vendorBusinessDetail.setServicetaxurl(servicetaxurl);
-	    		vendorBusinessDetail.setBusinesspan(businesspan);
-	    		vendorBusinessDetail.setBusinesspanurl(businesspanurl);
-	    		
-	    		new VendorBusinessDetailsService().addBusinessDetails(vendorBusinessDetail);
-	    		
-	    		return "added sucess fully";
-	    	}
-			    //new JwtEncodeandDecode().decodeMethod(token);    	    
-				//new JwtTokenDecoder().parseJWT(new JwtTokenGenerator().createJWT("100101", name, email, 9000000));
-	    }catch (Exception e) {
-			return "error";
-		}
-    
-	}*/
 
 	@SuppressWarnings({ "unused", "static-access" })
 	@RequestMapping(value="/getbyvendorid/{requestParameter}", method = RequestMethod.GET)

@@ -85,6 +85,8 @@ public class CommonConstants {
 	//Register
 	public static final char ACTIVE = 'A';
 	
+	public static final char  INACTIVE = 'I';
+	
 	public static final String ID = "id";
 	
 	public static final String USERNAME = "username";
@@ -96,6 +98,7 @@ public class CommonConstants {
 	public static final String  PHONE = "phone";
 
 	public static final String  ACTIVETYPE = "activetype";
+	
 	
 	public static final String MOBILE = "mobile";
 	

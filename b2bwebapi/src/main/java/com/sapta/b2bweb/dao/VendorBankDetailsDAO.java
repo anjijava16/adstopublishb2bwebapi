@@ -1,5 +1,7 @@
 package com.sapta.b2bweb.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -45,14 +47,15 @@ public class VendorBankDetailsDAO {
 		return vendorBankDetailDO;
 	}
 	
-	public VendorBankDetailDO retriveByVendorID(Long vendorid){
-		VendorBankDetailDO vendorBankDetailList = null;
+	@SuppressWarnings("unchecked")
+	public List<VendorBankDetailDO> retriveByVendorID(Long vendorid){
+		List<VendorBankDetailDO> vendorBankDetailList = null;
 		try {
 			em = SessionManager.createManager(PersistenceUnitNames.PERSISTENCE_UNIT_NAME);
 			if(em != null){
 				Query q = em.createNamedQuery(VendorBankDetailDO.FIND_BY_VENDOR_ID);
 				q.setParameter(CommonConstants.VENDORID, vendorid);
-				vendorBankDetailList = (VendorBankDetailDO) q.getResultList();
+				vendorBankDetailList =  q.getResultList();
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

@@ -68,35 +68,6 @@ public class VendorDetailsRS {
 		}
 		return respJSON != null ? respJSON.toString() : "";
 	}
-	
-   /* @RequestMapping(value="/updatevendordetail/{vendorid}/{displayname}/{businessdesc}", method = RequestMethod.GET)
-    @ResponseBody
-	public String  updatevendorDetail(@PathVariable String vendorid,@PathVariable String displayname, @PathVariable String businessdesc){
-    try {
-    	  VendorDetailDO vendorDetailDO=  new VendorDetailsService().retriveByVendorID(Long.valueOf(vendorid));
-    	    
-	    	if(vendorDetailDO != null){    	
-	    		vendorDetailDO.setVendorid(Long.valueOf(vendorid));
-	    		vendorDetailDO.setDisplayname(displayname);
-	    		vendorDetailDO.setBusinessDesc(businessdesc);
-	    		new VendorDetailsService().updatevendorDetails(vendorDetailDO);
-	    		
-				return "updated vendor Details";
-	    	}else{
-	    		VendorDetailDO VendorDetail = new VendorDetailDO();
-	    		VendorDetail.setVendorid(Long.valueOf(vendorid));
-	    		VendorDetail.setDisplayname(displayname);
-	    		VendorDetail.setBusinessDesc(businessdesc);
-	    			    		
-	    		new VendorDetailsService().addvendorDetails(VendorDetail);
-	    		return "add vendor Details ";
-	    	}
-			    //new JwtEncodeandDecode().decodeMethod(token);    	    
-				//new JwtTokenDecoder().parseJWT(new JwtTokenGenerator().createJWT("100101", name, email, 9000000));
-	    }catch (Exception e) {
-			return "error";
-		}
-	}*/
 
     @SuppressWarnings({ "static-access", "unused" })
 	@RequestMapping(value="/getbyvendorid/{requestParameter}", method = RequestMethod.GET)
