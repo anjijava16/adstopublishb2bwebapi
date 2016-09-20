@@ -36,43 +36,49 @@ public class VendorBankDetailsRS {
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
-				
+				System.out.println(requestObj.toString());
 				if(requestObj != null){
 					List<VendorUserDO> vendoruser =  new VendorUserService().retriveByID(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
-					List<VendorBankDetailDO> vendorBankDetailList =  new VendorBankDetailsService().retriveByVendorID(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
-			    	if(vendoruser.size() > 0 && vendoruser.get(0).getAccountstatus() != 'I' && vendorBankDetailList.size() == 0){    	
-			    		VendorBankDetailDO vendorBankDetailDO = new VendorBankDetailDO();
-			    		vendorBankDetailDO.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
-			    		vendorBankDetailDO.setAccountholdername(requestObj.getString(CommonConstants.ACCOUNTHOLDERNAME));
-			    		vendorBankDetailDO.setAccountnumber(Long.valueOf(requestObj.getString(CommonConstants.ACCOUNTNUMBER)));
-			    		vendorBankDetailDO.setIfsc(requestObj.getString(CommonConstants.IFSC));
-			    		vendorBankDetailDO.setBankname(requestObj.getString(CommonConstants.BANKNAME));
-			    		vendorBankDetailDO.setState(requestObj.getString(CommonConstants.STATE));
-			    		vendorBankDetailDO.setCity(requestObj.getString(CommonConstants.CITY));
-			    		vendorBankDetailDO.setBranch(requestObj.getString(CommonConstants.BRANCH));
-			    		vendorBankDetailDO.setAddressprooftype(requestObj.getString(CommonConstants.ADDRESSPROOFTYPE));
-			    		//vendorBankDetailDO.setAddressproofurl(requestObj.getString("addressproofurl"));
-			    		//vendorBankDetailDO.setCancelledchequeurl(requestObj.getString("cancelledchequeurl"));
-			    		new VendorBankDetailsService().addBankDetails(vendorBankDetailDO);
-			    		respJSON = CommonWebUtil.buildSuccessResponse();
-			    		//new JwtEncodeandDecode().decodeMethod(token);    	    
-						//new JwtTokenDecoder().parseJWT(new JwtTokenGenerator().createJWT("100101", name, email, 9000000));
-			    	}else{
-			    		VendorBankDetailDO vendorBankDetailDO = vendorBankDetailList.get(0);
-			    		vendorBankDetailDO.setVendorid(Long.valueOf(CommonConstants.VENDORID));
-			    		vendorBankDetailDO.setAccountholdername(CommonConstants.ACCOUNTHOLDERNAME);
-			    		vendorBankDetailDO.setAccountnumber(Long.valueOf(CommonConstants.ACCOUNTNUMBER));
-			    		vendorBankDetailDO.setIfsc(CommonConstants.IFSC);
-			    		vendorBankDetailDO.setBankname(CommonConstants.BANKNAME);
-			    		vendorBankDetailDO.setState(CommonConstants.STATE);
-			    		vendorBankDetailDO.setCity(CommonConstants.STATE);
-			    		vendorBankDetailDO.setBranch(CommonConstants.BRANCH);
-			    		vendorBankDetailDO.setAddressprooftype(CommonConstants.ADDRESSPROOFTYPE);
-			    		//vendorBankDetailDO.setAddressproofurl(addressproofurl);
-			    		//vendorBankDetailDO.setCancelledchequeurl(cancelledchequeurl);
-			    		new VendorBankDetailsService().updateBankDetails(vendorBankDetailDO);
-	    	    		respJSON = CommonWebUtil.buildSuccessResponse();
-			    	}	
+					System.out.println(vendoruser.size());
+					if(vendoruser.size() > 0 && vendoruser.get(0).getAccountstatus() != 'I'){
+						List<VendorBankDetailDO> vendorBankDetailList =  new VendorBankDetailsService().retriveByVendorID(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
+						if(vendorBankDetailList.size() == 0){  
+				    		VendorBankDetailDO vendorBankDetailDO = new VendorBankDetailDO();
+				    		vendorBankDetailDO.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
+				    		vendorBankDetailDO.setAccountholdername(requestObj.getString(CommonConstants.ACCOUNTHOLDERNAME));
+				    		vendorBankDetailDO.setAccountnumber(Long.valueOf(requestObj.getString(CommonConstants.ACCOUNTNUMBER)));
+				    		vendorBankDetailDO.setIfsc(requestObj.getString(CommonConstants.IFSC));
+				    		vendorBankDetailDO.setBankname(requestObj.getString(CommonConstants.BANKNAME));
+				    		vendorBankDetailDO.setState(requestObj.getString(CommonConstants.STATE));
+				    		vendorBankDetailDO.setCity(requestObj.getString(CommonConstants.CITY));
+				    		vendorBankDetailDO.setBranch(requestObj.getString(CommonConstants.BRANCH));
+				    		vendorBankDetailDO.setAddressprooftype(requestObj.getString(CommonConstants.ADDRESSPROOFTYPE));
+				    		//vendorBankDetailDO.setAddressproofurl(requestObj.getString("addressproofurl"));
+				    		//vendorBankDetailDO.setCancelledchequeurl(requestObj.getString("cancelledchequeurl"));
+				    		new VendorBankDetailsService().addBankDetails(vendorBankDetailDO);
+				    		respJSON = CommonWebUtil.buildSuccessResponse();
+				    		//new JwtEncodeandDecode().decodeMethod(token);    	    
+							//new JwtTokenDecoder().parseJWT(new JwtTokenGenerator().createJWT("100101", name, email, 9000000));
+				    	}else{
+				    		System.out.println(requestObj.getString(CommonConstants.STATE));
+				    		VendorBankDetailDO vendorBankDetailDO = vendorBankDetailList.get(0);
+				    		vendorBankDetailDO.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
+				    		vendorBankDetailDO.setAccountholdername(requestObj.getString(CommonConstants.ACCOUNTHOLDERNAME));
+				    		vendorBankDetailDO.setAccountnumber(Long.valueOf(requestObj.getString(CommonConstants.ACCOUNTNUMBER)));
+				    		vendorBankDetailDO.setIfsc(requestObj.getString(CommonConstants.IFSC));
+				    		vendorBankDetailDO.setBankname(requestObj.getString(CommonConstants.BANKNAME));
+				    		vendorBankDetailDO.setState(requestObj.getString(CommonConstants.STATE));
+				    		vendorBankDetailDO.setCity(requestObj.getString(CommonConstants.STATE));
+				    		vendorBankDetailDO.setBranch(requestObj.getString(CommonConstants.BRANCH));
+				    		vendorBankDetailDO.setAddressprooftype(requestObj.getString(CommonConstants.ADDRESSPROOFTYPE));
+				    		//vendorBankDetailDO.setAddressproofurl(addressproofurl);
+				    		//vendorBankDetailDO.setCancelledchequeurl(cancelledchequeurl);
+				    		new VendorBankDetailsService().updateBankDetails(vendorBankDetailDO);
+		    	    		respJSON = CommonWebUtil.buildSuccessResponse();
+				    	}	
+					}else{
+						 respJSON = CommonWebUtil.buildErrorResponse(" user not exits  ");
+					}
 			   }else{
 				   respJSON = CommonWebUtil.buildErrorResponse(" ");
 		       }

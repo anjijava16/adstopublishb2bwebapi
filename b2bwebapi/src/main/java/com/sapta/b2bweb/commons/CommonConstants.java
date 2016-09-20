@@ -80,7 +80,7 @@ public class CommonConstants {
 	
 	public static final String DISPLAYNAME = "displayname";
 	
-	public static final String BUISENESSDESC = "businessDesc";
+	public static final String BUISENESSDESC = "businessdesc";
 	
 	//Register
 	public static final char ACTIVE = 'A';

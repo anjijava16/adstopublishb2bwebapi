@@ -22,7 +22,6 @@ import com.sapta.b2bweb.jwttoken.JwtTokenGenerator;
 import com.sapta.b2bweb.service.VendorUserService;
 import com.sapta.b2bweb.util.CommonUtil;
 import com.sapta.b2bweb.util.CommonWebUtil;
-import com.sapta.b2bweb.util.FtpFileUpdate;
 
 @Controller
 @RequestMapping(value = "/vendor")
@@ -91,19 +90,15 @@ public class VendorUserRS {
         			if(vendorUserDOList != null && vendorUserDOList.size() > 0){
         				new JwtTokenGenerator().createJWT(vendorUserDOList.get(0), response);
         				respJSON = CommonWebUtil.buildSuccessResponse();
-        			}else{
+        			}else
         				respJSON = CommonWebUtil.buildErrorResponse("user not exits");
-        			}
-        		}else{
+        		}else
         			respJSON = CommonWebUtil.buildErrorResponse("requestObj");
-        		}
-        	}else{
+        	}else
         		respJSON = CommonWebUtil.buildErrorResponse("requestParameter");
-        	}
     	}catch(Exception exception){
     		respJSON = CommonWebUtil.buildErrorResponse("exception");
     	}
-    	FtpFileUpdate.sadsa();
     	return respJSON != null ? respJSON.toString() : "empty";
 	}
 	

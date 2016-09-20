@@ -45,54 +45,53 @@ public class VendorBusinessDetailsRS {
 				if(requestObj != null){
 			    	    List<VendorUserDO> vendoruser =  new VendorUserService().retriveByID(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
 				    	System.out.println(vendoruser.size());
-				    	
-				    	List<VendorBusinessDetailDO> vendorBusinessDetailList =  new VendorBusinessDetailsService().retriveByVendorID(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
-				    	
-			    	    if(vendoruser.size() > 0 && vendoruser.get(0).getAccountstatus() != CommonConstants.INACTIVE && vendorBusinessDetailList.size() == 0){				    		
-				    		VendorBusinessDetailDO vendorBusinessDetail = new VendorBusinessDetailDO();
-				    		vendorBusinessDetail.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
-				    		vendorBusinessDetail.setBusinessname(requestObj.getString(CommonConstants.BUSINESSNAME));
-				    		vendorBusinessDetail.setBusinesstype(requestObj.getString(CommonConstants.BUSSINESSTYPE));
-				    		vendorBusinessDetail.setPan(requestObj.getString(CommonConstants.PERSONALPAN));
-				    		//vendorBusinessDetail.setPanurl(requestObj.getString("panurl"));
-				    		vendorBusinessDetail.setTinvat(requestObj.getString(CommonConstants.TINVAT));
-				    		vendorBusinessDetail.setTan(requestObj.getString(CommonConstants.TAN));
-				    		/*vendorBusinessDetail.setTinvaturl(requestObj.getString("tinvaturl"));
-				    		vendorBusinessDetail.setServicetax(requestObj.getString("servicetaxurl"));
-				    		vendorBusinessDetail.setServicetaxurl(requestObj.getString("servicetaxurl"));*/
-				    		vendorBusinessDetail.setBusinesspan(requestObj.getString(CommonConstants.BUSINESSPAN));
-				    		//vendorBusinessDetail.setBusinesspanurl(requestObj.getString("businesspanurl"));
-				    		
-				    		
-				    		//FtpFileUpdate.sadsa(); save image in FTP location 
-				    		new VendorBusinessDetailsService().addBusinessDetails(vendorBusinessDetail);
-				    		System.out.println("created");
-				    		respJSON = CommonWebUtil.buildSuccessResponse();
-				    	}else{
-				    		VendorBusinessDetailDO vendorBusinessDetailDO = vendorBusinessDetailList.get(0);
-				    		vendorBusinessDetailDO.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
-				    		vendorBusinessDetailDO.setBusinessname(requestObj.getString(CommonConstants.BUSINESSNAME));
-				    		vendorBusinessDetailDO.setBusinesstype(requestObj.getString(CommonConstants.BUSSINESSTYPE));
-				    		vendorBusinessDetailDO.setPan(requestObj.getString(CommonConstants.PERSONALPAN));
-				    		//vendorBusinessDetailDO.setPanurl(requestObj.getString("panurl"));
-				    		vendorBusinessDetailDO.setTinvat(requestObj.getString(CommonConstants.TINVAT));
-				    		vendorBusinessDetailDO.setTan(requestObj.getString(CommonConstants.TAN));
-				    		/*vendorBusinessDetailDO.setTinvaturl(requestObj.getString("tinvaturl"));
-				    		vendorBusinessDetailDO.setServicetax(requestObj.getString("servicetaxurl"));
-				    		vendorBusinessDetailDO.setServicetaxurl(requestObj.getString("servicetaxurl"))*/;
-				    		vendorBusinessDetailDO.setBusinesspan(requestObj.getString(CommonConstants.BUSINESSPAN));
-				    	//	vendorBusinessDetailDO.setBusinesspanurl(requestObj.getString("businesspanurl"));
-				    		
-				    		new VendorBusinessDetailsService().updateBusinessDetails(vendorBusinessDetailDO);
-				    		System.out.println("updated");
-		        	    	respJSON = CommonWebUtil.buildSuccessResponse();
-				    	}	
-				}else{
+				    	if(vendoruser.size() > 0 && vendoruser.get(0).getAccountstatus() != CommonConstants.INACTIVE){
+				    		List<VendorBusinessDetailDO> vendorBusinessDetailList =  new VendorBusinessDetailsService().retriveByVendorID(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
+				    	    if(vendorBusinessDetailList.size() == 0){		    		
+					    		VendorBusinessDetailDO vendorBusinessDetail = new VendorBusinessDetailDO();
+					    		vendorBusinessDetail.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
+					    		vendorBusinessDetail.setBusinessname(requestObj.getString(CommonConstants.BUSINESSNAME));
+					    		vendorBusinessDetail.setBusinesstype(requestObj.getString(CommonConstants.BUSSINESSTYPE));
+					    		vendorBusinessDetail.setPan(requestObj.getString(CommonConstants.PERSONALPAN));
+					    		//vendorBusinessDetail.setPanurl(requestObj.getString("panurl"));
+					    		vendorBusinessDetail.setTinvat(requestObj.getString(CommonConstants.TINVAT));
+					    		vendorBusinessDetail.setTan(requestObj.getString(CommonConstants.TAN));
+					    		/*vendorBusinessDetail.setTinvaturl(requestObj.getString("tinvaturl"));
+					    		vendorBusinessDetail.setServicetax(requestObj.getString("servicetaxurl"));
+					    		vendorBusinessDetail.setServicetaxurl(requestObj.getString("servicetaxurl"));*/
+					    		vendorBusinessDetail.setBusinesspan(requestObj.getString(CommonConstants.BUSINESSPAN));
+					    		//vendorBusinessDetail.setBusinesspanurl(requestObj.getString("businesspanurl"));
+					    		
+					    		
+					    		//FtpFileUpdate.sadsa(); save image in FTP location 
+					    		new VendorBusinessDetailsService().addBusinessDetails(vendorBusinessDetail);
+					    		System.out.println("created");
+					    		respJSON = CommonWebUtil.buildSuccessResponse();
+					    	}else{
+					    		VendorBusinessDetailDO vendorBusinessDetailDO = vendorBusinessDetailList.get(0);
+					    		vendorBusinessDetailDO.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
+					    		vendorBusinessDetailDO.setBusinessname(requestObj.getString(CommonConstants.BUSINESSNAME));
+					    		vendorBusinessDetailDO.setBusinesstype(requestObj.getString(CommonConstants.BUSSINESSTYPE));
+					    		vendorBusinessDetailDO.setPan(requestObj.getString(CommonConstants.PERSONALPAN));
+					    		//vendorBusinessDetailDO.setPanurl(requestObj.getString("panurl"));
+					    		vendorBusinessDetailDO.setTinvat(requestObj.getString(CommonConstants.TINVAT));
+					    		vendorBusinessDetailDO.setTan(requestObj.getString(CommonConstants.TAN));
+					    		/*vendorBusinessDetailDO.setTinvaturl(requestObj.getString("tinvaturl"));
+					    		vendorBusinessDetailDO.setServicetax(requestObj.getString("servicetaxurl"));
+					    		vendorBusinessDetailDO.setServicetaxurl(requestObj.getString("servicetaxurl"))*/;
+					    		vendorBusinessDetailDO.setBusinesspan(requestObj.getString(CommonConstants.BUSINESSPAN));
+					    	//	vendorBusinessDetailDO.setBusinesspanurl(requestObj.getString("businesspanurl"));
+					    		
+					    		new VendorBusinessDetailsService().updateBusinessDetails(vendorBusinessDetailDO);
+					    		System.out.println("updated");
+			        	    	respJSON = CommonWebUtil.buildSuccessResponse();
+					    	}	
+				    	}else
+				    		 respJSON = CommonWebUtil.buildErrorResponse(" use not exits ");
+				}else
 	        	    respJSON = CommonWebUtil.buildErrorResponse(" ");
-			    }
-	    	}else{
+	    	}else
 	    		respJSON = CommonWebUtil.buildErrorResponse(" ");
-	    	}
 	    }catch (Exception e) {
 	    	respJSON = CommonWebUtil.buildErrorResponse(" Exception ");
 		}

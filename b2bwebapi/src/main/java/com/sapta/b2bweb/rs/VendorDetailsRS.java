@@ -38,25 +38,25 @@ public class VendorDetailsRS {
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
 					List<VendorUserDO> vendoruser =  new VendorUserService().retriveByID(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
-					List<VendorDetailDO> vendorDetailList =  new VendorDetailsService().retriveByVendorID(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
-					if(vendoruser.size() > 0 && vendoruser.get(0).getAccountstatus() != 'I' && vendorDetailList.size() == 0){    	
-						VendorDetailDO vendorDetailDO = new VendorDetailDO();
-			    		vendorDetailDO.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
-			    		vendorDetailDO.setDisplayname(requestObj.getString(CommonConstants.DISPLAYNAME));
-			    		vendorDetailDO.setBusinessDesc(requestObj.getString(CommonConstants.BUSINESSNAME));
-			    		
-			    		new VendorDetailsService().addvendorDetails(vendorDetailDO);
-			    		respJSON = CommonWebUtil.buildSuccessResponse();
-					}else{
-						VendorDetailDO vendorDetailDO = vendorDetailList.get(0);	
-					
-						vendorDetailDO.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
-			    		vendorDetailDO.setDisplayname(requestObj.getString(CommonConstants.DISPLAYNAME));
-			    		vendorDetailDO.setBusinessDesc(requestObj.getString(CommonConstants.BUSINESSNAME));
-			    		new VendorDetailsService().updatevendorDetails(vendorDetailDO);
-			    		
-			    		respJSON = CommonWebUtil.buildSuccessResponse();
-					}
+					if(vendoruser.size() > 0 && vendoruser.get(0).getAccountstatus() != 'I'){
+						List<VendorDetailDO> vendorDetailList =  new VendorDetailsService().retriveByVendorID(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
+						if(vendorDetailList.size() == 0){    	
+							VendorDetailDO vendorDetailDO = new VendorDetailDO();
+				    		vendorDetailDO.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
+				    		vendorDetailDO.setDisplayname(requestObj.getString(CommonConstants.DISPLAYNAME));
+				    		vendorDetailDO.setBusinessDesc(requestObj.getString(CommonConstants.BUISENESSDESC));
+				    		new VendorDetailsService().addvendorDetails(vendorDetailDO);
+				    		respJSON = CommonWebUtil.buildSuccessResponse();
+						}else{
+							VendorDetailDO vendorDetailDO = vendorDetailList.get(0);	
+							vendorDetailDO.setVendorid(Long.valueOf(requestObj.getString(CommonConstants.VENDORID)));
+				    		vendorDetailDO.setDisplayname(requestObj.getString(CommonConstants.DISPLAYNAME));
+				    		vendorDetailDO.setBusinessDesc(requestObj.getString(CommonConstants.BUISENESSDESC));
+				    		new VendorDetailsService().updatevendorDetails(vendorDetailDO);
+				    		respJSON = CommonWebUtil.buildSuccessResponse();
+						}
+					}else
+						respJSON = CommonWebUtil.buildErrorResponse("vendor not exits register first");
 	    	}else
 	    		respJSON = CommonWebUtil.buildErrorResponse("");
 			}else
