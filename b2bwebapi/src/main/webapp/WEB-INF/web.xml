@@ -13,6 +13,14 @@
     <param-name>contextConfigLocation</param-name>
     <param-value>/WEB-INF/mvc-dispatcher-servlet.xml</param-value>
   </context-param>
+  <context-param>
+	<param-name>MONGODB_HOST</param-name>
+	<param-value>localhost</param-value>
+  </context-param>
+  <context-param>
+	<param-name>MONGODB_PORT</param-name>
+	<param-value>27017</param-value>
+  </context-param>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
