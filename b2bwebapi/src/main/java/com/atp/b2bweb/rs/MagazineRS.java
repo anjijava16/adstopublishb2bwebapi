@@ -22,6 +22,7 @@ import com.atp.b2bweb.createdbobject.MongoDBMagazineObject;
 import com.atp.b2bweb.service.MagazineService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -67,52 +68,68 @@ public class MagazineRS {
 		return doc;
 	}
 
-	@RequestMapping(value = UrlCommonConstant.GET_MAGAZINE, method = RequestMethod.GET)
+	@RequestMapping(value = UrlCommonConstant.GET_MAGAZINE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-   	public List<DBObject> getMagazine(HttpServletRequest request, HttpServletResponse response){
+   	public String getMagazine(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
-		@SuppressWarnings("unused")
-		JSONObject respJSON = null;
-		DBObject doc = null;
+		org.json.simple.JSONObject respJSON = null;
+		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		 DBObject doc = null;
 		 List<DBObject> magazineList = new ArrayList<>();
-		try {
-			DBCursor dbCursor =  new MagazineService().getMagazine(mongo);
-			 while(dbCursor.hasNext()){
-				 doc = dbCursor.next();
-				 System.out.println(doc);
-				 magazineList.add(doc);
-			 }
-			 System.out.println(magazineList.get(0));
+		 try {
+				if(requestParameter != null){
+					JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
+					 System.out.println(requestObj);
+					if(requestObj != null){
+						DBCursor dbCursor =  new MagazineService().getMagazine(requestObj, mongo);
+						while(dbCursor.hasNext()){
+							 doc = dbCursor.next();
+							 magazineList.add(doc);
+						}
+						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
+					}
+				}
 		}catch (Exception e) {
-			respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+			System.out.println("exception "+e);
+			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		return magazineList;
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
+		 System.out.println("magazineList  "+magazineList.size());
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	
-	/*@RequestMapping(value = UrlCommonConstant.GET_MAGAZINE, method = RequestMethod.GET)
+	@SuppressWarnings("unused")
+	@RequestMapping(value = UrlCommonConstant.UPDATE_MAGAZINE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-   	public List<DBObject> getMagazine(HttpServletRequest request, HttpServletResponse response){
+   	public String updateMagazine(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
-		@SuppressWarnings("unused")
 		JSONObject respJSON = null;
-		DBObject doc = null;
-		 List<DBObject> magazineList = new ArrayList<>();
+		DBObject doc= null;
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		try {
-			DBCursor dbCursor =  new MagazineService().getMagazine(mongo);
-			 while(dbCursor.hasNext()){
-				 doc = dbCursor.next();
-				 System.out.println(doc);
-				 magazineList.add(doc);
-			 }
-			 System.out.println(magazineList.get(0));
-		}catch (Exception e) {
-			respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+			if(requestParameter != null){
+				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
+				if(requestObj != null){
+        			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
+        			if(result){
+        				doc = MongoDBMagazineObject.createMagazineDBObject(requestObj);
+        				new MagazineService().updateMagazine(requestObj.get("_id").toString(), doc , mongo);
+        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+        	    	}else{
+        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
+        	    	}
+        		}else{
+        			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        		}
+			}else{
+				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+			}
+	    }catch (Exception e) {
+	    	System.out.println(e);
+	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		return magazineList;
+		//return doc;
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
-*/
+
 }

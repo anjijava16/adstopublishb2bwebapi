@@ -50,4 +50,6 @@ public class UrlCommonConstant {
 	
 	public static final String GET_MAGAZINE = "/getmagazine";
 	
+	public static final String UPDATE_MAGAZINE = "/updatemagaine";
+	
 }
