@@ -17,14 +17,17 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-public class RadioDAO {
+public class OutdoorDAO {
+	
 	private DBCollection col;
-
-	public RadioDAO(MongoClient mongo){
-		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.RADIO);
+	
+	public OutdoorDAO(){ }
+	
+	public OutdoorDAO(MongoClient mongo){
+		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.OUTDOOR);
 	}
 	
-	public  DBObject addRadio(DBObject doc){
+	public  DBObject addOutdoor(DBObject doc){
 		try {
 			col.insert(doc);
 		} catch (Exception e) {
@@ -32,7 +35,7 @@ public class RadioDAO {
 		return doc;
 	}
 	
-	public  DBObject updateRadio(String id, DBObject doc){
+	public  DBObject updateOutdoor(String id, DBObject doc){
 		try {
 			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(id)).get();
 			col.update(query, doc);
@@ -47,11 +50,11 @@ public class RadioDAO {
 			data = col.findOne(query);
 		} catch (Exception e) {
 		} 
-		System.out.println("data getbyid RadioDAO  "+data);
+		System.out.println("data getbyid OutdoorDAo  "+data);
 		return data;
 	}
 
-	public DBCursor getRadio(JSONObject requestObj)  {
+	public DBCursor getOutdoor(JSONObject requestObj)  {
 		DBCursor dbCursor = null;
 		try {
 			String sortBy = requestObj.get("sortBy").toString();
@@ -96,4 +99,5 @@ public class RadioDAO {
 
 		return dbCursor;
 	}
+
 }

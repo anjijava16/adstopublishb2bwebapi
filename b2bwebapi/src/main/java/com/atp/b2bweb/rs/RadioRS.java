@@ -18,8 +18,8 @@ import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.ExceptionCommonconstant;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
-import com.atp.b2bweb.createdbobject.DBMagazineObject;
-import com.atp.b2bweb.service.MagazineService;
+import com.atp.b2bweb.createdbobject.DBRadioObject;
+import com.atp.b2bweb.service.RadioService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.atp.b2bweb.util.MzgazineUtil;
@@ -28,16 +28,16 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 @Controller
-@RequestMapping(value = UrlCommonConstant.MAGAZINE)
+@RequestMapping(value = UrlCommonConstant.RADIO)
 @SessionAttributes(UrlCommonConstant.SESSION)
-public class MagazineRS {
+public class RadioRS {
 	
-	MongoClient mongo;
+MongoClient mongo;
 	
 	@SuppressWarnings("unused")
-	@RequestMapping(value = UrlCommonConstant.ADD_MAGAZINE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
+	@RequestMapping(value = UrlCommonConstant.ADD_RADIO + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-	public DBObject  addMagazine(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+	public DBObject  addRadio(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
 		JSONObject respJSON = null;
 		DBObject doc= null;
@@ -48,8 +48,8 @@ public class MagazineRS {
 				if(requestObj != null){
         			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
         			if(result){
-        				doc = DBMagazineObject.createMagazineDBObject(requestObj);
-        				new MagazineService().addMagazine(doc, mongo);
+        				doc = DBRadioObject.createRadioDBObject(requestObj);
+        				new RadioService().addRadio(doc, mongo);
         		    	respJSON = CommonWebUtil.buildSuccessResponse();
         	    	}else{
         	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
@@ -68,23 +68,23 @@ public class MagazineRS {
 		return doc;
 	}
 
-	@RequestMapping(value = UrlCommonConstant.GET_MAGAZINE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
+	@RequestMapping(value = UrlCommonConstant.GET_RADIO + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-   	public String getMagazine(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+   	public String getRadio(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
 		org.json.simple.JSONObject respJSON = null;
 		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		 DBObject doc = null;
-		 List<DBObject> magazineList = new ArrayList<>();
+		 List<DBObject> radioList = new ArrayList<>();
 		 try {
 				if(requestParameter != null){
 					JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 					 System.out.println(requestObj);
 					if(requestObj != null){
-						DBCursor dbCursor =  new MagazineService().getMagazine(requestObj, mongo);
+						DBCursor dbCursor =  new RadioService().getRadio(requestObj, mongo);
 						while(dbCursor.hasNext()){
 							 doc = dbCursor.next();
-							 magazineList.add(doc);
+							 radioList.add(doc);
 						}
 						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
 					}
@@ -93,14 +93,14 @@ public class MagazineRS {
 			System.out.println("exception "+e);
 			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		 System.out.println("magazineList  "+magazineList.size());
+		 System.out.println("radioList  "+radioList.size());
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	
 	@SuppressWarnings("unused")
-	@RequestMapping(value = UrlCommonConstant.UPDATE_MAGAZINE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
+	@RequestMapping(value = UrlCommonConstant.UPDATE_RADIO + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-   	public String updateMagazine(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+   	public String updateRadio(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
 		JSONObject respJSON = null;
 		DBObject doc= null;
@@ -111,8 +111,8 @@ public class MagazineRS {
 				if(requestObj != null){
         			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
         			if(result){
-        				doc = DBMagazineObject.createMagazineDBObject(requestObj);
-        				new MagazineService().updateMagazine(requestObj.get("_id").toString(), doc , mongo);
+        				doc = DBRadioObject.createRadioDBObject(requestObj);
+        				new RadioService().updateRadio(requestObj.get("_id").toString(), doc , mongo);
         		    	respJSON = CommonWebUtil.buildSuccessResponse();
         	    	}else{
         	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
@@ -129,7 +129,6 @@ public class MagazineRS {
 		}
 		//return doc;
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
 }

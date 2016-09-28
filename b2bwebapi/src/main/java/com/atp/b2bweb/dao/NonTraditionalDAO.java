@@ -17,14 +17,17 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-public class RadioDAO {
-	private DBCollection col;
+public class NonTraditionalDAO {
 
-	public RadioDAO(MongoClient mongo){
-		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.RADIO);
+	private DBCollection col;
+	
+	public NonTraditionalDAO(){ }
+	
+	public NonTraditionalDAO(MongoClient mongo){
+		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.NON_TRADITIONAL);
 	}
 	
-	public  DBObject addRadio(DBObject doc){
+	public  DBObject addNonTraditional(DBObject doc){
 		try {
 			col.insert(doc);
 		} catch (Exception e) {
@@ -32,7 +35,7 @@ public class RadioDAO {
 		return doc;
 	}
 	
-	public  DBObject updateRadio(String id, DBObject doc){
+	public  DBObject updateNonTraditional(String id, DBObject doc){
 		try {
 			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(id)).get();
 			col.update(query, doc);
@@ -47,11 +50,11 @@ public class RadioDAO {
 			data = col.findOne(query);
 		} catch (Exception e) {
 		} 
-		System.out.println("data getbyid RadioDAO  "+data);
+		System.out.println("data getbyid NonTraditionalDAO  "+data);
 		return data;
 	}
 
-	public DBCursor getRadio(JSONObject requestObj)  {
+	public DBCursor getNonTraditional(JSONObject requestObj)  {
 		DBCursor dbCursor = null;
 		try {
 			String sortBy = requestObj.get("sortBy").toString();
@@ -96,4 +99,5 @@ public class RadioDAO {
 
 		return dbCursor;
 	}
+
 }

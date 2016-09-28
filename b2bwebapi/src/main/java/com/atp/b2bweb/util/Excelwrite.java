@@ -23,7 +23,7 @@ public class Excelwrite {
          
         //Create a blank sheet
         XSSFSheet sheet = workbook.createSheet("C:/Users/SAPTALABS/Desktop/Excelwrite.xlsx");
-        List<RadioDO> radioList = new RadioDAO().retrive();
+        List<RadioDO> radioList = null;// new RadioDAO().retrive();
         //This data needs to be written (Object[])
         Map<String, Object[]> data = new TreeMap<String, Object[]>();
         data.put("1", new Object[] {"ID", "NAME", "LASTNAME"});

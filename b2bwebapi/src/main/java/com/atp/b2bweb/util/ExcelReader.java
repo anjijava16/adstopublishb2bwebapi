@@ -54,7 +54,7 @@ public class ExcelReader {
                     }
                 }
                 System.out.println("addddd=================");
-                new RadioDAO().addRadio(radioDo);
+                //new RadioDAO().addRadio(radioDo);
                
             }
             file.close();

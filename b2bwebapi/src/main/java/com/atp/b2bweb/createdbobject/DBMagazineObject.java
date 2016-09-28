@@ -11,7 +11,7 @@ import com.atp.b2bweb.db.MagazineDB;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-public class MongoDBMagazineObject {
+public class DBMagazineObject {
 	
 	public static DBObject createMagazineDBObject(JSONObject requestObj) {
 		

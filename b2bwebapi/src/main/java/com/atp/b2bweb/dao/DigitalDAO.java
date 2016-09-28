@@ -17,14 +17,16 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-public class RadioDAO {
-	private DBCollection col;
-
-	public RadioDAO(MongoClient mongo){
-		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.RADIO);
+public class DigitalDAO {
+private DBCollection col;
+	
+	public DigitalDAO(){ }
+	
+	public DigitalDAO(MongoClient mongo){
+		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.DIGITAL);
 	}
 	
-	public  DBObject addRadio(DBObject doc){
+	public  DBObject addDigital(DBObject doc){
 		try {
 			col.insert(doc);
 		} catch (Exception e) {
@@ -32,7 +34,7 @@ public class RadioDAO {
 		return doc;
 	}
 	
-	public  DBObject updateRadio(String id, DBObject doc){
+	public  DBObject updateDigital(String id, DBObject doc){
 		try {
 			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(id)).get();
 			col.update(query, doc);
@@ -47,11 +49,11 @@ public class RadioDAO {
 			data = col.findOne(query);
 		} catch (Exception e) {
 		} 
-		System.out.println("data getbyid RadioDAO  "+data);
+		System.out.println("data getbyid DigitalDAO  "+data);
 		return data;
 	}
 
-	public DBCursor getRadio(JSONObject requestObj)  {
+	public DBCursor getDigital(JSONObject requestObj)  {
 		DBCursor dbCursor = null;
 		try {
 			String sortBy = requestObj.get("sortBy").toString();
