@@ -58,7 +58,8 @@ public class NewspaperDAO {
 		DBCursor dbCursor = null;
 		try {
 			String sortBy = requestObj.get("sortBy").toString();
-			int skip      = 0;
+			int skip      = Integer.valueOf(requestObj.get("offset").toString());
+			System.out.println(skip);
 			JSONObject jsonObject =  (JSONObject) requestObj.get("filters"); 
 			
 			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");

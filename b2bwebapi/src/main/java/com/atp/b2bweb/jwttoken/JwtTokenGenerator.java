@@ -27,7 +27,7 @@ public class JwtTokenGenerator {
 		//We will sign our JWT with our ApiKey secret
 		byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("chethan");
 		Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-		 
+		 System.out.println(vendorUserDO.getUsername());
 		 //Let's set the JWT Claims
 		JwtBuilder builder = Jwts.builder().setId(String.valueOf(vendorUserDO.getId()))
 		                                .setIssuedAt(now)

@@ -168,7 +168,7 @@ public class DBMagazineObject {
 						
 					mediaDetails.put(MagazineDB.REGULAR_OPTION, regularOptions);	
 					
-				document.put(MagazineDB.MEDIA_DETAILS, mediaDetails);		
+				document.put(MagazineDB.MEDIA_OPTIONS, mediaDetails);		
 					
 				document.put(CommonConstants.UPDATEDBY, requestObj.get(CommonConstants.VENDORID));
 				document.put(CommonConstants.UPDATEDON, new Date());	

@@ -22,6 +22,7 @@ import com.atp.b2bweb.createdbobject.DBAirlineAndAirportsObject;
 import com.atp.b2bweb.service.AirlineAndAirportsService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -71,8 +72,8 @@ MongoClient mongo;
 	@RequestMapping(value = UrlCommonConstant.GET_AIRLINE_AND_AIRPORTS + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
    	public String getAirlineAndAirports(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
-		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		org.json.simple.JSONObject respJSON = null;
+		 response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
+		 org.json.simple.JSONObject respJSON = null;
 		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		 DBObject doc = null;
 		 List<DBObject> AirlineAirportsList = new ArrayList<>();
@@ -86,7 +87,7 @@ MongoClient mongo;
 							 doc = dbCursor.next();
 							 AirlineAirportsList.add(doc);
 						}
-						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
+						respJSON = MzgazineUtil.getDetailLists(AirlineAirportsList);
 					}
 				}
 		}catch (Exception e) {
@@ -130,6 +131,12 @@ MongoClient mongo;
 		//return doc;
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
+	}
+	
+	@RequestMapping(value = "/addtodb")
+    @ResponseBody
+	public void addrecordtodb(){
+		JsonToDB.addAirlineAndAirporttodb();
 	}
 
 }

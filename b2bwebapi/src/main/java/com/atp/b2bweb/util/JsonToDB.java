@@ -1,11 +1,16 @@
 package com.atp.b2bweb.util;
 
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.json.JSONException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.atp.b2bweb.db.AirlineAndAirportsDB;
+import com.atp.b2bweb.db.NewspaperDB;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -19,19 +24,12 @@ public class JsonToDB {
 			
 			DB db = ConnectToMongoDB.connect();
 			DBCollection table = db.getCollection("magazine");
-
 			
 			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Downloads/Magazine1.txt"));
-			JSONObject jsonObject =  (JSONObject) obj;
-				
-			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");
-			
-			System.out.println("---------"+jsonArray.size()); 
-			
+			JSONObject jsonObject =  (JSONObject) obj;				
+			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");			
 			for (Object object : jsonArray) {
 				JSONObject jsonObject1 =  (JSONObject) object;
-				
-				
 				BasicDBObject document = new BasicDBObject();
 				document.put("toolId", "55755d6c66579f76671b1a1d");
 				document.put("logo", "/images/medias/55b7d6ab8ead0e48288b4595/55b7d6ab8ead0e48288b4595_logo.jpg");
@@ -48,11 +46,11 @@ public class JsonToDB {
 				document.put("categoryName", jsonObject1.get("categoryName"));
 				document.put("cardRate", jsonObject1.get("cardRate"));
 				document.put("discountedRate", jsonObject1.get("discountedRate"));
-			
-				BasicDBObject documentDetails = new BasicDBObject();
-				
-				    JSONObject jsonObject2 =  (JSONObject) jsonObject1.get("attributes");
-				
+				document.put("name1", "times of india");
+				document.put("state", "ka");
+				document.put("res", "ban");
+				BasicDBObject documentDetails = new BasicDBObject();				
+				    JSONObject jsonObject2 =  (JSONObject) jsonObject1.get("attributes");				
 					BasicDBObject documentDetail = new BasicDBObject();
 					JSONObject jsonObject3 = (JSONObject) jsonObject2.get("categoryName");
 					documentDetail.put("value", jsonObject3 != null ? jsonObject3.get("value"): "");					
@@ -241,5 +239,189 @@ public class JsonToDB {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void addnespaperrecordtodb(){
+		JSONParser parser = new JSONParser();
+		try {
+			
+			DB db = ConnectToMongoDB.connect();
+			DBCollection table = db.getCollection("newspaper");
 
+			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Documents/GitHub/adstopublish/Master Data/Newspaper/Newspaper.txt"));
+			JSONObject jsonObject =  (JSONObject) obj;
+			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");			
+			
+			for (Object object : jsonArray) {
+				JSONObject requestObj =  (JSONObject) object;
+					BasicDBObject document = new BasicDBObject();
+					List<String> categoryId = new ArrayList<>();  
+					categoryId.add(requestObj.get(NewspaperDB.CATEGORY_ID) != null ? requestObj.get(NewspaperDB.CATEGORY_ID).toString():"");
+					List<String> geography = new ArrayList<>();  
+					geography.add(requestObj.get(NewspaperDB.GEOGRAPHY).toString());
+					document.put(NewspaperDB.URL_SIUG, requestObj.get(NewspaperDB.URL_SIUG));
+					document.put(NewspaperDB.LOGO, requestObj.get(NewspaperDB.LOGO));
+					document.put(NewspaperDB.NAME, requestObj.get(NewspaperDB.NAME));
+					document.put(NewspaperDB.EDITION_NAME, requestObj.get(NewspaperDB.EDITION_NAME));
+					document.put(NewspaperDB.CATEGORYNAME, requestObj.get(NewspaperDB.CATEGORYNAME));
+
+					BasicDBObject mediaOptions = new BasicDBObject();
+						JSONObject mediaOptionsJSON =  (JSONObject) requestObj.get(NewspaperDB.MEDIA_OPTIONS);	
+						if(mediaOptionsJSON != null){
+							JSONObject otherOptionsJSON =  (JSONObject) mediaOptionsJSON.get(NewspaperDB.OTHER_OPTIONS);
+							if(otherOptionsJSON != null){
+								
+								BasicDBObject otherOptions = new BasicDBObject();
+								if(otherOptionsJSON != null){
+									for(int i = 0; i < otherOptionsJSON.size(); i++){  
+										Object[] aaa = otherOptionsJSON.keySet().toArray();
+										JSONObject jsonObject1 =  (JSONObject) otherOptionsJSON.get(aaa[i].toString());
+										if(jsonObject1 != null)
+										otherOptions.append(aaa[i].toString(), getBasicDBObject(jsonObject1));
+									}
+									mediaOptions.append(NewspaperDB.OTHER_OPTIONS, otherOptions);
+								}
+							}
+							JSONObject regularOptionsJSON =  (JSONObject) mediaOptionsJSON.get(NewspaperDB.REGULAR_OPTION);
+							if(regularOptionsJSON != null){
+								BasicDBObject regularOptions = new BasicDBObject();
+								for(int i = 0; i < regularOptionsJSON.size(); i++){
+									Object[] aaa = regularOptionsJSON.keySet().toArray();
+									JSONObject jsonObject1 =  (JSONObject) regularOptionsJSON.get(aaa[i].toString());
+									if(jsonObject1 != null)
+									regularOptions.append(aaa[i].toString(), getBasicDBObject(jsonObject1));
+								}
+								mediaOptions.append(NewspaperDB.REGULAR_OPTION, regularOptions);
+							}
+						}
+					BasicDBObject attributes = new BasicDBObject();	
+						JSONObject attributesJSON =  (JSONObject) requestObj.get(NewspaperDB.ATTRIBUTES);
+						if(attributesJSON != null){
+							for(int i = 0; i < attributesJSON.size(); i++){  
+								Object[] aaa = attributesJSON.keySet().toArray();
+								JSONObject jsonObject1 =  (JSONObject) attributesJSON.get(aaa[i].toString());
+								if(jsonObject1 != null)
+								attributes.append(aaa[i].toString(), getBasicDBObject(jsonObject1));
+							}
+						}
+						
+					document.append(NewspaperDB.ATTRIBUTES, attributes);	
+					document.append(NewspaperDB.MEDIA_OPTIONS, mediaOptions);
+					
+				
+				table.insert(document);
+			}
+
+		}catch(Exception e){
+			System.out.println(e);
+		}
+	}
+	
+	public static BasicDBObject getBasicDBObject(JSONObject jsonObj) throws JSONException{
+		BasicDBObject basicDBObject = new BasicDBObject();	
+		if(jsonObj != null){
+			for(int i = 0; i < jsonObj.size(); i++){
+				Object[] aaa = jsonObj.keySet().toArray();
+				basicDBObject.append(aaa[i].toString(), jsonObj.get(aaa[i].toString()) != null ? jsonObj.get(aaa[i].toString()) : "");
+			}
+		}
+		return basicDBObject;
+	}
+	
+	public static void addAirlineAndAirporttodb(){
+		JSONParser parser = new JSONParser();
+		try {
+			
+			DB db = ConnectToMongoDB.connect();
+			DBCollection table = db.getCollection("airlineandairports");
+
+			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Documents/GitHub/adstopublish/Master Data/AirlineAndAirports/AirlineAndAirports .txt"));
+			JSONObject jsonObject =  (JSONObject) obj;
+			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");			
+			for (Object object : jsonArray) {
+					JSONObject requestObj =  (JSONObject) object;
+					BasicDBObject document = new BasicDBObject();
+					document.put(AirlineAndAirportsDB.CATEGORY, requestObj.get(AirlineAndAirportsDB.CATEGORY));
+					document.put(AirlineAndAirportsDB.URL_SIUG, requestObj.get(AirlineAndAirportsDB.URL_SIUG));
+					document.put(AirlineAndAirportsDB.NAME, requestObj.get(AirlineAndAirportsDB.NAME));
+					List<String> geography = new ArrayList<>();  
+					geography.add(requestObj.get(AirlineAndAirportsDB.GEOGRAPHY).toString());
+					document.put(AirlineAndAirportsDB.LOGO, requestObj.get(AirlineAndAirportsDB.LOGO));
+					document.put(AirlineAndAirportsDB.VIEWS, requestObj.get(AirlineAndAirportsDB.VIEWS));
+					document.put(AirlineAndAirportsDB.SERVICE_TAX_PERCENTAGE, requestObj.get(AirlineAndAirportsDB.SERVICE_TAX_PERCENTAGE));
+					document.put(AirlineAndAirportsDB.CARD_RATE, requestObj.get(AirlineAndAirportsDB.CARD_RATE));
+					
+					BasicDBObject mediaOptions = new BasicDBObject();
+						
+						JSONObject mediaOptionsJSON =  (JSONObject) requestObj.get(AirlineAndAirportsDB.MEDIA_OPTIONS);	
+						if(mediaOptionsJSON != null){
+							JSONObject digitalOptionsJSON =  (JSONObject) mediaOptionsJSON.get(AirlineAndAirportsDB.DIGITAL_OPTIONS);
+							BasicDBObject digitalOptions = new BasicDBObject();
+							if(digitalOptionsJSON != null){
+								for(int i = 0; i < digitalOptionsJSON.size(); i++){ 
+									Object[] aaa = digitalOptionsJSON.keySet().toArray();
+									JSONObject jsonObject1 =  (JSONObject) digitalOptionsJSON.get(aaa[i].toString());
+									if(jsonObject1 != null)
+									digitalOptions.append(aaa[i].toString(), getBasicDBObject(jsonObject1));
+								}
+							}
+							mediaOptions.append(AirlineAndAirportsDB.DIGITAL_OPTIONS, digitalOptions);
+							
+							JSONObject printOptionsJSON =  (JSONObject) mediaOptionsJSON.get(AirlineAndAirportsDB.PRINT_OPTION);
+							BasicDBObject printOptions = new BasicDBObject();
+							if(printOptionsJSON != null){
+								for(int i = 0; i < printOptionsJSON.size(); i++){
+									Object[] aaa = printOptionsJSON.keySet().toArray();
+									JSONObject jsonObject1 =  (JSONObject) printOptionsJSON.get(aaa[i].toString());
+									if(jsonObject1 != null)
+									printOptions.append(aaa[i].toString(), getBasicDBObject(jsonObject1));
+								}
+							}
+							mediaOptions.append(AirlineAndAirportsDB.PRINT_OPTION, printOptions);
+							JSONObject aircraftOptionsJSON =  (JSONObject) mediaOptionsJSON.get(AirlineAndAirportsDB.AIRCRAFT_OPTIONS);
+							BasicDBObject aircraftOptions = new BasicDBObject();
+							if(aircraftOptionsJSON != null){
+								for(int i = 0; i < aircraftOptionsJSON.size(); i++){
+									Object[] aaa = aircraftOptionsJSON.keySet().toArray();
+									JSONObject jsonObject1 =  (JSONObject) aircraftOptionsJSON.get(aaa[i].toString());
+									if(jsonObject1 != null)
+									aircraftOptions.append(aaa[i].toString(), getBasicDBObject(jsonObject1));
+								}
+							}
+							mediaOptions.append(AirlineAndAirportsDB.AIRCRAFT_OPTIONS, printOptions);
+							JSONObject popularOptionsJSON =  (JSONObject) mediaOptionsJSON.get(AirlineAndAirportsDB.POPULAR_OPTION);
+							BasicDBObject popularOptions = new BasicDBObject();
+							if(popularOptionsJSON != null){
+								for(int i = 0; i < popularOptionsJSON.size(); i++){
+									Object[] aaa = popularOptionsJSON.keySet().toArray();
+									JSONObject jsonObject1 =  (JSONObject) popularOptionsJSON.get(aaa[i].toString());
+									if(jsonObject1 != null)
+									popularOptions.append(aaa[i].toString(), getBasicDBObject(jsonObject1));
+								}
+							}      
+							mediaOptions.append(AirlineAndAirportsDB.POPULAR_OPTION, popularOptions);
+						}
+						       
+					BasicDBObject attributes = new BasicDBObject();	
+						JSONObject attributesJSON =  (JSONObject) requestObj.get(AirlineAndAirportsDB.ATTRIBUTES);
+						if(attributesJSON != null){
+							for(int i = 0; i < attributesJSON.size(); i++){
+								Object[] aaa = attributesJSON.keySet().toArray();
+								JSONObject jsonObject1 =  (JSONObject) attributesJSON.get(aaa[i].toString());
+								if(jsonObject1 != null)
+								attributes.append(aaa[i].toString(), getBasicDBObject(jsonObject1));
+							}
+						}
+					document.append(AirlineAndAirportsDB.ATTRIBUTES, attributes);	
+					document.append(AirlineAndAirportsDB.MEDIA_OPTIONS, mediaOptions);
+					
+				//table.insert(document);
+			}
+
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		
+	}
+	
+	
 }

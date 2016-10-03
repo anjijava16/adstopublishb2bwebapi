@@ -22,6 +22,7 @@ import com.atp.b2bweb.createdbobject.DBNewspaperObject;
 import com.atp.b2bweb.service.NewspaperService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -76,7 +77,7 @@ public class NewspaperRS {
 		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		 DBObject doc = null;
 		 List<DBObject> newspaperList = new ArrayList<>();
-		 try {
+		 try {   
 				if(requestParameter != null){
 					JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 					 System.out.println(requestObj);
@@ -86,7 +87,7 @@ public class NewspaperRS {
 							 doc = dbCursor.next();
 							 newspaperList.add(doc);
 						}
-						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
+						respJSON = MzgazineUtil.getDetailLists(newspaperList);
 					}
 				}
 		}catch (Exception e) {
@@ -130,5 +131,10 @@ public class NewspaperRS {
 		//return doc;
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
-
+	
+	@RequestMapping(value = "/addtodb")
+    @ResponseBody
+	public void addrecordtodb(){
+		JsonToDB.addnespaperrecordtodb();
+	}
 }

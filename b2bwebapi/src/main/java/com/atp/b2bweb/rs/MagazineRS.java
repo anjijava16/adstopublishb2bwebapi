@@ -22,6 +22,7 @@ import com.atp.b2bweb.createdbobject.DBMagazineObject;
 import com.atp.b2bweb.service.MagazineService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -84,17 +85,20 @@ public class MagazineRS {
 						DBCursor dbCursor =  new MagazineService().getMagazine(requestObj, mongo);
 						while(dbCursor.hasNext()){
 							 doc = dbCursor.next();
+							 System.out.println("----====="+doc);
 							 magazineList.add(doc);
 						}
-						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
+						respJSON = MzgazineUtil.getDetailLists(magazineList);
+						System.out.println(respJSON);
 					}
 				}
+				
 		}catch (Exception e) {
 			System.out.println("exception "+e);
 			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		 System.out.println("magazineList  "+magazineList.size());
-		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
+		 System.out.println(respJSON.toString());
+		 return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	
 	@SuppressWarnings("unused")
@@ -130,6 +134,12 @@ public class MagazineRS {
 		//return doc;
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
+	}
+	
+	@RequestMapping(value ="/addmagazinedb" )
+	public void addmagazintodb(){
+		//JsonToDB.jsontodb();
+		
 	}
 
 }

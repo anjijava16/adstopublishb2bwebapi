@@ -56,7 +56,7 @@ public class DBAirlineAndAirportsObject {
 				
 				JSONObject aircraftOptionsJSON =  (JSONObject) mediaOptionsJSON.get(AirlineAndAirportsDB.AIRCRAFT_OPTIONS);
 				BasicDBObject aircraftOptions = new BasicDBObject();
-				for(int i = 0; i < printOptionsJSON.length(); i++){
+				for(int i = 0; i < aircraftOptionsJSON.length(); i++){
 					JSONObject jsonObject =  (JSONObject) aircraftOptionsJSON.get(printOptionsJSON.names().get(i).toString());
 					aircraftOptions.append(aircraftOptionsJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
 				}
@@ -64,7 +64,7 @@ public class DBAirlineAndAirportsObject {
 				
 				JSONObject popularOptionsJSON =  (JSONObject) mediaOptionsJSON.get(AirlineAndAirportsDB.POPULAR_OPTION);
 				BasicDBObject popularOptions = new BasicDBObject();
-				for(int i = 0; i < printOptionsJSON.length(); i++){
+				for(int i = 0; i < popularOptionsJSON.length(); i++){
 					JSONObject jsonObject =  (JSONObject) popularOptionsJSON.get(popularOptionsJSON.names().get(i).toString());
 					popularOptions.append(popularOptionsJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
 				}

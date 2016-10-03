@@ -58,9 +58,9 @@ public class MagazineDAO {
 		DBCursor dbCursor = null;
 		try {
 			String sortBy = requestObj.get("sortBy").toString();
-			int skip      = 0;
+			int skip      = (int) requestObj.get("offset");
 			JSONObject jsonObject =  (JSONObject) requestObj.get("filters"); 
-			
+			System.out.println(skip);
 			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
 			JSONArray geographiesArray = (JSONArray) jsonObject.get("geographies");
 			/*JSONArray targetGroupsArray = (JSONArray) jsonObject.get("targetGroups");

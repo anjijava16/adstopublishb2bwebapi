@@ -22,7 +22,7 @@ public class DBNewspaperObject {
 	
 	public static DBObject createNewspaperDBObject(JSONObject requestObj) {
 		BasicDBObject document = new BasicDBObject();
-		try {
+		try {    
 			List<String> categoryId = new ArrayList<>();  
 			categoryId.add(requestObj.get(NewspaperDB.CATEGORY_ID).toString());
 			List<String> geography = new ArrayList<>();  

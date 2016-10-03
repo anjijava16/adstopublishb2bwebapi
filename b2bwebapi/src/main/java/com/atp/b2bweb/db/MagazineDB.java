@@ -66,7 +66,7 @@ public class MagazineDB {
 	
 	public static final String REGULAR_OPTION = "regularOptions";
 	
-	public static final String MEDIA_DETAILS = "mediaDetails";
+	public static final String MEDIA_OPTIONS= "mediaOptions";
 	
 	
 
