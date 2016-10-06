@@ -25,4 +25,7 @@ public class OutdoorService {
 		return new OutdoorDAO(mongo).updateOutdoor(id, doc);
 	}
 
+	public int getCount(MongoClient mongo){
+		return new OutdoorDAO(mongo).getCount();
+	}
 }

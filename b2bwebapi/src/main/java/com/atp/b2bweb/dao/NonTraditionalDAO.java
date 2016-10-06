@@ -54,11 +54,17 @@ public class NonTraditionalDAO {
 		return data;
 	}
 
+	public int getCount(){
+		int count = col.find().count();   
+		
+		return count;
+	}
+	
 	public DBCursor getNonTraditional(JSONObject requestObj)  {
 		DBCursor dbCursor = null;
 		try {
 			String sortBy = requestObj.get("sortBy").toString();
-			int skip      = 0;
+			int skip      = Integer.valueOf(requestObj.get("offset").toString());
 			JSONObject jsonObject =  (JSONObject) requestObj.get("filters"); 
 			
 			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
@@ -68,10 +74,10 @@ public class NonTraditionalDAO {
 			JSONArray frequenciesArray = (JSONArray) jsonObject.get("frequencies");
 			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
 			
-			if(sortBy == "topserch") sortBy= "views";
-			else if(sortBy == "fullpageprice")	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
-			else if(sortBy == "circulation")	sortBy= "attributes.circulation.value";
-			else if(sortBy == "") sortBy= "views";
+			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
+			else if(sortBy.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
+			else if(sortBy.equalsIgnoreCase("circulation"))	sortBy= "attributes.circulation.value";
+			else if(sortBy.equalsIgnoreCase("")) sortBy= "views";
 			
 			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 				for (int i = 0;i < geographiesArray.length();i++) {

@@ -24,4 +24,8 @@ public class DigitalService {
 	public DBObject updateDigital(String id,DBObject doc, MongoClient mongo){
 		return new DigitalDAO(mongo).updateDigital(id, doc);
 	}
+	
+	public int getCount(MongoClient mongo){
+		return new DigitalDAO(mongo).getCount();
+	}
 }

@@ -24,9 +24,9 @@ public class TableCommonConstant {
     
     public static final String AIRLINE_AND_AIRPORTS = "airlineandairports";
     
-    public static final String TELEVISION = "Television";
+    public static final String TELEVISION = "television";
     
-    public static final String NON_TRADITIONAL = "NonTraditional";
+    public static final String NON_TRADITIONAL = "nontraditional";
     
     public static final String DIGITAL = "digital";
     

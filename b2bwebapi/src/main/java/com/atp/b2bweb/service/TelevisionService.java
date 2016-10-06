@@ -23,6 +23,9 @@ public class TelevisionService {
 	public DBObject updateTelevision(String id,DBObject doc, MongoClient mongo){
 		return new TelevisionDAO(mongo).updateTelevision(id, doc);
 	}
-
+	
+	public int getCount(MongoClient mongo){
+		return new TelevisionDAO(mongo).getCount();
+	}
 
 }

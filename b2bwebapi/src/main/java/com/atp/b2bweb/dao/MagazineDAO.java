@@ -53,8 +53,14 @@ public class MagazineDAO {
 		System.out.println("data getbyid MagazineDAO  "+data);
 		return data;
 	}
+	public int getCount(){
+		int count = col.find().count();   
+		
+		return count;
+	}
 
 	public DBCursor getMagazine(JSONObject requestObj)  {
+		List<DBCursor> dbCursorList = new ArrayList<DBCursor>();
 		DBCursor dbCursor = null;
 		try {
 			String sortBy = requestObj.get("sortBy").toString();
@@ -68,10 +74,10 @@ public class MagazineDAO {
 			JSONArray frequenciesArray = (JSONArray) jsonObject.get("frequencies");
 			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
 			
-			if(sortBy == "topserch") sortBy= "views";
-			else if(sortBy == "fullpageprice")	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
-			else if(sortBy == "circulation")	sortBy= "attributes.circulation.value";
-			else if(sortBy == "") sortBy= "views";
+			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
+			else if(sortBy.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
+			else if(sortBy.equalsIgnoreCase("circulation"))	sortBy= "attributes.circulation.value";
+			else if(sortBy.equalsIgnoreCase("")) sortBy= "views";
 			
 			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 				for (int i = 0;i < geographiesArray.length();i++) {
@@ -87,16 +93,16 @@ public class MagazineDAO {
 				for (int i = 0; i < frequenciesArray.length();i++) {
 					criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
 				}
-			
-			System.out.println("criteria.size()   "+criteria.size() );
 			if(criteria != null && criteria.size() > 0){
 				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
 				}else{
 				 dbCursor = col.find().sort(new BasicDBObject("sortBy",1)).sort(new BasicDBObject(sortBy,1)).skip(skip).limit(30);
 			}
-			
-		} catch (JSONException e) {	}
-
+			dbCursorList.add(dbCursor);
+		} catch (JSONException e) {	
+			System.out.println(e);
+		}
+		
 		return dbCursor;
 	}
 

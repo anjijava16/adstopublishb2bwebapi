@@ -22,6 +22,7 @@ import com.atp.b2bweb.createdbobject.DBRadioObject;
 import com.atp.b2bweb.service.RadioService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -86,7 +87,8 @@ MongoClient mongo;
 							 doc = dbCursor.next();
 							 radioList.add(doc);
 						}
-						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
+						int count = new RadioService().getCount(mongo);
+						respJSON = MzgazineUtil.getAllDetailLists(radioList, count);
 					}
 				}
 		}catch (Exception e) {
@@ -116,7 +118,7 @@ MongoClient mongo;
         		    	respJSON = CommonWebUtil.buildSuccessResponse();
         	    	}else{
         	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
-        	    	}
+        	    	}   
         		}else{
         			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
         		}
@@ -130,5 +132,13 @@ MongoClient mongo;
 		//return doc;
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
+	
+
+	@RequestMapping(value = "/addtodb")
+    @ResponseBody
+	public void addrecordtodb(){
+		JsonToDB.addRadiotodb();
+	}
+	
 
 }

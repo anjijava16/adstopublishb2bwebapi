@@ -24,4 +24,8 @@ public class CinemasService {
 	public DBObject updateCinemas(String id,DBObject doc, MongoClient mongo){
 		return new CinemasDAO(mongo).updateCinemas(id, doc);
 	}
+	
+	public int getCount(MongoClient mongo){
+		return new CinemasDAO(mongo).getCount();
+	}
 }

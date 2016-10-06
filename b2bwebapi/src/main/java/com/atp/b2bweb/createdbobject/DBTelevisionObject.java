@@ -66,7 +66,7 @@ public class DBTelevisionObject {
 					JSONObject jsonObject =  (JSONObject) attributesJSON.get(attributesJSON.names().get(i).toString());
 					attributes.append(attributesJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
 				}
-				
+				document.append(TelevisionDB.ATTRIBUTES, attributes);
 			document.append(TelevisionDB.MEDIA_OPTIONS, mediaOptions);	
 			System.out.println(document);
 		}catch(Exception e){ System.out.println(e);	}

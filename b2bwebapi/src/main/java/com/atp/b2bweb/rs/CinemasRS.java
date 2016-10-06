@@ -22,6 +22,7 @@ import com.atp.b2bweb.createdbobject.DBCinimasObject;
 import com.atp.b2bweb.service.CinemasService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -86,7 +87,8 @@ public class CinemasRS {
 							 doc = dbCursor.next();
 							 cinimasList.add(doc);
 						}
-						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
+						int count = new CinemasService().getCount(mongo);
+						respJSON = MzgazineUtil.getAllDetailLists(cinimasList, count);
 					}
 				}
 		}catch (Exception e) {
@@ -94,6 +96,7 @@ public class CinemasRS {
 			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
 		 System.out.println("cinimasList  "+cinimasList.size());
+		 System.out.println(respJSON);
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	
@@ -131,4 +134,9 @@ public class CinemasRS {
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
+	@RequestMapping(value = "/addtodb")
+    @ResponseBody
+	public void addrecordtodb(){
+		JsonToDB.addcinematodb();
+	}
 }

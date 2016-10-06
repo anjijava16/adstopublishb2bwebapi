@@ -21,7 +21,7 @@ public class TelevisionDAO {
 	private DBCollection col;
 
 	public TelevisionDAO(MongoClient mongo){
-		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.RADIO);
+		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.TELEVISION);
 	}
 	
 	public  DBObject addTelevision(DBObject doc){
@@ -51,11 +51,17 @@ public class TelevisionDAO {
 		return data;
 	}
 
+	public int getCount(){
+		int count = col.find().count();   
+		
+		return count;
+	}
+	
 	public DBCursor getTelevision(JSONObject requestObj)  {
 		DBCursor dbCursor = null;
 		try {
 			String sortBy = requestObj.get("sortBy").toString();
-			int skip      = 0;
+			int skip      = Integer.valueOf(requestObj.get("offset").toString());
 			JSONObject jsonObject =  (JSONObject) requestObj.get("filters"); 
 			
 			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
@@ -65,10 +71,10 @@ public class TelevisionDAO {
 			JSONArray frequenciesArray = (JSONArray) jsonObject.get("frequencies");
 			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
 			
-			if(sortBy == "topserch") sortBy= "views";
-			else if(sortBy == "fullpageprice")	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
-			else if(sortBy == "circulation")	sortBy= "attributes.circulation.value";
-			else if(sortBy == "") sortBy= "views";
+			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
+			else if(sortBy.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
+			else if(sortBy.equalsIgnoreCase("cardRate"))	sortBy= "cardRate";
+			else if(sortBy.equalsIgnoreCase("")) sortBy= "views";
 			
 			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 				for (int i = 0;i < geographiesArray.length();i++) {
@@ -89,9 +95,9 @@ public class TelevisionDAO {
 			if(criteria != null && criteria.size() > 0){
 				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
 				}else{
-				 dbCursor = col.find().sort(new BasicDBObject("sortBy",1)).sort(new BasicDBObject(sortBy,1)).skip(skip).limit(30);
+				 dbCursor = col.find().sort(new BasicDBObject(sortBy, -1)).skip(skip).limit(30);
 			}
-			
+			System.out.println(dbCursor);
 		} catch (JSONException e) {	}
 
 		return dbCursor;

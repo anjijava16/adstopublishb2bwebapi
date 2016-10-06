@@ -22,6 +22,7 @@ import com.atp.b2bweb.createdbobject.DBOutdoorObject;
 import com.atp.b2bweb.service.OutdoorService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -76,7 +77,7 @@ public class OutdoorRS {
 		org.json.simple.JSONObject respJSON = null;
 		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		 DBObject doc = null;
-		 List<DBObject> nonTraditionalList = new ArrayList<>();
+		 List<DBObject> outdoorList = new ArrayList<>();
 		 try {
 				if(requestParameter != null){
 					JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
@@ -85,16 +86,17 @@ public class OutdoorRS {
 						DBCursor dbCursor =  new OutdoorService().getOutdoor(requestObj, mongo);
 						while(dbCursor.hasNext()){
 							 doc = dbCursor.next();
-							 nonTraditionalList.add(doc);
+							 outdoorList.add(doc);
 						}
-						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
+						int count = new OutdoorService().getCount(mongo);
+						respJSON = MzgazineUtil.getAllDetailLists(outdoorList, count);
 					}
 				}
 		}catch (Exception e) {
 			System.out.println("exception "+e);
 			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		 System.out.println("nonTraditionalList  "+nonTraditionalList.size());
+		 System.out.println("outdoorList  "+outdoorList.size());
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	
@@ -132,4 +134,10 @@ public class OutdoorRS {
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
+
+	@RequestMapping(value = "/addtodb")
+    @ResponseBody
+	public void addrecordtodb(){
+		JsonToDB.addOutdoortodb();
+	}
 }

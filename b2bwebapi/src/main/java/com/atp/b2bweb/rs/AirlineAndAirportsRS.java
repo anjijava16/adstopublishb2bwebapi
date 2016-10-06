@@ -87,7 +87,8 @@ MongoClient mongo;
 							 doc = dbCursor.next();
 							 AirlineAirportsList.add(doc);
 						}
-						respJSON = MzgazineUtil.getDetailLists(AirlineAirportsList);
+						int count = new AirlineAndAirportsService().getCount(mongo);
+						respJSON = MzgazineUtil.getAllDetailLists(AirlineAirportsList, count);
 					}
 				}
 		}catch (Exception e) {
@@ -97,24 +98,25 @@ MongoClient mongo;
 		 System.out.println("AirlineAirportsList  "+AirlineAirportsList.size());
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
-	
+	    
 	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.UPDATE_AIRLINE_AND_AIRPORTS + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
    	public String updateAirlineAndAirports(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
 		JSONObject respJSON = null;
-		DBObject doc= null;
+		DBObject doc= null; 
 		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
-		try {
+		System.out.println("update airline airport  ");
+		try {   
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
         			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
         			if(result){
-        				doc = DBAirlineAndAirportsObject.createAirlineAndAirportsDBObject(requestObj);
+        				doc = DBAirlineAndAirportsObject.createAirlineAndAirportsDBObject(requestObj);        				
         				new AirlineAndAirportsService().updateAirlineAndAirportsService(requestObj.get("_id").toString(), doc , mongo);
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+        				respJSON = CommonWebUtil.buildSuccessResponse();
         	    	}else{
         	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
         	    	}

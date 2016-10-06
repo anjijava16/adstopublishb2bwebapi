@@ -25,4 +25,7 @@ public class RadioService {
 		return new RadioDAO(mongo).updateRadio(id, doc);
 	}
 
+	public int getCount(MongoClient mongo){
+		return new RadioDAO(mongo).getCount();
+	}
 }

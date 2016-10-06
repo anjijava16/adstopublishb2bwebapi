@@ -51,6 +51,12 @@ public class RadioDAO {
 		return data;
 	}
 
+	public int getCount(){
+		int count = col.find().count();   
+		
+		return count;
+	}
+	
 	public DBCursor getRadio(JSONObject requestObj)  {
 		DBCursor dbCursor = null;
 		try {
@@ -65,10 +71,10 @@ public class RadioDAO {
 			JSONArray frequenciesArray = (JSONArray) jsonObject.get("frequencies");
 			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
 			
-			if(sortBy == "topserch") sortBy= "views";
-			else if(sortBy == "fullpageprice")	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
-			else if(sortBy == "circulation")	sortBy= "attributes.circulation.value";
-			else if(sortBy == "") sortBy= "views";
+			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
+			else if(sortBy.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
+			else if(sortBy.equalsIgnoreCase("circulation"))	sortBy= "attributes.circulation.value";
+			else if(sortBy.equalsIgnoreCase("")) sortBy= "views";
 			
 			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 				for (int i = 0;i < geographiesArray.length();i++) {

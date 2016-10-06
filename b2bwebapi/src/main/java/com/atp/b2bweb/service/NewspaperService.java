@@ -15,13 +15,17 @@ public class NewspaperService {
 	
 	public DBCursor getNewspaper(JSONObject requestObj, MongoClient mongo){
 		return new NewspaperDAO(mongo).getNewspaper(requestObj);
-	}
+	}  
 	
 	public DBObject getByID(DBObject doc, MongoClient mongo){
 		return new NewspaperDAO(mongo).getByID(doc);
-	}
+	} 
 	
 	public DBObject updateNewspaper(String id,DBObject doc, MongoClient mongo){
 		return new NewspaperDAO(mongo).updateNewspaper(id, doc);
+	}
+	
+	public int getCount(MongoClient mongo){
+		return new NewspaperDAO(mongo).getCount();
 	}
 }

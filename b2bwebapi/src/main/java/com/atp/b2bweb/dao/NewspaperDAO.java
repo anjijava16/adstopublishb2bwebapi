@@ -53,11 +53,18 @@ public class NewspaperDAO {
 		System.out.println("data getbyid newspaperDAO  "+data);
 		return data;
 	}
+	
+	public int getCount(){
+		int count = col.find().count();   
+		
+		return count;
+	}
 
 	public DBCursor getNewspaper(JSONObject requestObj)  {
 		DBCursor dbCursor = null;
 		try {
-			String sortBy = requestObj.get("sortBy").toString();
+			String sortByparm = requestObj.get("sortBy").toString();
+			String sortBy = "";
 			int skip      = Integer.valueOf(requestObj.get("offset").toString());
 			System.out.println(skip);
 			JSONObject jsonObject =  (JSONObject) requestObj.get("filters"); 
@@ -69,20 +76,19 @@ public class NewspaperDAO {
 			JSONArray frequenciesArray = (JSONArray) jsonObject.get("frequencies");
 			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
 			
-			if(sortBy == "topserch") sortBy= "views";
-			else if(sortBy == "fullpageprice")	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
-			else if(sortBy == "circulation")	sortBy= "attributes.circulation.value";
-			else if(sortBy == "") sortBy= "views";
+			if(sortByparm.equalsIgnoreCase("topserch")) sortBy= "views";
+			else if(sortByparm.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
+			else if(sortByparm.equalsIgnoreCase("circulation"))	sortBy= "attributes.circulation.value";
+			else if(sortByparm.equalsIgnoreCase("")) sortBy= "views";
 			
 			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 				for (int i = 0;i < geographiesArray.length();i++) {
-					criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 
+					criteria.add(new BasicDBObject("attributes.areaCovered.value", geographiesArray.get(i))); 
 				}   
 				for (int i = 0;i < categoriesArray.length();i++) {
 					criteria.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
 				}
 				for (int i = 0;i < languagesArray.length();i++) {
-					System.out.println( languagesArray.get(i));
 					criteria.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
 				}
 				for (int i = 0; i < frequenciesArray.length();i++) {
@@ -90,12 +96,15 @@ public class NewspaperDAO {
 				}
 			
 			System.out.println("criteria.size()   "+criteria.size() );
-			if(criteria != null && criteria.size() > 0){
-				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
-				}else{
-				 dbCursor = col.find().sort(new BasicDBObject("sortBy",1)).sort(new BasicDBObject(sortBy,1)).skip(skip).limit(30);
-			}
+			System.out.println("sortBy   "+sortBy);
+		
 			
+			if(criteria != null && criteria.size() > 0){
+				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy, -1)).skip(skip).limit(30);
+				}else{
+				 dbCursor = col.find().sort(new BasicDBObject(sortBy,1)).sort(new BasicDBObject(sortBy, -1)).skip(skip).limit(30);
+			}
+			System.out.println("sortBy   "+sortBy);
 		} catch (JSONException e) {	}
 
 		return dbCursor;

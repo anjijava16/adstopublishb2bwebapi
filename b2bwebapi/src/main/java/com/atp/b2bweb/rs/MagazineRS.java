@@ -22,7 +22,6 @@ import com.atp.b2bweb.createdbobject.DBMagazineObject;
 import com.atp.b2bweb.service.MagazineService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
-import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -88,8 +87,9 @@ public class MagazineRS {
 							 System.out.println("----====="+doc);
 							 magazineList.add(doc);
 						}
-						respJSON = MzgazineUtil.getDetailLists(magazineList);
-						System.out.println(respJSON);
+						int count = new MagazineService().getCount(mongo);
+						respJSON = MzgazineUtil.getAllDetailLists(magazineList, count);
+						
 					}
 				}
 				
@@ -97,7 +97,7 @@ public class MagazineRS {
 			System.out.println("exception "+e);
 			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		 System.out.println(respJSON.toString());
+		 System.out.println();
 		 return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	

@@ -18,10 +18,11 @@ import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.ExceptionCommonconstant;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
-import com.atp.b2bweb.createdbobject.DBMagazineObject;
+import com.atp.b2bweb.createdbobject.DBDigitalObject;
 import com.atp.b2bweb.service.DigitalService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -32,7 +33,7 @@ import com.mongodb.MongoClient;
 @SessionAttributes(UrlCommonConstant.SESSION)
 public class DigitalRS {
 MongoClient mongo;
-	
+	  
 	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_DIGITAL + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
@@ -47,7 +48,7 @@ MongoClient mongo;
 				if(requestObj != null){
         			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
         			if(result){
-        				doc = DBMagazineObject.createMagazineDBObject(requestObj);
+        				doc = DBDigitalObject.createDigitalDBObject(requestObj);
         				new DigitalService().addDigital(doc, mongo);
         		    	respJSON = CommonWebUtil.buildSuccessResponse();
         	    	}else{
@@ -85,7 +86,8 @@ MongoClient mongo;
 							 doc = dbCursor.next();
 							 digitalList.add(doc);
 						}
-						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
+						int count = new DigitalService().getCount(mongo);
+						respJSON = MzgazineUtil.getAllDetailLists(digitalList, count);
 					}
 				}
 		}catch (Exception e) {
@@ -110,7 +112,7 @@ MongoClient mongo;
 				if(requestObj != null){
         			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
         			if(result){
-        				doc = DBMagazineObject.createMagazineDBObject(requestObj);
+        				doc = DBDigitalObject.createDigitalDBObject(requestObj);
         				new DigitalService().updateDigital(requestObj.get("_id").toString(), doc , mongo);
         		    	respJSON = CommonWebUtil.buildSuccessResponse();
         	    	}else{
@@ -129,6 +131,12 @@ MongoClient mongo;
 		//return doc;
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
+	}
+	
+	@RequestMapping(value = "/addtodb")
+    @ResponseBody
+	public void addDigitaltodb(){
+		JsonToDB.addDigitaltodb();
 	}
 
 }

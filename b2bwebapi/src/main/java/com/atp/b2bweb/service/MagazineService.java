@@ -24,5 +24,8 @@ public class MagazineService {
 	public DBObject updateMagazine(String id,DBObject doc, MongoClient mongo){
 		return new MagazineDAO(mongo).updateMagazine(id, doc);
 	}
-
+	
+	public int getCount(MongoClient mongo){
+		return new MagazineDAO(mongo).getCount();
+	}
 }

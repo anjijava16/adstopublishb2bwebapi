@@ -20,9 +20,12 @@ public class AirlineAndAirportsService {
 	public DBObject getByID(DBObject doc, MongoClient mongo){
 		return new AirlineAndAirportsDAO(mongo).getByID(doc);
 	}
-	
+	   
 	public DBObject updateAirlineAndAirportsService(String id,DBObject doc, MongoClient mongo){
 		return new AirlineAndAirportsDAO(mongo).updateAirlineAndAirports(id, doc);
+	}  
+	
+	public int getCount(MongoClient mongo){
+		return new AirlineAndAirportsDAO(mongo).getCount();
 	}
-
 }

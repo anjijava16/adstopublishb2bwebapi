@@ -24,4 +24,8 @@ public class NonTraditionalService {
 	public DBObject updateNonTraditional(String id,DBObject doc, MongoClient mongo){
 		return new NonTraditionalDAO(mongo).updateNonTraditional(id, doc);
 	}
+	
+	public int getCount(MongoClient mongo){
+		return new NonTraditionalDAO(mongo).getCount();
+	}
 }

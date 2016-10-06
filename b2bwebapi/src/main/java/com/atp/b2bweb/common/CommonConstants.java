@@ -29,6 +29,8 @@ public class CommonConstants {
 	
 	public static final String RESPONSE = "response";
 	
+	public static final String COUNT = "count";
+	
 	//variables
 	// vendor bank detais
 	

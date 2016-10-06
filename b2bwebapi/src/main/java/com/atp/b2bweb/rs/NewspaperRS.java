@@ -87,7 +87,8 @@ public class NewspaperRS {
 							 doc = dbCursor.next();
 							 newspaperList.add(doc);
 						}
-						respJSON = MzgazineUtil.getDetailLists(newspaperList);
+						int count = new NewspaperService().getCount(mongo);
+						respJSON = MzgazineUtil.getAllDetailLists(newspaperList, count);
 					}
 				}
 		}catch (Exception e) {
@@ -95,6 +96,7 @@ public class NewspaperRS {
 			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
 		 System.out.println("newspaperList  "+newspaperList.size());
+		 System.out.println("  =======   "+respJSON);
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	

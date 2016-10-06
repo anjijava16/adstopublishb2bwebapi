@@ -22,6 +22,7 @@ import com.atp.b2bweb.createdbobject.DBNonTraditionalObject;
 import com.atp.b2bweb.service.NonTraditionalService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -86,7 +87,8 @@ public class NonTraditionalRS {
 							 doc = dbCursor.next();
 							 nonTraditionalList.add(doc);
 						}
-						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
+						int count = new NonTraditionalService().getCount(mongo);
+						respJSON = MzgazineUtil.getAllDetailLists(nonTraditionalList, count);
 					}
 				}
 		}catch (Exception e) {
@@ -131,6 +133,11 @@ public class NonTraditionalRS {
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
+	@RequestMapping(value = "/addtodb")
+    @ResponseBody
+	public void addrecordtodb(){  
+		JsonToDB.addnontraditionaltodb();
+	}
 }
 
 

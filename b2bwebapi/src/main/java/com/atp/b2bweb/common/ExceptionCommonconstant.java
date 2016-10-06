@@ -9,7 +9,7 @@ public class ExceptionCommonconstant {
 	
 	public static final String USER_NOT_EXITS = "user not exits";
 	
-	public static final String ALREADY_REGISTERD = "ur are already registerd.Plz Login ";
+	public static final String ALREADY_REGISTERD = "already registerd";
 	
 	////adding bank, business, detail ERRORS
 	

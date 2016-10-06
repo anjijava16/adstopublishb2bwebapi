@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.atp.b2bweb.db.NewspaperDB;
 import com.atp.b2bweb.db.RadionDB;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -62,6 +63,17 @@ public class DBRadioObject {
 				mediaOptions.append(RadionDB.REGULAR_OPTION, regularOptions);
 				
 			document.append(RadionDB.MEDIA_OPTIONS, mediaOptions);	
+			
+			BasicDBObject attributes = new BasicDBObject();	
+			
+			JSONObject attributesJSON =  (JSONObject) requestObj.get(NewspaperDB.ATTRIBUTES);
+			for(int i = 0; i < attributesJSON.length(); i++){  
+				JSONObject jsonObject =  (JSONObject) attributesJSON.get(attributesJSON.names().get(i).toString());
+				attributes.append(attributesJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
+			}
+			
+		document.append(NewspaperDB.ATTRIBUTES, attributes);	
+			
 			System.out.println(document);
 		}catch(Exception e){ System.out.println(e);	}
 		

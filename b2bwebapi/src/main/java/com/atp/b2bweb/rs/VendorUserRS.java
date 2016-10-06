@@ -52,28 +52,30 @@ public class VendorUserRS {
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				System.out.println("requestObj   "+requestObj.toString());
 				if(requestObj != null){
-        			boolean result = new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);
-        			if(!result){    	   
-        		    	VendorUserDO vendoruserDO = new VendorUserDO();
-        		    	System.out.println(requestObj);
-        		    	vendoruserDO.setUsername(requestObj.getString(CommonConstants.NAME));
-        		    	vendoruserDO.setEmail(requestObj.getString(CommonConstants.EMAIL));
-        		    	System.out.println(requestObj.getString(CommonConstants.EMAIL));
-        		    	vendoruserDO.setMobile(requestObj.getString(CommonConstants.PHONE));
-        		    	vendoruserDO.setPassword(requestObj.getString(CommonConstants.PASSWORD));
-        		    	vendoruserDO.setAccountstatus(CommonConstants.ACTIVE.charAt(0));        		    	
-        		    	vendoruserDO.setUpdatedby(requestObj.getString(CommonConstants.NAME));
-        		    	vendoruserDO.setUpdatedon(new Date());
-        		    	 
-        		    	VendorUserDO registerVendor = new VendorUserService().vendorRegister(vendoruserDO, mongo);
-        		    	System.out.println(registerVendor);
-        		    	//token generate    	
-        		    	new JwtTokenGenerator().createJWT(vendoruserDO, response);
-        	    	
-        		    	//send mail
-        		    	//EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(registerVendor.getEmail()));
-        		    	
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+        			boolean result = new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.PHONE), mongo);
+        			if(!result){    	
+        				if( requestObj.getString(CommonConstants.PASSWORD) != ""){
+	        		    	VendorUserDO vendoruserDO = new VendorUserDO();
+	        		    	System.out.println(requestObj);
+	        		    	vendoruserDO.setUsername(requestObj.getString(CommonConstants.NAME));
+	        		    	vendoruserDO.setEmail(requestObj.getString(CommonConstants.EMAIL));
+	        		    	System.out.println(requestObj.getString(CommonConstants.EMAIL));
+	        		    	vendoruserDO.setMobile(requestObj.getString(CommonConstants.PHONE));
+	        		    	vendoruserDO.setPassword(requestObj.getString(CommonConstants.PASSWORD));
+	        		    	vendoruserDO.setAccountstatus(CommonConstants.ACTIVE.charAt(0));        		    	
+	        		    	vendoruserDO.setUpdatedby(requestObj.getString(CommonConstants.NAME));
+	        		    	vendoruserDO.setUpdatedon(new Date());
+	        		    	 
+	        		    	VendorUserDO registerVendor = new VendorUserService().vendorRegister(vendoruserDO, mongo);
+	        		    	System.out.println(registerVendor);
+	        		    	//token generate    	
+	        		    	new JwtTokenGenerator().createJWT(vendoruserDO, response);
+	        	    	
+	        		    	//send mail
+	        		    	//EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(registerVendor.getEmail()));
+	        		    		        		    	
+        				}
+        				respJSON = CommonWebUtil.buildSuccessResponse();
         	    	}else{
         	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
         	    	}

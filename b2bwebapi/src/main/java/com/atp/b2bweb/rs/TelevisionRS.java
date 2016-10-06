@@ -22,6 +22,7 @@ import com.atp.b2bweb.createdbobject.DBTelevisionObject;
 import com.atp.b2bweb.service.TelevisionService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -59,10 +60,10 @@ public class TelevisionRS {
 			}else{
 				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 			}
-	    }catch (Exception e) {
-	    	System.out.println(e);
+	    }catch (Exception e) {   
+	    	System.out.println(e);   
 	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
-		}
+		}   
 		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 		return doc;
 	}
@@ -85,7 +86,8 @@ public class TelevisionRS {
 							 doc = dbCursor.next();
 							 televisionList.add(doc);
 						}
-						respJSON = MzgazineUtil.getMzgazineDetailList(dbCursor);
+						int count = new TelevisionService().getCount(mongo);
+						respJSON = MzgazineUtil.getAllDetailLists(televisionList, count);
 					}
 				}
 		}catch (Exception e) {
@@ -130,6 +132,11 @@ public class TelevisionRS {
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
-
+	
+	@RequestMapping(value = "/addtodb")
+    @ResponseBody
+	public void addrecordtodb(){
+		JsonToDB.addTVtodb();
+	}
 }
 	
