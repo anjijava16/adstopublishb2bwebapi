@@ -1,8 +1,8 @@
 package com.atp.b2bweb.rs;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,12 +21,15 @@ import com.atp.b2bweb.common.ExceptionCommonconstant;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
 import com.atp.b2bweb.createdbobject.MongoToVendorDo;
+import com.atp.b2bweb.createdbobject.VendorDBObject;
+import com.atp.b2bweb.db.vendorDetailsDB;
 import com.atp.b2bweb.domainobject.VendorUserDO;
 import com.atp.b2bweb.emailproxy.EmailProxyUtil;
 import com.atp.b2bweb.jwttoken.JwtTokenGenerator;
 import com.atp.b2bweb.service.VendorUserService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
@@ -46,43 +49,27 @@ public class VendorUserRS {
 	public String  vendorRegister(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
 		JSONObject respJSON = null;
-		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		DBObject doc= null;
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
-				System.out.println("requestObj   "+requestObj.toString());
 				if(requestObj != null){
-        			boolean result = new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.PHONE), mongo);
-        			if(!result){    	
-        				if( !requestObj.getString(CommonConstants.PASSWORD).equalsIgnoreCase("")){
-	        		    	VendorUserDO vendoruserDO = new VendorUserDO();
-	        		    	System.out.println(requestObj);
-	        		    	vendoruserDO.setUsername(requestObj.getString(CommonConstants.NAME));
-	        		    	vendoruserDO.setEmail(requestObj.getString(CommonConstants.EMAIL));
-	        		    	System.out.println(requestObj.getString(CommonConstants.EMAIL));
-	        		    	vendoruserDO.setMobile(requestObj.getString(CommonConstants.PHONE));
-	        		    	vendoruserDO.setPassword(requestObj.getString(CommonConstants.PASSWORD));
-	        		    	vendoruserDO.setAccountstatus(CommonConstants.ACTIVE.charAt(0));        		    	
-	        		    	vendoruserDO.setUpdatedby(requestObj.getString(CommonConstants.NAME));
-	        		    	vendoruserDO.setUpdatedon(new Date());
-	        		    	 
-	        		    	VendorUserDO registerVendor = new VendorUserService().vendorRegister(vendoruserDO, mongo);
-	        		    	System.out.println(registerVendor);
-	        		    	//token generate    	
-	        		    	new JwtTokenGenerator().createJWT(vendoruserDO, response);
-	        	    	
-	        		    	//send mail
-	        		    	EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(registerVendor.getEmail()));
-	        		    	respJSON = CommonWebUtil.buildSuccessResponse();	    	
-        				}else{
-        					
-        					EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(requestObj.getString(CommonConstants.EMAIL)));
-        					respJSON = CommonWebUtil.buildSuccessResponseMsg("register");
-        				}
-        				
-        	    	}else{
-        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
-        	    	}
+					if(requestObj.get(vendorDetailsDB.EMAIL).toString() != "" && requestObj.get(vendorDetailsDB.PHONENUMBER).toString() != ""){
+						DBCursor dbCursor =  new VendorUserService().getvendorDetails(requestObj,mongo);
+						if(dbCursor == null){
+							UUID uniqueKey = UUID.randomUUID();
+							requestObj.put(vendorDetailsDB.REGISTERTOKEN,uniqueKey);
+							doc = VendorDBObject.vendorRegisterDBObject(requestObj);
+							DBObject newRegisterdUserInfo = new VendorUserService().vendorRegister(doc, mongo);
+							String  RegisterdMailId = (String) newRegisterdUserInfo.get("email");
+							EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(RegisterdMailId),uniqueKey);
+						}else{
+							System.out.println("user already registerd");
+							System.out.println("ths s dbCursor"+dbCursor);
+						}
+					}
+					respJSON = CommonWebUtil.buildSuccessResponse();
         		}else{
         			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
         		}
@@ -90,13 +77,13 @@ public class VendorUserRS {
 				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 			}
 			
-	    }catch (Exception e) {
-	    	System.out.println(e);
-	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	   }catch (Exception e) {
+	   	System.out.println(e);
+	   	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		System.out.println(respJSON+"   respJSON");
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
+    
 
     
 	@SuppressWarnings("unused")
@@ -157,7 +144,7 @@ public class VendorUserRS {
     			    	vendoruserDO.setMobile(phone);
     			    	vendoruserDO.setAccountstatus(activetype);
     			    	vendoruserDO.setDisplayname(name);
-    			    	new VendorUserService().vendorUpdate(vendoruserDO, mongo);
+    			    	//new VendorUserService().vendorUpdate(vendoruserDO, mongo);
     		    	}else
     		    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.USER_NOT_EXITS);
         		}else
@@ -217,7 +204,7 @@ public class VendorUserRS {
         		if(requestObj != null){
         			List<VendorUserDO> vendorUserList =  new VendorUserService().retriveUserByEmailOrMobile(requestObj.getString(CommonConstants.USERNAME),requestObj.getString(CommonConstants.USERNAME), mongo);
 					if(vendorUserList != null && vendorUserList.size() >  0){
-						EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.FORGETPASSWORD_MAIL_BODY, false, Arrays.asList(vendorUserList.get(0).getEmail()));
+						EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.FORGETPASSWORD_MAIL_BODY, false, Arrays.asList(vendorUserList.get(0).getEmail()), null);
 						respJSON = CommonWebUtil.buildSuccessResponse();
 					}else{
 						respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.USER_NOT_EXITS);
