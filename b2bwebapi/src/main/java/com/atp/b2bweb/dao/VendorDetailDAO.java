@@ -4,7 +4,7 @@ import org.bson.types.ObjectId;
 
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.TableCommonConstant;
-import com.atp.b2bweb.createdbobject.MongoDBObject;
+import com.atp.b2bweb.createdbobject.VendorDBObject;
 import com.atp.b2bweb.domainobject.VendorDetailDO;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
@@ -22,7 +22,7 @@ public class VendorDetailDAO {
 	
 	public  VendorDetailDO addVendorDetails(VendorDetailDO vendorDetailDO){
 		try {
-			DBObject doc = MongoDBObject.createVendorDetailDBObject(vendorDetailDO);
+			DBObject doc = VendorDBObject.createVendorDetailDBObject(vendorDetailDO);
 			col.insert(doc);
 		} catch (Exception e) {	}
 		return vendorDetailDO;
@@ -30,7 +30,7 @@ public class VendorDetailDAO {
 	
 	public  VendorDetailDO updateVendorDetails(VendorDetailDO vendorDetailDO){
 		try {
-			DBObject doc = MongoDBObject.createVendorDetailDBObject(vendorDetailDO);
+			DBObject doc = VendorDBObject.createVendorDetailDBObject(vendorDetailDO);
 			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(vendorDetailDO.getId())).get();
 			System.out.println(query);
 			col.update(query, doc);

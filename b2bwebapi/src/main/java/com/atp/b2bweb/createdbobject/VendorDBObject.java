@@ -2,31 +2,55 @@ package com.atp.b2bweb.createdbobject;
 
 import java.util.Date;
 
+import org.json.JSONObject;
+
 import com.atp.b2bweb.common.CommonConstants;
+import com.atp.b2bweb.db.vendorDetailsDB;
 import com.atp.b2bweb.domainobject.VendorBankDetailDO;
 import com.atp.b2bweb.domainobject.VendorBusinessDetailDO;
 import com.atp.b2bweb.domainobject.VendorDetailDO;
-import com.atp.b2bweb.domainobject.VendorUserDO;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 
-public class MongoDBObject {
+public class VendorDBObject {
 
-	
-	public static DBObject createRegisterDBObject(VendorUserDO vendorUserDO) {
+	public static DBObject vendorRegisterDBObject(JSONObject reqObject) {
 		BasicDBObjectBuilder docBuilder = BasicDBObjectBuilder.start();
 								
-		//docBuilder.append("_id", vendorUserDO.getId());
-		docBuilder.append(CommonConstants.USERNAME, vendorUserDO.getUsername());
-		docBuilder.append(CommonConstants.EMAIL, vendorUserDO.getEmail());
-		docBuilder.append(CommonConstants.PASSWORD, vendorUserDO.getPassword());
-		docBuilder.append(CommonConstants.MOBILE, vendorUserDO.getMobile());
-		docBuilder.append(CommonConstants.DISPLAYNAME, vendorUserDO.getUsername());
-		docBuilder.append(CommonConstants.ACCOUNTSTATUS, CommonConstants.ACTIVE);
+		try {
+		/*docBuilder.append(CommonConstants.USERNAME, reqObject.get(vendorDetailsDB.NAME));*/
+		docBuilder.append(CommonConstants.EMAIL, reqObject.get(vendorDetailsDB.EMAIL));
 		
-		docBuilder.append(CommonConstants.UPDATEDBY, vendorUserDO.getUpdatedby());
+		docBuilder.append(CommonConstants.MOBILE, reqObject.get(vendorDetailsDB.PHONENUMBER));
+		
+		docBuilder.append(CommonConstants.TOKEN, reqObject.get(vendorDetailsDB.REGISTERTOKEN));
+		docBuilder.append(CommonConstants.STATUS, reqObject.get(vendorDetailsDB.STATUS));
+		
+		
+		/*docBuilder.append(CommonConstants.UPDATEDBY, reqObject.get(vendorDetailsDB.UPDATEDBY));*/
 		docBuilder.append(CommonConstants.UPDATEDON, new Date());
+		} catch (Exception e) {
+			System.out.println("exception in vendordb object java "+e);
+		}
+		return docBuilder.get();
+	}
+	
+	
+	public static DBObject createRegisterDBObject(JSONObject reqObject) {
+		BasicDBObjectBuilder docBuilder = BasicDBObjectBuilder.start();
+								
+		try {
+		/*docBuilder.append(CommonConstants.USERNAME, reqObject.get(vendorDetailsDB.NAME));*/
+		docBuilder.append(CommonConstants.EMAIL, reqObject.get(vendorDetailsDB.EMAIL));
 		
+		docBuilder.append(CommonConstants.MOBILE, reqObject.get(vendorDetailsDB.PHONENUMBER));
+		
+		
+		docBuilder.append(CommonConstants.UPDATEDBY, reqObject.get(vendorDetailsDB.UPDATEDBY));
+		docBuilder.append(CommonConstants.UPDATEDON, new Date());
+		} catch (Exception e) {
+			System.out.println("exception in vendordb object java "+e);
+		}
 		return docBuilder.get();
 	}
 	

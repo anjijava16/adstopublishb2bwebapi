@@ -4,7 +4,7 @@ import org.bson.types.ObjectId;
 
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.TableCommonConstant;
-import com.atp.b2bweb.createdbobject.MongoDBObject;
+import com.atp.b2bweb.createdbobject.VendorDBObject;
 import com.atp.b2bweb.domainobject.VendorBankDetailDO;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
@@ -21,7 +21,7 @@ public class VendorBankDetailsDAO {
 	
 	public  VendorBankDetailDO addBankDetails(VendorBankDetailDO vendorBankDetailDO){
 		try {
-			DBObject doc = MongoDBObject.createVendorBankDetailDBObject(vendorBankDetailDO);
+			DBObject doc = VendorDBObject.createVendorBankDetailDBObject(vendorBankDetailDO);
 			col.insert(doc);
 		} catch (Exception e) {	}
 		return vendorBankDetailDO;
@@ -29,7 +29,7 @@ public class VendorBankDetailsDAO {
 	
 	public  VendorBankDetailDO updateBankDetails(VendorBankDetailDO vendorBankDetailDO){
 		try {
-			DBObject doc = MongoDBObject.createVendorBankDetailDBObject(vendorBankDetailDO);
+			DBObject doc = VendorDBObject.createVendorBankDetailDBObject(vendorBankDetailDO);
 			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(vendorBankDetailDO.getId())).get();
 			System.out.println("bank detail   -----------"+query);
 			 col.update(query, doc);

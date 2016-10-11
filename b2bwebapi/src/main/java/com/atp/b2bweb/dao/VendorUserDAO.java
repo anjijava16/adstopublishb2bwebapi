@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.json.JSONObject;
 
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.TableCommonConstant;
-import com.atp.b2bweb.createdbobject.MongoDBObject;
+import com.atp.b2bweb.createdbobject.VendorDBObject;
 import com.atp.b2bweb.createdbobject.MongoToVendorDo;
+import com.atp.b2bweb.db.vendorDetailsDB;
 import com.atp.b2bweb.domainobject.VendorUserDO;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
@@ -45,14 +47,42 @@ public class VendorUserDAO {
 		
 	}
 	
-	public  VendorUserDO persist(VendorUserDO vendorUserDO){
+	public  DBObject vendorRegister(DBObject doc){
 		try {
-			DBObject doc = MongoDBObject.createRegisterDBObject(vendorUserDO);
+			col.insert(doc);
+		} catch (Exception e) {
+		} 
+		return doc;
+	}
+	
+	
+	public  DBCursor getvendorDetails(JSONObject requestObj){
+		DBCursor result = null;
+		try {
+			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
+			criteria.add(new BasicDBObject(CommonConstants.EMAIL, new BasicDBObject(TableCommonConstant.EQUALS, requestObj.get(vendorDetailsDB.EMAIL).toString())));
+			criteria.add(new BasicDBObject(CommonConstants.MOBILE, new BasicDBObject(TableCommonConstant.EQUALS, requestObj.get(vendorDetailsDB.PHONENUMBER).toString()))); 
+			DBCursor dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria));
+
+			if(dbCursor.size() > 0)	result = dbCursor;
+		} catch (Exception e) {
+			System.out.println("in DAO   "+e);
+		}
+		return result;
+	}
+	
+	
+	
+	/*public  VendorUserDO persist(VendorUserDO vendorUserDO){
+		try {
+			DBObject doc = VendorDBObject.createRegisterDBObject(vendorUserDO);
 			col.insert(doc);
 		} catch (Exception e) {
 		} 
 		return vendorUserDO;
-	}
+	}*/
+	
+	
 	
 	public  boolean vendorFind(String email, String mobile){
 		boolean result = false;
@@ -87,15 +117,15 @@ public class VendorUserDAO {
 		return data;
 	}
 	
-	public  VendorUserDO vendorUpdate(VendorUserDO vendorUserDO){
+	/*public  VendorUserDO vendorUpdate(VendorUserDO vendorUserDO){
 		try {
 			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(vendorUserDO.getId())).get();
-			col.update(query, MongoDBObject.createRegisterDBObject(vendorUserDO));
+			col.update(query, VendorDBObject.createRegisterDBObject(vendorUserDO));
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 		return vendorUserDO;
-	}
+	}*/
 	
 	public  String vendorDelete(VendorUserDO vendorUserDO){
 		try {
