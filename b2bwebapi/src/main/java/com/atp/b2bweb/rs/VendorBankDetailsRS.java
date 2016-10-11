@@ -1,5 +1,8 @@
 package com.atp.b2bweb.rs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +23,7 @@ import com.atp.b2bweb.service.VendorBankDetailsService;
 import com.atp.b2bweb.service.VendorUserService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
@@ -45,20 +49,21 @@ public class VendorBankDetailsRS {
 					DBObject dbObject =  new VendorUserService().retriveByID(requestObj.getString(CommonConstants.VENDORID), mongo);
 					if(dbObject != null && dbObject.get(CommonConstants.ACCOUNTSTATUS) != CommonConstants.INACTIVE){
 						DBObject dbVendorBankObject =  new VendorBankDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
+						System.out.println("dbVendorBankObject  "+dbVendorBankObject);
 						if(dbVendorBankObject == null){  
 				    		VendorBankDetailDO vendorBankDetailDO = new VendorBankDetailDO();
 				    		vendorBankDetailDO.setVendorid(requestObj.getString(CommonConstants.VENDORID));
 				    		vendorBankDetailDO.setAccountholdername(requestObj.getString(CommonConstants.ACCOUNTHOLDERNAME));
 				    		vendorBankDetailDO.setAccountnumber(Long.valueOf(requestObj.getString(CommonConstants.ACCOUNTNUMBER)));
 				    		vendorBankDetailDO.setIfsc(requestObj.getString(CommonConstants.IFSC));
-				    		/*vendorBankDetailDO.setBankname(requestObj.getString(CommonConstants.BANKNAME));
+				    		vendorBankDetailDO.setBankname(requestObj.getString(CommonConstants.BANKNAME));
 				    		vendorBankDetailDO.setState(requestObj.getString(CommonConstants.STATE));
 				    		vendorBankDetailDO.setCity(requestObj.getString(CommonConstants.CITY));
-				    		vendorBankDetailDO.setBranch(requestObj.getString(CommonConstants.BRANCH));*/
-				    		vendorBankDetailDO.setBankname("hdfc");
+				    		vendorBankDetailDO.setBranch(requestObj.getString(CommonConstants.BRANCH));
+				    		/*vendorBankDetailDO.setBankname("hdfc");
 				    		vendorBankDetailDO.setState("jk");
 				    		vendorBankDetailDO.setCity("abc");
-				    		vendorBankDetailDO.setBranch("asasd");
+				    		vendorBankDetailDO.setBranch("asasd");*/
 				    		vendorBankDetailDO.setAddressprooftype(requestObj.getString(CommonConstants.ADDRESSPROOFTYPE));
 				    		vendorBankDetailDO.setUpdatedby(requestObj.getString(CommonConstants.VENDORID));
 				    		//vendorBankDetailDO.setAddressproofurl(requestObj.getString("addressproofurl"));
@@ -73,15 +78,15 @@ public class VendorBankDetailsRS {
 				    		vendorBankDetailDO.setVendorid(requestObj.getString(CommonConstants.VENDORID));
 				    		vendorBankDetailDO.setAccountholdername(requestObj.getString(CommonConstants.ACCOUNTHOLDERNAME));
 				    		vendorBankDetailDO.setAccountnumber(Long.valueOf(requestObj.getString(CommonConstants.ACCOUNTNUMBER)));
-				    		/*vendorBankDetailDO.setIfsc(requestObj.getString(CommonConstants.IFSC));
+				    		vendorBankDetailDO.setIfsc(requestObj.getString(CommonConstants.IFSC));
 				    		vendorBankDetailDO.setBankname(requestObj.getString(CommonConstants.BANKNAME));
 				    		vendorBankDetailDO.setState(requestObj.getString(CommonConstants.STATE));
 				    		vendorBankDetailDO.setCity(requestObj.getString(CommonConstants.CITY));
-				    		vendorBankDetailDO.setBranch(requestObj.getString(CommonConstants.BRANCH));*/
-				    		vendorBankDetailDO.setBankname("hdfc");
+				    		vendorBankDetailDO.setBranch(requestObj.getString(CommonConstants.BRANCH));
+				    		/*vendorBankDetailDO.setBankname("hdfc");
 				    		vendorBankDetailDO.setState("jk");
 				    		vendorBankDetailDO.setCity("abc");
-				    		vendorBankDetailDO.setBranch("asasd");
+				    		vendorBankDetailDO.setBranch("asasd");*/
 				    		vendorBankDetailDO.setAddressprooftype(requestObj.getString(CommonConstants.ADDRESSPROOFTYPE));
 				    		//vendorBankDetailDO.setAddressproofurl(addressproofurl);
 				    		//vendorBankDetailDO.setCancelledchequeurl(cancelledchequeurl);
@@ -111,26 +116,28 @@ public class VendorBankDetailsRS {
    	public String  retriveByVendorID(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
 		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
-		JSONObject respJSON = null;
+		org.json.simple.JSONObject respJSON = null;
+		List<DBObject> bankList = new ArrayList<>();
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				System.out.println(requestObj.toString());
 				if(requestObj != null){
 					DBObject dbObject =  new VendorBankDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
-		       	    if(dbObject != null){
-		       	    	respJSON = (JSONObject) dbObject;
+		       	    if(dbObject != null){		       	    	
+		       	    	bankList.add(dbObject);
+		       	    	respJSON = MzgazineUtil.getAllDetailLists(bankList , 1); 
 		       	    }else{
-		       	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.USER_NOT_EXITS);
+		       	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.USER_NOT_EXITS);
 		       	    }
 				}else{
-					respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+					//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 			    }
 			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 			}
 		}catch (Exception e) {
-			respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}

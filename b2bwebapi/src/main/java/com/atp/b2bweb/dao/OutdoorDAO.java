@@ -28,8 +28,8 @@ public class OutdoorDAO {
 	}
 	
 	public  DBObject addOutdoor(DBObject doc){
-		try {
-			col.insert(doc);
+		try {  
+			col.insert(doc);			
 		} catch (Exception e) {
 		} 
 		return doc;
@@ -37,7 +37,17 @@ public class OutdoorDAO {
 	
 	public  DBObject updateOutdoor(String id, DBObject doc){
 		try {
-			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(id)).get();
+			String[] idString = id.split(":");
+			String x = null;
+			if(idString.length > 1){
+				 x = idString[1].substring(1, idString[1].length() - 2);
+			}else{
+				 x = idString[0];
+			}
+			
+			DBObject query = new BasicDBObject("_id", new ObjectId(x));
+			System.out.println(query);
+			System.out.println("updatesd "+doc);
 			col.update(query, doc);
 		} catch (Exception e) {	} 
 		return doc;
@@ -57,7 +67,26 @@ public class OutdoorDAO {
 	public int getCount(){
 		int count = col.find().count();   
 		
-		return count;
+		return count; 
+	}
+	
+	public  boolean findOutdoor(String id){
+		boolean result = false;
+		try {
+			String[] idString = id.split(":");
+			String x = null;
+			if(idString.length > 1){
+				 x = idString[1].substring(1, idString[1].length() - 2);
+			}else{
+				 x = idString[0];
+			}
+			System.out.println(x);
+			DBObject query = new BasicDBObject("_id", new ObjectId(x));
+			DBObject data = col.findOne(query);
+			if(data == null) result = true;
+		} catch (Exception e) {
+		} 
+		return result;
 	}
 	
 	public DBCursor getOutdoor(JSONObject requestObj)  {

@@ -28,4 +28,8 @@ public class RadioService {
 	public int getCount(MongoClient mongo){
 		return new RadioDAO(mongo).getCount();
 	}
+	
+	public boolean findOutdoor(String id , MongoClient mongo){
+		return new RadioDAO(mongo).findOutdoor(id);
+	}
 }

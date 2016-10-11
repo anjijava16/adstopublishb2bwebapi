@@ -37,35 +37,41 @@ public class MagazineRS {
 	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_MAGAZINE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-	public DBObject  addMagazine(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+	public String  addMagazine(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		JSONObject respJSON = null;
+		org.json.simple.JSONObject respJSON = null;
 		DBObject doc= null;
-		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		boolean result = true;
+		List<DBObject> magazineList = new ArrayList<>();
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-        			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
+        			if(!requestObj.getString("_id").equalsIgnoreCase("")){
+						result = new MagazineService().findOutdoor(requestObj.getString("_id"), mongo);
+					}
         			if(result){
         				doc = DBMagazineObject.createMagazineDBObject(requestObj);
-        				new MagazineService().addMagazine(doc, mongo);
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+        				magazineList.add(new MagazineService().addMagazine(doc, mongo));
+        				respJSON = MzgazineUtil.getAllDetailLists(magazineList , 1);
         	    	}else{
-        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
+        	    		doc = DBMagazineObject.createMagazineDBObject(requestObj);
+        	    		new MagazineService().updateMagazine(requestObj.get("_id").toString(), doc , mongo);
+        	    		//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
         	    	}
         		}else{
-        			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        			//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
         		}
 			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 			}
 	    }catch (Exception e) {
 	    	System.out.println(e);
-	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-		return doc;
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
+		
 	}
 
 	@RequestMapping(value = UrlCommonConstant.GET_MAGAZINE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)

@@ -28,4 +28,8 @@ public class NewspaperService {
 	public int getCount(MongoClient mongo){
 		return new NewspaperDAO(mongo).getCount();
 	}
+	
+	public boolean findOutdoor(String id , MongoClient mongo){
+		return new NewspaperDAO(mongo).findOutdoor(id);
+	}
 }

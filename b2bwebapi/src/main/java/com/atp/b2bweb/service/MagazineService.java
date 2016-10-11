@@ -3,6 +3,7 @@ package com.atp.b2bweb.service;
 import org.json.JSONObject;
 
 import com.atp.b2bweb.dao.MagazineDAO;
+import com.atp.b2bweb.dao.NewspaperDAO;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -27,5 +28,9 @@ public class MagazineService {
 	
 	public int getCount(MongoClient mongo){
 		return new MagazineDAO(mongo).getCount();
+	}
+	
+	public boolean findOutdoor(String id , MongoClient mongo){
+		return new MagazineDAO(mongo).findOutdoor(id);
 	}
 }

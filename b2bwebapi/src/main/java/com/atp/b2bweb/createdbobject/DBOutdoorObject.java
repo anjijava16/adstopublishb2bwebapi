@@ -13,14 +13,23 @@ public class DBOutdoorObject {
 	public static BasicDBObject getBasicDBObject(JSONObject jsonObj) throws JSONException{
 		BasicDBObject basicDBObject = new BasicDBObject();	
 		for(int i = 0; i < jsonObj.length(); i++){
-			basicDBObject.append(jsonObj.names().get(i).toString(), jsonObj.get(jsonObj.names().get(i).toString()));
+			String aaaa = jsonObj.get(jsonObj.names().get(i).toString()).toString();
+			if(aaaa.contains(":")){
+				BasicDBObject attObject = new BasicDBObject();
+				JSONObject attJSON = (JSONObject) jsonObj.get(jsonObj.names().get(i).toString());
+				for(int j = 0; j < attJSON.length(); j++){
+					basicDBObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
+				}
+				basicDBObject.append(jsonObj.names().get(i).toString(), attObject);
+			 }else{
+				basicDBObject.append(jsonObj.names().get(i).toString(), jsonObj.get(jsonObj.names().get(i).toString()));
+			 }
 		}
 		return basicDBObject;
 	}
 	
 	public static DBObject createOutdoorDBObject(JSONObject requestObj) {
 		BasicDBObject document = new BasicDBObject();
-		
 		try {
 			document.put(OutdoorDB.URL_SIUG, requestObj.get(OutdoorDB.URL_SIUG));
 			document.put(OutdoorDB.NAME, requestObj.get(OutdoorDB.NAME));
@@ -31,28 +40,31 @@ public class DBOutdoorObject {
 			document.put(OutdoorDB.LOCALITY, requestObj.get(OutdoorDB.LOCALITY));
 			document.put(OutdoorDB.CITY, requestObj.get(OutdoorDB.CITY));
 			document.put(OutdoorDB.CARD_RATE, requestObj.get(OutdoorDB.CARD_RATE));
-			
+
 			BasicDBObject attributes = new BasicDBObject();	
 				JSONObject attributesJSON =  (JSONObject) requestObj.get(NonTraditionalDB.ATTRIBUTES);
-				for(int i = 0; i < attributesJSON.length(); i++){  
-					JSONObject jsonObject =  (JSONObject) attributesJSON.get(attributesJSON.names().get(i).toString());
-					attributes.append(attributesJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
+				if(attributesJSON != null){
+					for(int i = 0; i < attributesJSON.length(); i++){  
+						JSONObject jsonObject =  (JSONObject) attributesJSON.get(attributesJSON.names().get(i).toString());
+						if(jsonObject != null) attributes.append(attributesJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
+					}
+					document.append(NonTraditionalDB.ATTRIBUTES, attributes);
 				}
-				document.append(NonTraditionalDB.ATTRIBUTES, attributes);
-					
-			BasicDBObject mediaOptions = new BasicDBObject();
-				
+			
 				JSONObject mediaOptionsJSON =  (JSONObject) requestObj.get(OutdoorDB.MEDIA_OPTIONS);	
-
-				JSONObject regularOptionsJSON =  (JSONObject) mediaOptionsJSON.get(OutdoorDB.REGULAR_OPTION);
-				BasicDBObject regularOptions = new BasicDBObject();
-				for(int i = 0; i < regularOptionsJSON.length(); i++){
-					JSONObject jsonObject =  (JSONObject) regularOptionsJSON.get(regularOptionsJSON.names().get(i).toString());
-					regularOptions.append(regularOptionsJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
+				if(mediaOptionsJSON != null){
+					BasicDBObject mediaOptions = new BasicDBObject();
+					JSONObject regularOptionsJSON =  (JSONObject) mediaOptionsJSON.get(OutdoorDB.REGULAR_OPTION);
+					if(regularOptionsJSON != null){
+						BasicDBObject regularOptions = new BasicDBObject();
+						for(int i = 0; i < regularOptionsJSON.length(); i++){
+							JSONObject jsonObject =  (JSONObject) regularOptionsJSON.get(regularOptionsJSON.names().get(i).toString());
+							if(jsonObject != null) regularOptions.append(regularOptionsJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
+						}
+						mediaOptions.append(OutdoorDB.REGULAR_OPTION, regularOptions);
+						document.append(OutdoorDB.MEDIA_OPTIONS, mediaOptions);
+					}
 				}
-				mediaOptions.append(OutdoorDB.REGULAR_OPTION, regularOptions);
-			document.append(OutdoorDB.MEDIA_OPTIONS, mediaOptions);	
-			System.out.println(document);
 		}catch(Exception e){ System.out.println(e);	}
 		
 		return document;

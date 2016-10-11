@@ -28,4 +28,7 @@ public class AirlineAndAirportsService {
 	public int getCount(MongoClient mongo){
 		return new AirlineAndAirportsDAO(mongo).getCount();
 	}
+	public boolean findOutdoor(String id , MongoClient mongo){
+		return new AirlineAndAirportsDAO(mongo).findOutdoor(id);
+	}
 }

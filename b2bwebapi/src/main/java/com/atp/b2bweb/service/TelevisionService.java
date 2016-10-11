@@ -27,5 +27,8 @@ public class TelevisionService {
 	public int getCount(MongoClient mongo){
 		return new TelevisionDAO(mongo).getCount();
 	}
-
+	
+	public boolean findOutdoor(String id , MongoClient mongo){
+		return new TelevisionDAO(mongo).findOutdoor(id);
+	}
 }

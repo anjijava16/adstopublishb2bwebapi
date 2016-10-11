@@ -38,35 +38,40 @@ MongoClient mongo;
 	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_AIRLINE_AND_AIRPORTS + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-	public DBObject  addAirlineAndAirports(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+	public String  addAirlineAndAirports(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		JSONObject respJSON = null;
+		org.json.simple.JSONObject respJSON = null;
 		DBObject doc= null;
-		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		boolean result = true;
+		List<DBObject> airlineList = new ArrayList<>();
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-        			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
-        			if(result){
-        				doc = DBAirlineAndAirportsObject.createAirlineAndAirportsDBObject(requestObj);
-        				new AirlineAndAirportsService().addAirlineAndAirportsService(doc, mongo);
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+					if(!requestObj.getString("_id").equalsIgnoreCase("")){
+						result = new AirlineAndAirportsService().findOutdoor(requestObj.getString("_id"), mongo);
+					}
+					if(result){
+        				doc = DBAirlineAndAirportsObject.createAirlineAndAirportsDBObject(requestObj);        				
+        				airlineList.add(new AirlineAndAirportsService().addAirlineAndAirportsService(doc, mongo));
+        				respJSON = MzgazineUtil.getAllDetailLists(airlineList , 1);
         	    	}else{
-        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
+        	    		doc = DBAirlineAndAirportsObject.createAirlineAndAirportsDBObject(requestObj);  
+        	    		new AirlineAndAirportsService().updateAirlineAndAirportsService(requestObj.get("_id").toString(), doc , mongo);
+        	    		//srespJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
         	    	}
         		}else{
-        			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        			//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
         		}
 			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 			}
 	    }catch (Exception e) {
 	    	System.out.println(e);
-	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-		return doc;
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
 	@RequestMapping(value = UrlCommonConstant.GET_AIRLINE_AND_AIRPORTS + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)

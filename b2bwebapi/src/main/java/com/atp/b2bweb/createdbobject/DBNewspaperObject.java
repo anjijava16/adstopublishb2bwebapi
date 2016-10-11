@@ -11,12 +11,22 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 public class DBNewspaperObject {
-
+    
 	public static BasicDBObject getBasicDBObject(JSONObject jsonObj) throws JSONException{
 		BasicDBObject basicDBObject = new BasicDBObject();	
 		for(int i = 0; i < jsonObj.length(); i++){
-			basicDBObject.append(jsonObj.names().get(i).toString(), jsonObj.get(jsonObj.names().get(i).toString()));
-		}
+			String aaaa = jsonObj.get(jsonObj.names().get(i).toString()).toString();
+			if(aaaa.contains(":")){
+				BasicDBObject attObject = new BasicDBObject();
+				JSONObject attJSON = (JSONObject) jsonObj.get(jsonObj.names().get(i).toString());
+				for(int j = 0; j < attJSON.length(); j++){
+					basicDBObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
+				}
+				basicDBObject.append(jsonObj.names().get(i).toString(), attObject);
+			 }else{
+				basicDBObject.append(jsonObj.names().get(i).toString(), jsonObj.get(jsonObj.names().get(i).toString()));
+			 }
+		}  
 		return basicDBObject;
 	}
 	
@@ -36,7 +46,6 @@ public class DBNewspaperObject {
 			BasicDBObject mediaOptions = new BasicDBObject();
 				
 				JSONObject mediaOptionsJSON =  (JSONObject) requestObj.get(NewspaperDB.MEDIA_OPTIONS);	
-
 				JSONObject otherOptionsJSON =  (JSONObject) mediaOptionsJSON.get(NewspaperDB.OTHER_OPTIONS);
 				BasicDBObject otherOptions = new BasicDBObject();
 				for(int i = 0; i < otherOptionsJSON.length(); i++){  
@@ -55,7 +64,7 @@ public class DBNewspaperObject {
 				mediaOptions.append(NewspaperDB.REGULAR_OPTION, regularOptions);
 				
 			BasicDBObject attributes = new BasicDBObject();	
-				
+			
 				JSONObject attributesJSON =  (JSONObject) requestObj.get(NewspaperDB.ATTRIBUTES);
 				for(int i = 0; i < attributesJSON.length(); i++){  
 					JSONObject jsonObject =  (JSONObject) attributesJSON.get(attributesJSON.names().get(i).toString());
@@ -64,9 +73,8 @@ public class DBNewspaperObject {
 				
 			document.append(NewspaperDB.ATTRIBUTES, attributes);	
 			document.append(NewspaperDB.MEDIA_OPTIONS, mediaOptions);
-			System.out.println("mediaOptions  ");
 		}catch(Exception e){ System.out.println(e);	}
-		
+		System.out.println("document  "+document);
 		return document;
 	}
 }

@@ -32,41 +32,50 @@ import com.mongodb.MongoClient;
 @RequestMapping(value = UrlCommonConstant.NEWSPAPER)
 @SessionAttributes(UrlCommonConstant.SESSION)
 public class NewspaperRS {
-
+        
 	MongoClient mongo;
 	
 	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_NEWSPAPER + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-	public DBObject  addNewspaper(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+	public String  addNewspaper(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		JSONObject respJSON = null;
+		org.json.simple.JSONObject respJSON = null;
 		DBObject doc= null;
-		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		boolean result = true;
+		List<DBObject> newspaperList = new ArrayList<>();
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-        			boolean result = true; /*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
+					if(!requestObj.getString("_id").equalsIgnoreCase("")){
+						result = new NewspaperService().findOutdoor(requestObj.getString("_id"), mongo);
+					}
         			if(result){
+        				System.out.println("adddddd newspaper "+requestObj);
         				doc = DBNewspaperObject.createNewspaperDBObject(requestObj);
-        				new NewspaperService().addNewspaper(doc, mongo);
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+        				newspaperList.add(new NewspaperService().addNewspaper(doc, mongo));
+        				respJSON = MzgazineUtil.getAllDetailLists(newspaperList , 1);
         	    	}else{
-        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
+        	    		System.out.println("updtae newspaper");
+        	    		doc = DBNewspaperObject.createNewspaperDBObject(requestObj);
+        				new NewspaperService().updateNewspaper(requestObj.get("_id").toString(), doc , mongo);
+        	    		//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
         	    	}
         		}else{
-        			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        			//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
         		}
 			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 			}
 	    }catch (Exception e) {
 	    	System.out.println(e);
-	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
+		System.out.println("55555");
 		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-		return doc;
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
 	@RequestMapping(value = UrlCommonConstant.GET_NEWSPAPER + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)

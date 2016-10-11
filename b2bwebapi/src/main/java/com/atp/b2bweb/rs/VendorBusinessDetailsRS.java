@@ -1,5 +1,8 @@
 package com.atp.b2bweb.rs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +23,7 @@ import com.atp.b2bweb.service.VendorBusinessDetailsService;
 import com.atp.b2bweb.service.VendorUserService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
+import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
@@ -44,13 +48,13 @@ public class VendorBusinessDetailsRS {
 			//new JwtTokenDecoder().parseJWT(new JwtTokenGenerator().createJWT("100101", name, email, 9000000));
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
-				System.out.println(requestObj.toString());
+				System.out.println("requestObj  "+requestObj.toString());
 				if(requestObj != null){
 					DBObject dbObject  =  new VendorUserService().retriveByID(requestObj.getString(CommonConstants.VENDORID), mongo);
-				    	System.out.println(dbObject);
+				    	System.out.println("dbObject "+dbObject);
 				    	if(dbObject != null && dbObject.get(CommonConstants.ACCOUNTSTATUS) != CommonConstants.INACTIVE){
 				    		DBObject dbBusinessDetailObject =  new VendorBusinessDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
-				    	    if(dbBusinessDetailObject == null){		    		
+				    	    if(dbBusinessDetailObject == null){		      		
 					    		VendorBusinessDetailDO vendorBusinessDetail = new VendorBusinessDetailDO();
 					    		vendorBusinessDetail.setVendorid(requestObj.getString(CommonConstants.VENDORID));
 					    		vendorBusinessDetail.setBusinessname(requestObj.getString(CommonConstants.BUSINESSNAME));
@@ -112,28 +116,28 @@ public class VendorBusinessDetailsRS {
    	public String  retriveByVendorID(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
     	response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
     	mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
-		JSONObject respJSON = null;
+		org.json.simple.JSONObject respJSON = null;
+		List<DBObject> businessList = new ArrayList<>();
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
 					DBObject dbObject =  new VendorBusinessDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
 			       	  if(dbObject != null ){
-			       		//respJSON = new VendorBusinessDetailsUtil().getBusinessDetailList(vendorBusinessDetailDO);
-			       		 respJSON = (JSONObject) dbObject;
-			       		 System.out.println(respJSON);
+			       		businessList.add(dbObject);
+		       	    	respJSON = MzgazineUtil.getAllDetailLists(businessList , 1);
 			       	  }else{
-				    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.USER_NOT_EXITS);
+				    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.USER_NOT_EXITS);
 				      }
 				}else{
-					respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+					//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 			    }
 			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 		    }
    	    }catch (Exception e) {
    	    	System.out.println(e);
-   	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+   	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
    		}
        return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
    	}

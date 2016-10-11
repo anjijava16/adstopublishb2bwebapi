@@ -37,35 +37,41 @@ public class TelevisionRS {
 	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_TELEVISION + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-	public DBObject  addTelevision(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+	public String  addTelevision(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		JSONObject respJSON = null;
+		org.json.simple.JSONObject respJSON = null;
 		DBObject doc= null;
+		boolean result = true;
+		List<DBObject> televisionList = new ArrayList<>();
 		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		try {
 			if(requestParameter != null){
+				
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-        			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
+					if(!requestObj.getString("_id").equalsIgnoreCase("")){
+						result = new TelevisionService().findOutdoor(requestObj.getString("_id"), mongo);
+					}
         			if(result){
         				doc = DBTelevisionObject.createTelevisionDBObject(requestObj);
-        				new TelevisionService().addTelevision(doc, mongo);
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+        				televisionList.add(new TelevisionService().addTelevision(doc, mongo));
+        				respJSON = MzgazineUtil.getAllDetailLists(televisionList , 1);
         	    	}else{
-        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
-        	    	}
+        	    		doc = DBTelevisionObject.createTelevisionDBObject(requestObj);
+        	    		new TelevisionService().updateTelevision(requestObj.get("_id").toString(), doc , mongo);
+        	    		respJSON = MzgazineUtil.getResponseObject("message");
+        	    	}	
         		}else{
-        			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        			respJSON = MzgazineUtil.getResponseObject("");
         		}
 			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				respJSON = MzgazineUtil.getResponseObject("");
 			}
 	    }catch (Exception e) {   
 	    	System.out.println(e);   
-	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	respJSON = MzgazineUtil.getResponseObject("Exception");
 		}   
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-		return doc;
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
 	@RequestMapping(value = UrlCommonConstant.GET_TELEVISION + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
@@ -92,7 +98,7 @@ public class TelevisionRS {
 				}
 		}catch (Exception e) {
 			System.out.println("exception "+e);
-			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+			respJSON = MzgazineUtil.getResponseObject("Exception");
 		}
 		 System.out.println("televisionList  "+televisionList.size());
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
@@ -128,9 +134,7 @@ public class TelevisionRS {
 	    	System.out.println(e);
 	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		//return doc;
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	
 	@RequestMapping(value = "/addtodb")

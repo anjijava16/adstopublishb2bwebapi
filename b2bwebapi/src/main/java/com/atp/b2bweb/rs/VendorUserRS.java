@@ -54,7 +54,7 @@ public class VendorUserRS {
 				if(requestObj != null){
         			boolean result = new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.PHONE), mongo);
         			if(!result){    	
-        				if( requestObj.getString(CommonConstants.PASSWORD) != ""){
+        				if( !requestObj.getString(CommonConstants.PASSWORD).equalsIgnoreCase("")){
 	        		    	VendorUserDO vendoruserDO = new VendorUserDO();
 	        		    	System.out.println(requestObj);
 	        		    	vendoruserDO.setUsername(requestObj.getString(CommonConstants.NAME));
@@ -72,10 +72,14 @@ public class VendorUserRS {
 	        		    	new JwtTokenGenerator().createJWT(vendoruserDO, response);
 	        	    	
 	        		    	//send mail
-	        		    	//EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(registerVendor.getEmail()));
-	        		    		        		    	
+	        		    	EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(registerVendor.getEmail()));
+	        		    	respJSON = CommonWebUtil.buildSuccessResponse();	    	
+        				}else{
+        					
+        					EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(requestObj.getString(CommonConstants.EMAIL)));
+        					respJSON = CommonWebUtil.buildSuccessResponseMsg("register");
         				}
-        				respJSON = CommonWebUtil.buildSuccessResponse();
+        				
         	    	}else{
         	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
         	    	}
