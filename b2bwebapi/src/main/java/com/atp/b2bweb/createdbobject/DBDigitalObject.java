@@ -16,7 +16,17 @@ public class DBDigitalObject {
 	public static BasicDBObject getBasicDBObject(JSONObject jsonObj) throws JSONException{
 		BasicDBObject basicDBObject = new BasicDBObject();	
 		for(int i = 0; i < jsonObj.length(); i++){
-			basicDBObject.append(jsonObj.names().get(i).toString(), jsonObj.get(jsonObj.names().get(i).toString()));
+			String aaaa = jsonObj.get(jsonObj.names().get(i).toString()).toString();
+			if(aaaa.contains(":")){
+				BasicDBObject attObject = new BasicDBObject();
+				JSONObject attJSON = (JSONObject) jsonObj.get(jsonObj.names().get(i).toString());
+				for(int j = 0; j < attJSON.length(); j++){
+					basicDBObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
+				}
+				basicDBObject.append(jsonObj.names().get(i).toString(), attObject);
+			 }else{
+				basicDBObject.append(jsonObj.names().get(i).toString(), jsonObj.get(jsonObj.names().get(i).toString()));
+			 }
 		}
 		return basicDBObject;
 	}

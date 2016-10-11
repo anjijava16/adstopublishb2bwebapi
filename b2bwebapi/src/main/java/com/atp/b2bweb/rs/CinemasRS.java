@@ -38,35 +38,43 @@ public class CinemasRS {
 	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_CINEMAS + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-	public DBObject  addCinemas(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+	public String  addCinemas(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		JSONObject respJSON = null;
+		org.json.simple.JSONObject respJSON = null;
 		DBObject doc= null;
-		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		boolean result = true;
+		List<DBObject> cinemasList = new ArrayList<>();
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-        			boolean result = true; /*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
+					if(!requestObj.getString("_id").equalsIgnoreCase("")){
+						result = new CinemasService().findOutdoor(requestObj.getString("_id"), mongo);
+					}
         			if(result){
-        				doc = DBCinimasObject.createCinimasDBObject(requestObj);
-        				new CinemasService().addCinemas(doc, mongo);
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+        				System.out.println("addd");
+        				doc = DBCinimasObject.createCinimasDBObject(requestObj);        				
+        				cinemasList.add(new CinemasService().addCinemas(doc, mongo));	
+        				respJSON = MzgazineUtil.getAllDetailLists(cinemasList , 1);    
+        				System.out.println("respJSON   "+respJSON);
         	    	}else{
-        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
+        	    		System.out.println("update");
+        	    		doc = DBCinimasObject.createCinimasDBObject(requestObj);
+        	    		new CinemasService().updateCinemas(requestObj.get("_id").toString(), doc , mongo);
+        	    		//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
         	    	}
         		}else{
-        			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        			//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
         		}
 			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 			}
 	    }catch (Exception e) {
 	    	System.out.println(e);
-	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-		return doc;
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
 	@RequestMapping(value = UrlCommonConstant.GET_CINEMAS + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)

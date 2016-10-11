@@ -30,6 +30,7 @@ public class CinemasDAO {
 	public  DBObject addCinemas(DBObject doc){
 		try {
 			col.insert(doc);
+			System.out.println("222");
 		} catch (Exception e) {
 		} 
 		return doc;
@@ -59,6 +60,26 @@ public class CinemasDAO {
 		
 		return count;
 	}
+	
+	public  boolean findOutdoor(String id){
+		boolean result = false;
+		try {
+			String[] idString = id.split(":");
+			String x = null;
+			if(idString.length > 1){
+				 x = idString[1].substring(1, idString[1].length() - 2);
+			}else{
+				 x = idString[0];
+			}
+			System.out.println(x);
+			DBObject query = new BasicDBObject("_id", new ObjectId(x));
+			DBObject data = col.findOne(query);
+			if(data == null) result = true;
+		} catch (Exception e) {
+		} 
+		return result;
+	}
+	
 	
 	public DBCursor getCinemas(JSONObject requestObj)  {
 		DBCursor dbCursor = null;

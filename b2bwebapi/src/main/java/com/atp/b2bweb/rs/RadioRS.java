@@ -38,35 +38,40 @@ MongoClient mongo;
 	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_RADIO + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-	public DBObject  addRadio(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+	public String  addRadio(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		JSONObject respJSON = null;
+		org.json.simple.JSONObject respJSON = null;
 		DBObject doc= null;
-		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		boolean result = true;
+		List<DBObject> radioList = new ArrayList<>();
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-        			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
+					if(!requestObj.getString("_id").equalsIgnoreCase("")){
+						result = new RadioService().findOutdoor(requestObj.getString("_id"), mongo);
+					}
         			if(result){
         				doc = DBRadioObject.createRadioDBObject(requestObj);
-        				new RadioService().addRadio(doc, mongo);
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+        				radioList.add(new RadioService().addRadio(doc, mongo));
+        				respJSON = MzgazineUtil.getAllDetailLists(radioList , 1);
         	    	}else{
-        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
+        	    		doc = DBRadioObject.createRadioDBObject(requestObj);
+        	    		new RadioService().updateRadio(requestObj.get("_id").toString(), doc , mongo);
+        	    		//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
         	    	}
         		}else{
-        			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        			//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
         		}
 			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
 			}
 	    }catch (Exception e) {
 	    	System.out.println(e);
-	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
 		}
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-		return doc;
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
 	@RequestMapping(value = UrlCommonConstant.GET_RADIO + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)

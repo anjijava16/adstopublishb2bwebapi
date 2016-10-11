@@ -25,6 +25,8 @@ public class CommonConstants {
 	
 	public static final String ERRORS = "errors";
 	
+	public static final String SUCCESS_MSG = "successmsg";
+	
 	public static final String RESULTS = "results";
 	
 	public static final String RESPONSE = "response";
