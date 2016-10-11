@@ -4,8 +4,7 @@ import org.bson.types.ObjectId;
 
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.TableCommonConstant;
-import com.atp.b2bweb.createdbobject.VendorDBObject;
-import com.atp.b2bweb.domainobject.VendorBankDetailDO;
+import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -19,22 +18,28 @@ public class VendorBankDetailsDAO {
 		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.VENDOR_BANK_DETAIL);
 	}
 	
-	public  VendorBankDetailDO addBankDetails(VendorBankDetailDO vendorBankDetailDO){
+	public  DBObject addBankDetails(DBObject doc){
 		try {
-			DBObject doc = VendorDBObject.createVendorBankDetailDBObject(vendorBankDetailDO);
+			//DBObject doc = VendorDBObject.createVendorBankDetailDBObject(vendorBankDetailDO);
 			col.insert(doc);
 		} catch (Exception e) {	}
-		return vendorBankDetailDO;
+		return doc;
 	}
 	
-	public  VendorBankDetailDO updateBankDetails(VendorBankDetailDO vendorBankDetailDO){
+	public  DBObject updateBankDetails(DBObject doc, String  id){
 		try {
-			DBObject doc = VendorDBObject.createVendorBankDetailDBObject(vendorBankDetailDO);
-			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(vendorBankDetailDO.getId())).get();
-			System.out.println("bank detail   -----------"+query);
+			String[] idString = id.split(":");
+			String x = null;
+			if(idString.length > 1){
+				 x = idString[1].substring(1, idString[1].length() - 2);
+			}else{
+				 x = idString[0];
+			}
+			DBObject query = new BasicDBObject("_id", new ObjectId(x));
+			
 			 col.update(query, doc);
 		} catch (Exception e) {	}
-		return vendorBankDetailDO;
+		return doc;
 	}
 	
 	public DBObject retriveByVendorID(String vendorid){

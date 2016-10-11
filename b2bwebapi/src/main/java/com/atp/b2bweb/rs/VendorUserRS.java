@@ -62,14 +62,13 @@ public class VendorUserRS {
 							requestObj.put(vendorDetailsDB.REGISTERTOKEN,uniqueKey);
 							doc = VendorDBObject.vendorRegisterDBObject(requestObj);
 							DBObject newRegisterdUserInfo = new VendorUserService().vendorRegister(doc, mongo);
-							String  RegisterdMailId = (String) newRegisterdUserInfo.get("email");
-							EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(RegisterdMailId),uniqueKey);
+							EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(newRegisterdUserInfo.get("email").toString()), uniqueKey);
+							respJSON = CommonWebUtil.buildSuccessResponse();
 						}else{
 							System.out.println("user already registerd");
 							System.out.println("ths s dbCursor"+dbCursor);
 						}
 					}
-					respJSON = CommonWebUtil.buildSuccessResponse();
         		}else{
         			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
         		}
@@ -83,8 +82,6 @@ public class VendorUserRS {
 		}
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
-    
-
     
 	@SuppressWarnings("unused")
 	@RequestMapping(value="/login/{requestParameter}", method = RequestMethod.GET)

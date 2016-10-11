@@ -15,7 +15,7 @@ import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.ExceptionCommonconstant;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
-import com.atp.b2bweb.domainobject.VendorDetailDO;
+import com.atp.b2bweb.createdbobject.VendorDBObject;
 import com.atp.b2bweb.service.VendorDetailsService;
 import com.atp.b2bweb.service.VendorUserService;
 import com.atp.b2bweb.util.CommonUtil;
@@ -36,31 +36,32 @@ public class VendorDetailsRS {
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
 		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		JSONObject respJSON = null;
+		DBObject doc= null;
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-					System.out.println("  "+requestObj.getString(CommonConstants.VENDORID));
 					DBObject dbObject =  new VendorUserService().retriveByID(requestObj.getString(CommonConstants.VENDORID), mongo);
 					if(dbObject != null && dbObject.get(CommonConstants.ACCOUNTSTATUS) != CommonConstants.INACTIVE){
 						DBObject dbObjectVendor =  new VendorDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
-						System.out.println("asd1 "+dbObjectVendor );
-						if(dbObjectVendor ==  null){    	
-							VendorDetailDO vendorDetailDO = new VendorDetailDO();
+						if(dbObjectVendor ==  null){   
+							doc = VendorDBObject.createVendorDetailDBObject(requestObj);
+							/*VendorDetailDO vendorDetailDO = new VendorDetailDO();
 				    		vendorDetailDO.setVendorid(requestObj.getString(CommonConstants.VENDORID));
 				    		vendorDetailDO.setDisplayname(requestObj.getString(CommonConstants.DISPLAYNAME));
 				    		vendorDetailDO.setBusinessDesc(requestObj.getString(CommonConstants.BUISENESSDESC));
-				    		vendorDetailDO.setUpdatedby(requestObj.getString(CommonConstants.VENDORID));
-				    		new VendorDetailsService().addvendorDetails(vendorDetailDO, mongo);
+				    		vendorDetailDO.setUpdatedby(requestObj.getString(CommonConstants.VENDORID));*/
+				    		new VendorDetailsService().addvendorDetails(doc, mongo);
 				    		respJSON = CommonWebUtil.buildSuccessResponse();
 						}else{
-							VendorDetailDO vendorDetailDO = new VendorDetailDO();
+							doc = VendorDBObject.createVendorDetailDBObject(requestObj);
+							/*VendorDetailDO vendorDetailDO = new VendorDetailDO();
 							vendorDetailDO.setId(dbObjectVendor.get(CommonConstants._ID).toString());
 							vendorDetailDO.setVendorid(requestObj.getString(CommonConstants.VENDORID));
 				    		vendorDetailDO.setDisplayname(requestObj.getString(CommonConstants.DISPLAYNAME));
 				    		vendorDetailDO.setBusinessDesc(requestObj.getString(CommonConstants.BUISENESSDESC));
-				    		vendorDetailDO.setUpdatedby(requestObj.getString(CommonConstants.VENDORID));
-				    		new VendorDetailsService().updatevendorDetails(vendorDetailDO, mongo);
+				    		vendorDetailDO.setUpdatedby(requestObj.getString(CommonConstants.VENDORID));*/
+				    		new VendorDetailsService().updatevendorDetails(doc,dbObjectVendor.get("_id").toString(), mongo);
 				    		respJSON = CommonWebUtil.buildSuccessResponse();
 						}
 					}else

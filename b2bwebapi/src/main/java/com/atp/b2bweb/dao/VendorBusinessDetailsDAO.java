@@ -4,8 +4,7 @@ import org.bson.types.ObjectId;
 
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.TableCommonConstant;
-import com.atp.b2bweb.createdbobject.VendorDBObject;
-import com.atp.b2bweb.domainobject.VendorBusinessDetailDO;
+import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -19,23 +18,27 @@ public class VendorBusinessDetailsDAO {
 		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.VENDOR_BUINESS_DETAIL);
 	}
 	
-	public  VendorBusinessDetailDO addBusinessDetails(VendorBusinessDetailDO vendorBusinessDetailDO){
+	public  DBObject addBusinessDetails(DBObject doc){
 		try {
-			//WriteResult result = 
-			DBObject doc = VendorDBObject.createVendorBusinessDetailDBObject(vendorBusinessDetailDO);
 			col.insert(doc);
 		} catch (Exception e) {	}
-		return vendorBusinessDetailDO;
+		return doc;
 	}
 	
-	public  VendorBusinessDetailDO updateBusinessDetails(VendorBusinessDetailDO vendorBusinessDetailDO){
+	public  DBObject updateBusinessDetails(DBObject doc, String id){
 		try {
-			DBObject doc = VendorDBObject.createVendorBusinessDetailDBObject(vendorBusinessDetailDO);
-			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(vendorBusinessDetailDO.getId())).get();
-			System.out.println("business detail   -----------"+query);
+			//DBObject doc = VendorDBObject.createVendorBusinessDetailDBObject(vendorBusinessDetailDO);
+			String[] idString = id.split(":");
+			String x = null;
+			if(idString.length > 1){
+				 x = idString[1].substring(1, idString[1].length() - 2);
+			}else{
+				 x = idString[0];
+			}
+			DBObject query = new BasicDBObject("_id", new ObjectId(x));
 			 col.update(query, doc);
 		} catch (Exception e) {	}
-		return vendorBusinessDetailDO;
+		return doc;
 	}
 	
 	public  DBObject  retriveByVendorID(String vendorid){

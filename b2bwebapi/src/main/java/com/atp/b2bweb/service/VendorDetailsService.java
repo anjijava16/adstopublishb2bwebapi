@@ -1,18 +1,17 @@
 package com.atp.b2bweb.service;
 
 import com.atp.b2bweb.dao.VendorDetailDAO;
-import com.atp.b2bweb.domainobject.VendorDetailDO;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 public class VendorDetailsService {
 	
-	public VendorDetailDO addvendorDetails(VendorDetailDO vendorDetailDO, MongoClient mongo){
-		return new VendorDetailDAO(mongo).addVendorDetails(vendorDetailDO);
+	public DBObject addvendorDetails(DBObject doc, MongoClient mongo){
+		return new VendorDetailDAO(mongo).addVendorDetails(doc);
 	}
 	
-	public VendorDetailDO updatevendorDetails(VendorDetailDO vendorDetailDO, MongoClient mongo){	
-		return new VendorDetailDAO(mongo).updateVendorDetails(vendorDetailDO);
+	public DBObject updatevendorDetails(DBObject doc, String id,  MongoClient mongo){	
+		return new VendorDetailDAO(mongo).updateVendorDetails(doc, id);
 	}
 	
 	public DBObject retriveByVendorID(String vendorId, MongoClient mongo){	

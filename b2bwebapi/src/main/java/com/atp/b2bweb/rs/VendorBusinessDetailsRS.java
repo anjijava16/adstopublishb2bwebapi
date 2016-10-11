@@ -18,7 +18,7 @@ import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.ExceptionCommonconstant;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
-import com.atp.b2bweb.domainobject.VendorBusinessDetailDO;
+import com.atp.b2bweb.createdbobject.VendorDBObject;
 import com.atp.b2bweb.service.VendorBusinessDetailsService;
 import com.atp.b2bweb.service.VendorUserService;
 import com.atp.b2bweb.util.CommonUtil;
@@ -42,7 +42,7 @@ public class VendorBusinessDetailsRS {
 		JSONObject respJSON = null;
 		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		String token = request.getHeader("Accept");
-		System.out.println(11111+"  "+token);
+		DBObject doc= null;
 		try {
 			//new JwtEncodeandDecode().decodeMethod(token);    	    
 			//new JwtTokenDecoder().parseJWT(new JwtTokenGenerator().createJWT("100101", name, email, 9000000));
@@ -54,8 +54,10 @@ public class VendorBusinessDetailsRS {
 				    	System.out.println("dbObject "+dbObject);
 				    	if(dbObject != null && dbObject.get(CommonConstants.ACCOUNTSTATUS) != CommonConstants.INACTIVE){
 				    		DBObject dbBusinessDetailObject =  new VendorBusinessDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
-				    	    if(dbBusinessDetailObject == null){		      		
-					    		VendorBusinessDetailDO vendorBusinessDetail = new VendorBusinessDetailDO();
+				    	    if(dbBusinessDetailObject == null){		
+				    	    	doc = VendorDBObject.createVendorBusinessDetailDBObject(requestObj);
+				    	    	
+					    		/*VendorBusinessDetailDO vendorBusinessDetail = new VendorBusinessDetailDO();
 					    		vendorBusinessDetail.setVendorid(requestObj.getString(CommonConstants.VENDORID));
 					    		vendorBusinessDetail.setBusinessname(requestObj.getString(CommonConstants.BUSINESSNAME));
 					    		vendorBusinessDetail.setBusinesstype(requestObj.getString(CommonConstants.BUSSINESSTYPE));
@@ -68,31 +70,17 @@ public class VendorBusinessDetailsRS {
 					    		//vendorBusinessDetail.setServicetaxurl(requestObj.getString(CommonConstants.TINVATURL));
 					    		vendorBusinessDetail.setBusinesspan(requestObj.getString(CommonConstants.BUSINESSPAN));
 					    		//vendorBusinessDetail.setBusinesspanurl(requestObj.getString("businesspanurl"));
-					    		
+*/					    		
 					    		
 					    		//FtpFileUpdate.sadsa(); save image in FTP location 
-					    		new VendorBusinessDetailsService().addBusinessDetails(vendorBusinessDetail, mongo);
+					    		new VendorBusinessDetailsService().addBusinessDetails(doc, mongo);
 					    		System.out.println("created");
 					    		respJSON = CommonWebUtil.buildSuccessResponse();
 					    		
 					    	}else{
+					    		doc = VendorDBObject.createVendorBusinessDetailDBObject(requestObj);
 					    		
-					    		VendorBusinessDetailDO vendorBusinessDetailDO = new VendorBusinessDetailDO();
-					    		vendorBusinessDetailDO.setId(dbBusinessDetailObject.get("_id").toString());
-					    		vendorBusinessDetailDO.setVendorid(requestObj.getString(CommonConstants.VENDORID));
-					    		vendorBusinessDetailDO.setBusinessname(requestObj.getString(CommonConstants.BUSINESSNAME));
-					    		vendorBusinessDetailDO.setBusinesstype(requestObj.getString(CommonConstants.BUSSINESSTYPE));
-					    		vendorBusinessDetailDO.setPan(requestObj.getString(CommonConstants.PERSONALPAN));
-					    		//vendorBusinessDetailDO.setPanurl(requestObj.getString(CommonConstants.PANURL));
-					    		vendorBusinessDetailDO.setTinvat(requestObj.getString(CommonConstants.TINVAT));
-					    		vendorBusinessDetailDO.setTan(requestObj.getString(CommonConstants.TAN));
-					    		//vendorBusinessDetailDO.setTinvaturl(requestObj.getString(CommonConstants.TINVATURL));
-					    		//vendorBusinessDetailDO.setServicetax(requestObj.getString(CommonConstants.SERVICETAX));
-					    		//vendorBusinessDetailDO.setServicetaxurl(requestObj.getString(CommonConstants.SERVICETAXURL));
-					    		vendorBusinessDetailDO.setBusinesspan(requestObj.getString(CommonConstants.BUSINESSPAN));
-					    	//	vendorBusinessDetailDO.setBusinesspanurl(requestObj.getString("businesspanurl"));
-					    		
-					    		new VendorBusinessDetailsService().updateBusinessDetails(vendorBusinessDetailDO, mongo);
+					    		new VendorBusinessDetailsService().updateBusinessDetails(doc, dbBusinessDetailObject.get("_id").toString(), mongo);
 					    		System.out.println("updated");
 			        	    	respJSON = CommonWebUtil.buildSuccessResponse();
 					    	}	

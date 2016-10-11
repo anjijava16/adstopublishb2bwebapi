@@ -6,9 +6,6 @@ import org.json.JSONObject;
 
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.db.vendorDetailsDB;
-import com.atp.b2bweb.domainobject.VendorBankDetailDO;
-import com.atp.b2bweb.domainobject.VendorBusinessDetailDO;
-import com.atp.b2bweb.domainobject.VendorDetailDO;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 
@@ -23,7 +20,7 @@ public class VendorDBObject {
 		
 		docBuilder.append(CommonConstants.MOBILE, reqObject.get(vendorDetailsDB.PHONENUMBER));
 		
-		docBuilder.append(CommonConstants.TOKEN, reqObject.get(vendorDetailsDB.REGISTERTOKEN));
+		docBuilder.append(CommonConstants.TOKEN,  reqObject.get(vendorDetailsDB.REGISTERTOKEN));
 		docBuilder.append(CommonConstants.STATUS, reqObject.get(vendorDetailsDB.STATUS));
 		
 		
@@ -54,62 +51,67 @@ public class VendorDBObject {
 		return docBuilder.get();
 	}
 	
-	public static DBObject createVendorDetailDBObject(VendorDetailDO vendorDetailDO) {
+	public static DBObject createVendorDetailDBObject(JSONObject reqObject) {
 		BasicDBObjectBuilder docBuilder = BasicDBObjectBuilder.start();
-								
-		//docBuilder.append("_id", vendorUserDO.getId());
-		docBuilder.append(CommonConstants.VENDORID, vendorDetailDO.getVendorid());
-		docBuilder.append(CommonConstants.DISPLAYNAME, vendorDetailDO.getDisplayname());
-		docBuilder.append(CommonConstants.BUISENESSDESC, vendorDetailDO.getBusinessDesc());
+		try {	
+			docBuilder.append(CommonConstants.VENDORID, reqObject.get(CommonConstants.VENDORID));
+			docBuilder.append(CommonConstants.DISPLAYNAME, reqObject.get(CommonConstants.DISPLAYNAME));
+			docBuilder.append(CommonConstants.BUISENESSDESC, reqObject.get(CommonConstants.BUISENESSDESC));
+			docBuilder.append(CommonConstants.UPDATEDBY, reqObject.get(CommonConstants.UPDATEDBY));
+			docBuilder.append(CommonConstants.UPDATEDON, new Date());
 		
-		docBuilder.append(CommonConstants.UPDATEDBY, vendorDetailDO.getUpdatedby());
-		docBuilder.append(CommonConstants.UPDATEDON, new Date());
-		
+		} catch(Exception e){
+			System.out.println(e);
+		}
 		return docBuilder.get();
 	}
 	
-	public static DBObject createVendorBankDetailDBObject(VendorBankDetailDO vendorBankDetailDO) {
+	public static DBObject createVendorBankDetailDBObject(JSONObject reqObject) {
 		BasicDBObjectBuilder docBuilder = BasicDBObjectBuilder.start();
-								
+		try {							
 		//docBuilder.append("_id", vendorUserDO.getId());
-		docBuilder.append(CommonConstants.VENDORID, vendorBankDetailDO.getVendorid());
-		docBuilder.append(CommonConstants.ACCOUNTHOLDERNAME, vendorBankDetailDO.getAccountholdername());
-		docBuilder.append(CommonConstants.ACCOUNTNUMBER, vendorBankDetailDO.getAccountnumber());
-		docBuilder.append(CommonConstants.IFSC, vendorBankDetailDO.getIfsc());
-		docBuilder.append(CommonConstants.BANKNAME, vendorBankDetailDO.getBankname());
-		docBuilder.append(CommonConstants.STATE, vendorBankDetailDO.getState());
-		docBuilder.append(CommonConstants.CITY, vendorBankDetailDO.getCity());
-		docBuilder.append(CommonConstants.BRANCH, vendorBankDetailDO.getBranch());
-		docBuilder.append(CommonConstants.ADDRESSPROOFTYPE, vendorBankDetailDO.getAddressprooftype());
-		docBuilder.append(CommonConstants.ADDRESSPROOFURL, vendorBankDetailDO.getAddressproofurl());
-		docBuilder.append(CommonConstants.CANCELLEDCHEQUEURL, vendorBankDetailDO.getCancelledchequeurl());
-		
-		docBuilder.append(CommonConstants.UPDATEDBY, vendorBankDetailDO.getUpdatedby());
-		docBuilder.append(CommonConstants.UPDATEDON, new Date());
-		
+			docBuilder.append(CommonConstants.VENDORID, reqObject.get(CommonConstants.VENDORID));
+			docBuilder.append(CommonConstants.ACCOUNTHOLDERNAME, reqObject.get(CommonConstants.ACCOUNTHOLDERNAME));
+			docBuilder.append(CommonConstants.ACCOUNTNUMBER, reqObject.get(CommonConstants.ACCOUNTNUMBER));
+			docBuilder.append(CommonConstants.IFSC, reqObject.get(CommonConstants.IFSC));
+			docBuilder.append(CommonConstants.BANKNAME, reqObject.get(CommonConstants.BANKNAME));
+			docBuilder.append(CommonConstants.STATE, reqObject.get(CommonConstants.STATE));
+			docBuilder.append(CommonConstants.CITY, reqObject.get(CommonConstants.CITY));
+			docBuilder.append(CommonConstants.BRANCH, reqObject.get(CommonConstants.BRANCH));
+			docBuilder.append(CommonConstants.ADDRESSPROOFTYPE, reqObject.get(CommonConstants.ADDRESSPROOFTYPE));
+			docBuilder.append(CommonConstants.ADDRESSPROOFURL, reqObject.get(CommonConstants.ADDRESSPROOFURL));
+			docBuilder.append(CommonConstants.CANCELLEDCHEQUEURL, reqObject.get(CommonConstants.CANCELLEDCHEQUEURL));
+			
+			docBuilder.append(CommonConstants.UPDATEDBY, reqObject.get(CommonConstants.UPDATEDBY));
+			docBuilder.append(CommonConstants.UPDATEDON, new Date());
+		}catch(Exception e){
+			
+		}
 		return docBuilder.get();
 	}
 	
 	
-	public static DBObject createVendorBusinessDetailDBObject(VendorBusinessDetailDO vendorBusinessDetailDO) {
+	public static DBObject createVendorBusinessDetailDBObject(JSONObject reqObject) {
 		BasicDBObjectBuilder docBuilder = BasicDBObjectBuilder.start();
-								
 		//docBuilder.append("_id", vendorUserDO.getId());
-		docBuilder.append(CommonConstants.VENDORID, vendorBusinessDetailDO.getVendorid());
-		docBuilder.append(CommonConstants.BUSINESSNAME, vendorBusinessDetailDO.getBusinessname());
-		docBuilder.append(CommonConstants.BUSSINESSTYPE, vendorBusinessDetailDO.getBusinesstype());
-		docBuilder.append(CommonConstants.PAN, vendorBusinessDetailDO.getPan());
-		docBuilder.append(CommonConstants.PANURL, vendorBusinessDetailDO.getPanurl());
-		docBuilder.append(CommonConstants.TAN, vendorBusinessDetailDO.getTan());
-		docBuilder.append(CommonConstants.TANURL, vendorBusinessDetailDO.getTanUrl());
-		docBuilder.append(CommonConstants.TINVAT, vendorBusinessDetailDO.getTinvat());
-		docBuilder.append(CommonConstants.TINVATURL, vendorBusinessDetailDO.getTanUrl());
-		docBuilder.append(CommonConstants.BUSINESSPAN, vendorBusinessDetailDO.getBusinesspan());
-		docBuilder.append(CommonConstants.BUSINESSPANURL, vendorBusinessDetailDO.getBusinesspanurl());
-		
-		docBuilder.append(CommonConstants.UPDATEDBY, vendorBusinessDetailDO.getUpdatedby());
-		docBuilder.append(CommonConstants.UPDATEDON, new Date());
-		
+		try {	
+			docBuilder.append(CommonConstants.VENDORID, reqObject.get(CommonConstants.VENDORID));
+			docBuilder.append(CommonConstants.BUSINESSNAME, reqObject.get(CommonConstants.BUSINESSNAME));
+			docBuilder.append(CommonConstants.BUSSINESSTYPE, reqObject.get(CommonConstants.BUSSINESSTYPE));
+			docBuilder.append(CommonConstants.PAN, reqObject.get(CommonConstants.PAN));
+			docBuilder.append(CommonConstants.PANURL, reqObject.get(CommonConstants.PANURL));
+			docBuilder.append(CommonConstants.TAN, reqObject.get(CommonConstants.TAN));
+			docBuilder.append(CommonConstants.TANURL, reqObject.get(CommonConstants.TANURL));
+			docBuilder.append(CommonConstants.TINVAT, reqObject.get(CommonConstants.TINVAT));
+			docBuilder.append(CommonConstants.TINVATURL, reqObject.get(CommonConstants.TINVATURL));
+			docBuilder.append(CommonConstants.BUSINESSPAN, reqObject.get(CommonConstants.BUSINESSPAN));
+			docBuilder.append(CommonConstants.BUSINESSPANURL, reqObject.get(CommonConstants.BUSINESSPANURL));
+			
+			docBuilder.append(CommonConstants.UPDATEDBY, reqObject.get(CommonConstants.UPDATEDBY));
+			docBuilder.append(CommonConstants.UPDATEDON, new Date());
+		}catch(Exception e){
+			
+		}
 		return docBuilder.get();
 	}
 	
