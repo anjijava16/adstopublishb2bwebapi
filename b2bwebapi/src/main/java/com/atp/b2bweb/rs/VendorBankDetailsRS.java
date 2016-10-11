@@ -49,7 +49,7 @@ public class VendorBankDetailsRS {
 					DBObject dbObject =  new VendorUserService().retriveByID(requestObj.getString(CommonConstants.VENDORID), mongo);
 					if(dbObject != null && dbObject.get(CommonConstants.ACCOUNTSTATUS) != CommonConstants.INACTIVE){
 						DBObject dbVendorBankObject =  new VendorBankDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
-						System.out.println("dbVendorBankObject  "+dbVendorBankObject);
+						
 						if(dbVendorBankObject == null){  
 				    		VendorBankDetailDO vendorBankDetailDO = new VendorBankDetailDO();
 				    		vendorBankDetailDO.setVendorid(requestObj.getString(CommonConstants.VENDORID));

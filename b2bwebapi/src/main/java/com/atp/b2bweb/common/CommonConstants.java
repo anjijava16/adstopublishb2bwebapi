@@ -33,6 +33,10 @@ public class CommonConstants {
 	
 	public static final String COUNT = "count";
 	
+	public static final String TOKEN = "token";
+
+	public static final String STATUS = "status";
+	
 	//variables
 	// vendor bank detais
 	

@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.TableCommonConstant;
-import com.atp.b2bweb.createdbobject.VendorDBObject;
 import com.atp.b2bweb.createdbobject.MongoToVendorDo;
 import com.atp.b2bweb.db.vendorDetailsDB;
 import com.atp.b2bweb.domainobject.VendorUserDO;
@@ -27,24 +26,7 @@ public class VendorUserDAO {
 	public VendorUserDAO(){ }
 	
 	public VendorUserDAO(MongoClient mongo){
-		/* try { 
-			 DB db = (new MongoClient("localhost", 27017)).getDB("admin");
-			//DB db = mongo.getDB("admin");
-			
-			char[] password = new char[] {'a', 'd', 'm', 'i', 'n'};
-			System.out.println(db.authenticate("prasad",password));
-			//if (auth) {
-				this.col = db.getCollection(TableCommonConstant.VENDOR_USER);
-			//}
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-			
-         // Now connect to your databases
-*/         
 		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.VENDOR_USER);
-		
 	}
 	
 	public  DBObject vendorRegister(DBObject doc){
@@ -57,18 +39,17 @@ public class VendorUserDAO {
 	
 	
 	public  DBCursor getvendorDetails(JSONObject requestObj){
-		DBCursor result = null;
+		DBCursor dbCursor = null;
 		try {
 			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 			criteria.add(new BasicDBObject(CommonConstants.EMAIL, new BasicDBObject(TableCommonConstant.EQUALS, requestObj.get(vendorDetailsDB.EMAIL).toString())));
 			criteria.add(new BasicDBObject(CommonConstants.MOBILE, new BasicDBObject(TableCommonConstant.EQUALS, requestObj.get(vendorDetailsDB.PHONENUMBER).toString()))); 
-			DBCursor dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria));
+			dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria));
 
-			if(dbCursor.size() > 0)	result = dbCursor;
 		} catch (Exception e) {
 			System.out.println("in DAO   "+e);
 		}
-		return result;
+		return dbCursor;
 	}
 	
 	
