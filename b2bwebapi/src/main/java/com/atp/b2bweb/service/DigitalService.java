@@ -28,4 +28,8 @@ public class DigitalService {
 	public int getCount(MongoClient mongo){
 		return new DigitalDAO(mongo).getCount();
 	}
+	
+	public boolean findOutdoor(String id , MongoClient mongo){
+		return new DigitalDAO(mongo).findOutdoor(id);
+	}
 }

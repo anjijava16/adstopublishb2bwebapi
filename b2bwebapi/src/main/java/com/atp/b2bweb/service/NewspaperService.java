@@ -21,7 +21,7 @@ public class NewspaperService {
 		return new NewspaperDAO(mongo).getByID(doc);
 	} 
 	
-	public DBObject updateNewspaper(String id,DBObject doc, MongoClient mongo){
+	public DBObject updateNewspaper(String id, DBObject doc, MongoClient mongo){
 		return new NewspaperDAO(mongo).updateNewspaper(id, doc);
 	}
 	

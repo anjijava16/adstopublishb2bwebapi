@@ -20,10 +20,10 @@ import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
 import com.atp.b2bweb.createdbobject.DBRadioObject;
 import com.atp.b2bweb.service.RadioService;
+import com.atp.b2bweb.util.CommonResponseUtil;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.atp.b2bweb.util.JsonToDB;
-import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -35,7 +35,6 @@ public class RadioRS {
 	
 MongoClient mongo;
 	
-	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_RADIO + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
 	public String  addRadio(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
@@ -51,25 +50,23 @@ MongoClient mongo;
 				if(requestObj != null){
 					if(!requestObj.getString("_id").equalsIgnoreCase("")){
 						result = new RadioService().findOutdoor(requestObj.getString("_id"), mongo);
-					}
+					}      
         			if(result){
         				doc = DBRadioObject.createRadioDBObject(requestObj);
         				radioList.add(new RadioService().addRadio(doc, mongo));
-        				respJSON = MzgazineUtil.getAllDetailLists(radioList , 1);
-        	    	}else{
+        				respJSON = CommonResponseUtil.getAllDetailLists(radioList , 1);
+        	    	}else{     
         	    		doc = DBRadioObject.createRadioDBObject(requestObj);
-        	    		new RadioService().updateRadio(requestObj.get("_id").toString(), doc , mongo);
-        	    		//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
+        	    		radioList.add(new RadioService().updateRadio(requestObj.get("_id").toString(), doc , mongo));
+        	    		respJSON = CommonResponseUtil.getAllDetailLists(radioList , 1);
         	    	}
-        		}else{
-        			//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
         		}
 			}else{
-				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				respJSON = CommonResponseUtil.getErrorResponseObject("");
 			}
 	    }catch (Exception e) {
 	    	System.out.println(e);
-	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	respJSON = CommonResponseUtil.getErrorResponseObject(ExceptionCommonconstant.EXCEPTION);
 		}
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
@@ -93,12 +90,12 @@ MongoClient mongo;
 							 radioList.add(doc);
 						}
 						int count = new RadioService().getCount(mongo);
-						respJSON = MzgazineUtil.getAllDetailLists(radioList, count);
+						respJSON = CommonResponseUtil.getAllDetailLists(radioList, count);
 					}
 				}
 		}catch (Exception e) {
 			System.out.println("exception "+e);
-			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+			respJSON = CommonResponseUtil.getErrorResponseObject(ExceptionCommonconstant.EXCEPTION);
 		}
 		 System.out.println("radioList  "+radioList.size());
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
@@ -117,11 +114,11 @@ MongoClient mongo;
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
         			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
-        			if(result){
+        			if(result){ 
         				doc = DBRadioObject.createRadioDBObject(requestObj);
         				new RadioService().updateRadio(requestObj.get("_id").toString(), doc , mongo);
         		    	respJSON = CommonWebUtil.buildSuccessResponse();
-        	    	}else{
+        	    	}else{ 
         	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
         	    	}   
         		}else{

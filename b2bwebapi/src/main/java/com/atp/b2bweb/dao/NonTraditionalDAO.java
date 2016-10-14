@@ -37,7 +37,16 @@ public class NonTraditionalDAO {
 	
 	public  DBObject updateNonTraditional(String id, DBObject doc){
 		try {
-			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(id)).get();
+			String[] idString = id.split(":");
+			String x = null;
+			if(idString.length > 1){
+				 x = idString[1].substring(1, idString[1].length() - 2);
+			}else{
+				 x = idString[0];
+			}
+			System.out.println(x);
+			DBObject query = new BasicDBObject("_id", new ObjectId(x));
+			System.out.println("1111DAO");
 			col.update(query, doc);
 		} catch (Exception e) {	} 
 		return doc;
@@ -58,6 +67,25 @@ public class NonTraditionalDAO {
 		int count = col.find().count();   
 		
 		return count;
+	}
+	
+	public  boolean findOutdoor(String id){
+		boolean result = false;
+		try {
+			String[] idString = id.split(":");
+			String x = null;
+			if(idString.length > 1){
+				 x = idString[1].substring(1, idString[1].length() - 2);
+			}else{
+				 x = idString[0];
+			}
+			System.out.println("id   "+x);
+			DBObject query = new BasicDBObject("_id", new ObjectId(x));
+			DBObject data = col.findOne(query);
+			if(data == null) result = true;
+		} catch (Exception e) {
+		} 
+		return result;
 	}
 	
 	public DBCursor getNonTraditional(JSONObject requestObj)  {

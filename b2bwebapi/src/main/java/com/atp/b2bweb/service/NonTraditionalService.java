@@ -28,4 +28,8 @@ public class NonTraditionalService {
 	public int getCount(MongoClient mongo){
 		return new NonTraditionalDAO(mongo).getCount();
 	}
+	
+	public boolean findOutdoor(String id , MongoClient mongo){
+		return new NonTraditionalDAO(mongo).findOutdoor(id);
+	}
 }

@@ -20,10 +20,10 @@ import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
 import com.atp.b2bweb.createdbobject.DBDigitalObject;
 import com.atp.b2bweb.service.DigitalService;
+import com.atp.b2bweb.util.CommonResponseUtil;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.atp.b2bweb.util.JsonToDB;
-import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -37,35 +37,41 @@ MongoClient mongo;
 	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_DIGITAL + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-	public DBObject addDigital(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+	public String addDigital(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		JSONObject respJSON = null;
+		org.json.simple.JSONObject respJSON = null;
 		DBObject doc= null;
-		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		boolean result = true;
+		List<DBObject> digitalList = new ArrayList<>();
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-        			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
-        			if(result){
+					if(!requestObj.getString("_id").equalsIgnoreCase("")){
+						result = new DigitalService().findOutdoor(requestObj.getString("_id"), mongo);
+					}
+					if(result){
         				doc = DBDigitalObject.createDigitalDBObject(requestObj);
-        				new DigitalService().addDigital(doc, mongo);
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+        				digitalList.add(new DigitalService().addDigital(doc, mongo));
+        				respJSON = CommonResponseUtil.getAllDetailLists(digitalList , 1);
         	    	}else{
-        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
-        	    	}
+        	    		doc = DBDigitalObject.createDigitalDBObject(requestObj);
+        	    		System.out.println("doc             "+doc);
+        				digitalList.add(new DigitalService().updateDigital(requestObj.get("_id").toString(), doc , mongo));
+        				respJSON = CommonResponseUtil.getAllDetailLists(digitalList , 1);
+        			}
         		}else{
-        			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        			respJSON = CommonResponseUtil.getResponseObject("");
         		}
 			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				respJSON = CommonResponseUtil.getResponseObject("");
 			}
 	    }catch (Exception e) {
 	    	System.out.println(e);
-	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	respJSON = CommonResponseUtil.getResponseObject("Exception");
 		}
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-		return doc;
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
 	@RequestMapping(value = UrlCommonConstant.GET_DIGITAL + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
@@ -87,7 +93,7 @@ MongoClient mongo;
 							 digitalList.add(doc);
 						}
 						int count = new DigitalService().getCount(mongo);
-						respJSON = MzgazineUtil.getAllDetailLists(digitalList, count);
+						respJSON = CommonResponseUtil.getAllDetailLists(digitalList, count);
 					}
 				}
 		}catch (Exception e) {

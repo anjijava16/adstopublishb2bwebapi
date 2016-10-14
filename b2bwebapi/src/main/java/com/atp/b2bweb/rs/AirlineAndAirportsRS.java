@@ -23,7 +23,7 @@ import com.atp.b2bweb.service.AirlineAndAirportsService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.atp.b2bweb.util.JsonToDB;
-import com.atp.b2bweb.util.MzgazineUtil;
+import com.atp.b2bweb.util.CommonResponseUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -55,7 +55,7 @@ MongoClient mongo;
 					if(result){
         				doc = DBAirlineAndAirportsObject.createAirlineAndAirportsDBObject(requestObj);        				
         				airlineList.add(new AirlineAndAirportsService().addAirlineAndAirportsService(doc, mongo));
-        				respJSON = MzgazineUtil.getAllDetailLists(airlineList , 1);
+        				respJSON = CommonResponseUtil.getAllDetailLists(airlineList , 1);
         	    	}else{
         	    		doc = DBAirlineAndAirportsObject.createAirlineAndAirportsDBObject(requestObj);  
         	    		new AirlineAndAirportsService().updateAirlineAndAirportsService(requestObj.get("_id").toString(), doc , mongo);
@@ -93,7 +93,7 @@ MongoClient mongo;
 							 AirlineAirportsList.add(doc);
 						}
 						int count = new AirlineAndAirportsService().getCount(mongo);
-						respJSON = MzgazineUtil.getAllDetailLists(AirlineAirportsList, count);
+						respJSON = CommonResponseUtil.getAllDetailLists(AirlineAirportsList, count);
 					}
 				}
 		}catch (Exception e) {

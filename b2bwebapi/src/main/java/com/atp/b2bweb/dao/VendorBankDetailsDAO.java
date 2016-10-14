@@ -37,7 +37,7 @@ public class VendorBankDetailsDAO {
 			}
 			DBObject query = new BasicDBObject("_id", new ObjectId(x));
 			
-			 col.update(query, doc);
+			col.update(query, doc);
 		} catch (Exception e) {	}
 		return doc;
 	}
@@ -48,8 +48,6 @@ public class VendorBankDetailsDAO {
 	    try {
 			query = BasicDBObjectBuilder.start().append(CommonConstants.VENDORID,vendorid).get();
 			data = col.findOne(query);
-			System.out.println("vendor bank detail dao    "+query);
-			System.out.println("vendor bank detail dao    "+data);
 	    } catch (Exception e) {
 	    	System.out.println("in DAO   "+e);
 	    }

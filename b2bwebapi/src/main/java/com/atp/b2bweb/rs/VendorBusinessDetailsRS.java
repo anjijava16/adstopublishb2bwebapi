@@ -21,9 +21,9 @@ import com.atp.b2bweb.common.UrlCommonConstant;
 import com.atp.b2bweb.createdbobject.VendorDBObject;
 import com.atp.b2bweb.service.VendorBusinessDetailsService;
 import com.atp.b2bweb.service.VendorUserService;
+import com.atp.b2bweb.util.CommonResponseUtil;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
-import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
@@ -48,15 +48,13 @@ public class VendorBusinessDetailsRS {
 			//new JwtTokenDecoder().parseJWT(new JwtTokenGenerator().createJWT("100101", name, email, 9000000));
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
-				System.out.println("requestObj  "+requestObj.toString());
 				if(requestObj != null){
 					DBObject dbObject  =  new VendorUserService().retriveByID(requestObj.getString(CommonConstants.VENDORID), mongo);
-				    	System.out.println("dbObject "+dbObject);
 				    	if(dbObject != null && dbObject.get(CommonConstants.ACCOUNTSTATUS) != CommonConstants.INACTIVE){
 				    		DBObject dbBusinessDetailObject =  new VendorBusinessDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
-				    	    if(dbBusinessDetailObject == null){		
-				    	    	doc = VendorDBObject.createVendorBusinessDetailDBObject(requestObj);
-				    	    	
+				    	   System.out.println(dbBusinessDetailObject);
+				    		if(dbBusinessDetailObject == null){		
+				    	    	doc = VendorDBObject.createVendorBusinessDetailDBObject(requestObj);				    	    	
 					    		/*VendorBusinessDetailDO vendorBusinessDetail = new VendorBusinessDetailDO();
 					    		vendorBusinessDetail.setVendorid(requestObj.getString(CommonConstants.VENDORID));
 					    		vendorBusinessDetail.setBusinessname(requestObj.getString(CommonConstants.BUSINESSNAME));
@@ -76,10 +74,10 @@ public class VendorBusinessDetailsRS {
 					    		new VendorBusinessDetailsService().addBusinessDetails(doc, mongo);
 					    		System.out.println("created");
 					    		respJSON = CommonWebUtil.buildSuccessResponse();
-					    		
 					    	}else{
+					    		System.out.println(requestObj);
 					    		doc = VendorDBObject.createVendorBusinessDetailDBObject(requestObj);
-					    		
+					    		System.out.println("doc "+doc);
 					    		new VendorBusinessDetailsService().updateBusinessDetails(doc, dbBusinessDetailObject.get("_id").toString(), mongo);
 					    		System.out.println("updated");
 			        	    	respJSON = CommonWebUtil.buildSuccessResponse();
@@ -98,7 +96,6 @@ public class VendorBusinessDetailsRS {
 	}
 	
 
-	@SuppressWarnings({ "unused"})
 	@RequestMapping(value = UrlCommonConstant.GET_BY_VENDOR_DETAIL + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
    	public String  retriveByVendorID(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
@@ -113,19 +110,18 @@ public class VendorBusinessDetailsRS {
 					DBObject dbObject =  new VendorBusinessDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
 			       	  if(dbObject != null ){
 			       		businessList.add(dbObject);
-		       	    	respJSON = MzgazineUtil.getAllDetailLists(businessList , 1);
+		       	    	respJSON = CommonResponseUtil.getAllDetailLists(businessList , 1);
+		       	    	System.out.println("respJSON   "+respJSON);
 			       	  }else{
-				    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.USER_NOT_EXITS);
+			       		respJSON = CommonResponseUtil.getErrorResponseObject("not found");
 				      }
-				}else{
-					//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
-			    }
+				}
 			}else{
-				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				respJSON = CommonResponseUtil.getErrorResponseObject("");
 		    }
    	    }catch (Exception e) {
    	    	System.out.println(e);
-   	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+   	    	respJSON = CommonResponseUtil.getErrorResponseObject("Exception");
    		}
        return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
    	}

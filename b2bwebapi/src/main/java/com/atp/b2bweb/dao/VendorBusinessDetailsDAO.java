@@ -27,7 +27,6 @@ public class VendorBusinessDetailsDAO {
 	
 	public  DBObject updateBusinessDetails(DBObject doc, String id){
 		try {
-			//DBObject doc = VendorDBObject.createVendorBusinessDetailDBObject(vendorBusinessDetailDO);
 			String[] idString = id.split(":");
 			String x = null;
 			if(idString.length > 1){
@@ -35,6 +34,7 @@ public class VendorBusinessDetailsDAO {
 			}else{
 				 x = idString[0];
 			}
+			System.out.println("DAO DOC "+doc);
 			DBObject query = new BasicDBObject("_id", new ObjectId(x));
 			 col.update(query, doc);
 		} catch (Exception e) {	}
@@ -42,14 +42,10 @@ public class VendorBusinessDetailsDAO {
 	}
 	
 	public  DBObject  retriveByVendorID(String vendorid){
-		DBObject query = null;
 		DBObject data = null;
 	    try {
-			query = BasicDBObjectBuilder.start().append(CommonConstants.VENDORID,vendorid).get();
+			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants.VENDORID, vendorid).get();
 			data = col.findOne(query);
-			
-			System.out.println("vendor bank detail dao    "+query);
-			System.out.println("vendor bank detail dao    "+data);
 	    } catch (Exception e) {
 	    	System.out.println("in DAO   "+e);
 	    }

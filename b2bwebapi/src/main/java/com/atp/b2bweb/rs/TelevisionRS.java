@@ -23,7 +23,7 @@ import com.atp.b2bweb.service.TelevisionService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.atp.b2bweb.util.JsonToDB;
-import com.atp.b2bweb.util.MzgazineUtil;
+import com.atp.b2bweb.util.CommonResponseUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -55,21 +55,22 @@ public class TelevisionRS {
         			if(result){
         				doc = DBTelevisionObject.createTelevisionDBObject(requestObj);
         				televisionList.add(new TelevisionService().addTelevision(doc, mongo));
-        				respJSON = MzgazineUtil.getAllDetailLists(televisionList , 1);
+        				respJSON = CommonResponseUtil.getAllDetailLists(televisionList , 1);
         	    	}else{
+        	    		System.out.println("updated");
         	    		doc = DBTelevisionObject.createTelevisionDBObject(requestObj);
-        	    		new TelevisionService().updateTelevision(requestObj.get("_id").toString(), doc , mongo);
-        	    		respJSON = MzgazineUtil.getResponseObject("message");
+        	    		televisionList.add(new TelevisionService().updateTelevision(requestObj.get("_id").toString(), doc , mongo));
+        	    		respJSON = CommonResponseUtil.getAllDetailLists(televisionList , 1);
         	    	}	
         		}else{
-        			respJSON = MzgazineUtil.getResponseObject("");
+        			respJSON = CommonResponseUtil.getResponseObject("");
         		}
 			}else{
-				respJSON = MzgazineUtil.getResponseObject("");
+				respJSON = CommonResponseUtil.getResponseObject("");
 			}
 	    }catch (Exception e) {   
 	    	System.out.println(e);   
-	    	respJSON = MzgazineUtil.getResponseObject("Exception");
+	    	respJSON = CommonResponseUtil.getResponseObject("Exception");
 		}   
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
@@ -93,12 +94,12 @@ public class TelevisionRS {
 							 televisionList.add(doc);
 						}
 						int count = new TelevisionService().getCount(mongo);
-						respJSON = MzgazineUtil.getAllDetailLists(televisionList, count);
+						respJSON = CommonResponseUtil.getAllDetailLists(televisionList, count);
 					}
 				}
 		}catch (Exception e) {
 			System.out.println("exception "+e);
-			respJSON = MzgazineUtil.getResponseObject("Exception");
+			respJSON = CommonResponseUtil.getResponseObject("Exception");
 		}
 		 System.out.println("televisionList  "+televisionList.size());
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;

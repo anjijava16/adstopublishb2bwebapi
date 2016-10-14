@@ -3,6 +3,7 @@ package com.atp.b2bweb.createdbobject;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,13 +17,19 @@ public class DBTelevisionObject {
 		BasicDBObject basicDBObject = new BasicDBObject();	
 		for(int i = 0; i < jsonObj.length(); i++){
 			String aaaa = jsonObj.get(jsonObj.names().get(i).toString()).toString();
-			if(aaaa.contains(":")){
+			if(aaaa.contains("{") || aaaa.contains("[")){				
 				BasicDBObject attObject = new BasicDBObject();
-				JSONObject attJSON = (JSONObject) jsonObj.get(jsonObj.names().get(i).toString());
-				for(int j = 0; j < attJSON.length(); j++){
-					basicDBObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
+				if(aaaa.contains("{")){
+					JSONObject attJSON = (JSONObject) jsonObj.get(jsonObj.names().get(i).toString());
+					for(int j = 0; j < attJSON.length(); j++){
+						attObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
+					}
+					basicDBObject.append(jsonObj.names().get(i).toString(), attObject);
 				}
-				basicDBObject.append(jsonObj.names().get(i).toString(), attObject);
+				if(aaaa.contains("[")){
+					JSONArray attJSON =  (JSONArray) jsonObj.get(jsonObj.names().get(i).toString());				
+					basicDBObject.append(jsonObj.names().get(i).toString(), attJSON.toString());
+				}
 			 }else{
 				basicDBObject.append(jsonObj.names().get(i).toString(), jsonObj.get(jsonObj.names().get(i).toString()));
 			 }

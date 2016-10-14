@@ -38,7 +38,12 @@ public class AirlineAndAirportsDAO {
 	public  DBObject updateAirlineAndAirports(String id, DBObject doc){
 		try {
 			String[] idString = id.split(":");
-			String x = idString[1].substring(1, idString[1].length() - 2);
+			String x = null;
+			if(idString.length > 1){
+				 x = idString[1].substring(1, idString[1].length() - 2);
+			}else{
+				 x = idString[0];
+			}
 			
 			DBObject query = new BasicDBObject("_id", new ObjectId(x));
 			col.update(query, doc);   
@@ -73,8 +78,8 @@ public class AirlineAndAirportsDAO {
 			}else{
 				 x = idString[0];
 			}
-			System.out.println(x);
 			DBObject query = new BasicDBObject("_id", new ObjectId(x));
+			
 			DBObject data = col.findOne(query);
 			if(data == null) result = true;
 		} catch (Exception e) {

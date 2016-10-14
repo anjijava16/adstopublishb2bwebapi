@@ -34,7 +34,15 @@ public class RadioDAO {
 	
 	public  DBObject updateRadio(String id, DBObject doc){
 		try {
-			DBObject query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(id)).get();
+			String[] idString = id.split(":");
+			String x = null;
+			if(idString.length > 1){
+				 x = idString[1].substring(1, idString[1].length() - 2);
+			}else{
+				 x = idString[0];
+			}
+			System.out.println(x);
+			DBObject query = new BasicDBObject("_id", new ObjectId(x));
 			col.update(query, doc);
 		} catch (Exception e) {	} 
 		return doc;
@@ -97,7 +105,7 @@ public class RadioDAO {
 			
 			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 				for (int i = 0;i < geographiesArray.length();i++) {
-					criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 
+					criteria.add(new BasicDBObject("attributes.city.value", geographiesArray.get(i))); 
 				}   
 				for (int i = 0;i < categoriesArray.length();i++) {
 					criteria.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 

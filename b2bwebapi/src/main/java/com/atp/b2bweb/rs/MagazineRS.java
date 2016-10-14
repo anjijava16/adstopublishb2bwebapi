@@ -15,14 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.atp.b2bweb.common.CommonConstants;
-import com.atp.b2bweb.common.ExceptionCommonconstant;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
 import com.atp.b2bweb.createdbobject.DBMagazineObject;
 import com.atp.b2bweb.service.MagazineService;
+import com.atp.b2bweb.util.CommonResponseUtil;
 import com.atp.b2bweb.util.CommonUtil;
-import com.atp.b2bweb.util.CommonWebUtil;
-import com.atp.b2bweb.util.MzgazineUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -34,7 +33,6 @@ public class MagazineRS {
 	
 	MongoClient mongo;
 	
-	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_MAGAZINE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
 	public String  addMagazine(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
@@ -48,27 +46,24 @@ public class MagazineRS {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-        			if(!requestObj.getString("_id").equalsIgnoreCase("")){
+        			if(!requestObj.getString("_id").equalsIgnoreCase(""))
 						result = new MagazineService().findOutdoor(requestObj.getString("_id"), mongo);
-					}
         			if(result){
         				doc = DBMagazineObject.createMagazineDBObject(requestObj);
         				magazineList.add(new MagazineService().addMagazine(doc, mongo));
-        				respJSON = MzgazineUtil.getAllDetailLists(magazineList , 1);
+        				respJSON = CommonResponseUtil.getAllDetailLists(magazineList , 1);
         	    	}else{
         	    		doc = DBMagazineObject.createMagazineDBObject(requestObj);
-        	    		new MagazineService().updateMagazine(requestObj.get("_id").toString(), doc , mongo);
-        	    		//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
-        	    	}
-        		}else{
-        			//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        	    		magazineList.add(new MagazineService().updateMagazine(requestObj.get("_id").toString(), doc , mongo));
+        	    		respJSON = CommonResponseUtil.getAllDetailLists(magazineList , 1);
+        	    	}     
         		}
 			}else{
-				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				respJSON = CommonResponseUtil.getErrorResponseObject("no records");
 			}
 	    }catch (Exception e) {
 	    	System.out.println(e);
-	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	respJSON = CommonResponseUtil.getErrorResponseObject("Exception");
 		}
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 		
@@ -90,12 +85,10 @@ public class MagazineRS {
 						DBCursor dbCursor =  new MagazineService().getMagazine(requestObj, mongo);
 						while(dbCursor.hasNext()){
 							 doc = dbCursor.next();
-							 System.out.println("----====="+doc);
 							 magazineList.add(doc);
 						}
 						int count = new MagazineService().getCount(mongo);
-						respJSON = MzgazineUtil.getAllDetailLists(magazineList, count);
-						
+						respJSON = CommonResponseUtil.getAllDetailLists(magazineList, count);
 					}
 				}
 				
@@ -107,7 +100,7 @@ public class MagazineRS {
 		 return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	
-	@SuppressWarnings("unused")
+	/*@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.UPDATE_MAGAZINE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
    	public String updateMagazine(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
@@ -119,8 +112,8 @@ public class MagazineRS {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-        			boolean result = true;/*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
-        			if(result){
+        			boolean result = true;new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);
+        			if(result){      
         				doc = DBMagazineObject.createMagazineDBObject(requestObj);
         				new MagazineService().updateMagazine(requestObj.get("_id").toString(), doc , mongo);
         		    	respJSON = CommonWebUtil.buildSuccessResponse();
@@ -140,11 +133,11 @@ public class MagazineRS {
 		//return doc;
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-	}
+	}*/
 	
 	@RequestMapping(value ="/addmagazinedb" )
 	public void addmagazintodb(){
-		//JsonToDB.jsontodb();
+		JsonToDB.jsontodb();
 		
 	}
 

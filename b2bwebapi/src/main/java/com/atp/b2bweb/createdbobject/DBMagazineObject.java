@@ -20,7 +20,7 @@ public class DBMagazineObject {
 				BasicDBObject attObject = new BasicDBObject();
 				JSONObject attJSON = (JSONObject) jsonObj.get(jsonObj.names().get(i).toString());
 				for(int j = 0; j < attJSON.length(); j++){
-					basicDBObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
+					attObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
 				}
 				basicDBObject.append(jsonObj.names().get(i).toString(), attObject);
 			 }else{
@@ -31,9 +31,9 @@ public class DBMagazineObject {
 	}
 	
 	public static DBObject createMagazineDBObject(JSONObject requestObj) {
-		
 		BasicDBObject document = new BasicDBObject();
 		try {
+			System.out.println("requestObj  "+requestObj);
 			document.put(MagazineDB.TOOL_ID, requestObj.get(MagazineDB.TOOL_ID));
 			document.put(MagazineDB.LOGO, requestObj.get(MagazineDB.LOGO));
 			document.put(MagazineDB.THUMBNAIL, requestObj.get(MagazineDB.THUMBNAIL));
@@ -55,7 +55,9 @@ public class DBMagazineObject {
 			document.put(MagazineDB.CATEGORY_NAME, requestObj.get(MagazineDB.CATEGORY_NAME));
 			document.put(MagazineDB.CARD_RATE, requestObj.get(MagazineDB.CARD_RATE));
 			document.put(MagazineDB.DISCOUNT_RATE, requestObj.get(MagazineDB.DISCOUNT_RATE));
-		
+			
+			
+			
 			BasicDBObject mediaOptions = new BasicDBObject();
 			
 			JSONObject mediaOptionsJSON =  (JSONObject) requestObj.get(MagazineDB.MEDIA_OPTIONS);	
@@ -69,7 +71,6 @@ public class DBMagazineObject {
 			}
 			mediaOptions.append(MagazineDB.REGULAR_OPTION, regularOptions);
 			
-			
 			BasicDBObject attributes = new BasicDBObject();	
 		
 			JSONObject attributesJSON =  (JSONObject) requestObj.get(MagazineDB.ATTRIBUTES);
@@ -77,16 +78,12 @@ public class DBMagazineObject {
 				JSONObject jsonObject =  (JSONObject) attributesJSON.get(attributesJSON.names().get(i).toString());
 				attributes.append(attributesJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
 			}
+			document.put(MagazineDB.ATTRIBUTES, attributes);	
+			document.put(MagazineDB.MEDIA_OPTIONS, mediaOptions);	
 			
-			document.append(MagazineDB.ATTRIBUTES, attributes);	
-			document.append(MagazineDB.MEDIA_OPTIONS, mediaOptions);	
-					
-				/*document.put(CommonConstants.UPDATEDBY, requestObj.get(CommonConstants.VENDORID));
-				document.put(CommonConstants.UPDATEDON, new Date());	*/
 		} catch (Exception e) {
 			System.out.println("exception in mondodbmagazineobject java "+e);
 		}
-		System.out.println("document----------------------"+document);
 		return document;
 	}
 

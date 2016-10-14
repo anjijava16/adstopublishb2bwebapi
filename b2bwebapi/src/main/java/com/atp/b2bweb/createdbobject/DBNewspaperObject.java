@@ -20,7 +20,7 @@ public class DBNewspaperObject {
 				BasicDBObject attObject = new BasicDBObject();
 				JSONObject attJSON = (JSONObject) jsonObj.get(jsonObj.names().get(i).toString());
 				for(int j = 0; j < attJSON.length(); j++){
-					basicDBObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
+					attObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
 				}
 				basicDBObject.append(jsonObj.names().get(i).toString(), attObject);
 			 }else{
@@ -32,7 +32,8 @@ public class DBNewspaperObject {
 	
 	public static DBObject createNewspaperDBObject(JSONObject requestObj) {
 		BasicDBObject document = new BasicDBObject();
-		try {    
+		try {  
+			System.out.println(requestObj);
 			List<String> categoryId = new ArrayList<>();  
 			categoryId.add(requestObj.get(NewspaperDB.CATEGORY_ID).toString());
 			List<String> geography = new ArrayList<>();  
@@ -74,7 +75,6 @@ public class DBNewspaperObject {
 			document.append(NewspaperDB.ATTRIBUTES, attributes);	
 			document.append(NewspaperDB.MEDIA_OPTIONS, mediaOptions);
 		}catch(Exception e){ System.out.println(e);	}
-		System.out.println("document  "+document);
 		return document;
 	}
 }

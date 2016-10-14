@@ -23,7 +23,7 @@ import com.atp.b2bweb.service.OutdoorService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.atp.b2bweb.util.JsonToDB;
-import com.atp.b2bweb.util.MzgazineUtil;
+import com.atp.b2bweb.util.CommonResponseUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -60,7 +60,7 @@ public class OutdoorRS {
         				System.out.println("innn");     
         				DBObject respDoc = new OutdoorService().addOutdoor(doc, mongo);
         				outdoorList.add(respDoc);						
-        				respJSON = MzgazineUtil.getAllDetailLists(outdoorList , 1);  
+        				respJSON = CommonResponseUtil.getAllDetailLists(outdoorList , 1);  
         				System.out.println("respJSON   "+respJSON);
         	    	}else{  
         	    		doc = DBOutdoorObject.createOutdoorDBObject(requestObj);
@@ -99,7 +99,7 @@ public class OutdoorRS {
 							 outdoorList.add(doc);
 						}
 						int count = new OutdoorService().getCount(mongo);
-						respJSON = MzgazineUtil.getAllDetailLists(outdoorList, count);
+						respJSON = CommonResponseUtil.getAllDetailLists(outdoorList, count);
 					}
 				}
 		}catch (Exception e) {

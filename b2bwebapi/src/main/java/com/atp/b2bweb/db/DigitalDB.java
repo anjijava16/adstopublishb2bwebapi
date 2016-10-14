@@ -6,7 +6,7 @@ public class DigitalDB {
 	
 	public static final String NAME = "name";
 	
-	public static final String MEDIUM = "midium";
+	public static final String MEDIUM = "medium";
 	
 	public static final String URL_SIUG = "urlSlug";
 	

@@ -23,7 +23,7 @@ import com.atp.b2bweb.service.CinemasService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.atp.b2bweb.util.JsonToDB;
-import com.atp.b2bweb.util.MzgazineUtil;
+import com.atp.b2bweb.util.CommonResponseUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -56,13 +56,13 @@ public class CinemasRS {
         				System.out.println("addd");
         				doc = DBCinimasObject.createCinimasDBObject(requestObj);        				
         				cinemasList.add(new CinemasService().addCinemas(doc, mongo));	
-        				respJSON = MzgazineUtil.getAllDetailLists(cinemasList , 1);    
+        				respJSON = CommonResponseUtil.getAllDetailLists(cinemasList , 1);    
         				System.out.println("respJSON   "+respJSON);
         	    	}else{
         	    		System.out.println("update");
         	    		doc = DBCinimasObject.createCinimasDBObject(requestObj);
-        	    		new CinemasService().updateCinemas(requestObj.get("_id").toString(), doc , mongo);
-        	    		//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
+        	    		cinemasList.add(new CinemasService().updateCinemas(requestObj.get("_id").toString(), doc , mongo));
+        	    		respJSON = CommonResponseUtil.getAllDetailLists(cinemasList , 1);  
         	    	}
         		}else{
         			//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
@@ -96,7 +96,7 @@ public class CinemasRS {
 							 cinimasList.add(doc);
 						}
 						int count = new CinemasService().getCount(mongo);
-						respJSON = MzgazineUtil.getAllDetailLists(cinimasList, count);
+						respJSON = CommonResponseUtil.getAllDetailLists(cinimasList, count);
 					}
 				}
 		}catch (Exception e) {

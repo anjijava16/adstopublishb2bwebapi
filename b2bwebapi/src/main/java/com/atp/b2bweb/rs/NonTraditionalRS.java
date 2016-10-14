@@ -20,10 +20,10 @@ import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
 import com.atp.b2bweb.createdbobject.DBNonTraditionalObject;
 import com.atp.b2bweb.service.NonTraditionalService;
+import com.atp.b2bweb.util.CommonResponseUtil;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.atp.b2bweb.util.JsonToDB;
-import com.atp.b2bweb.util.MzgazineUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -38,35 +38,40 @@ public class NonTraditionalRS {
 	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_NON_TRADITIONAL + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-	public DBObject  addNonTraditional(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+	public String  addNonTraditional(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		JSONObject respJSON = null;
+		org.json.simple.JSONObject respJSON = null;
 		DBObject doc= null;
-		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		boolean result = true;
+		List<DBObject> nonTraditionalList = new ArrayList<>();
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
 		try {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-        			boolean result = true; /*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
+        			if(!requestObj.getString("_id").equalsIgnoreCase("")){
+						result = new NonTraditionalService().findOutdoor(requestObj.getString("_id"), mongo);
+					}
         			if(result){
         				doc = DBNonTraditionalObject.createNonTraditionalDBObject(requestObj);
-        				new NonTraditionalService().addNonTraditional(doc, mongo);
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
+        				nonTraditionalList.add(new NonTraditionalService().addNonTraditional(doc, mongo));
+        				respJSON = CommonResponseUtil.getAllDetailLists(nonTraditionalList , 1);
         	    	}else{
-        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
+        	    		doc = DBNonTraditionalObject.createNonTraditionalDBObject(requestObj);
+        	    		nonTraditionalList.add(new NonTraditionalService().updateNonTraditional(requestObj.get("_id").toString(), doc , mongo));
+        				respJSON = CommonResponseUtil.getAllDetailLists(nonTraditionalList , 1);
         	    	}
         		}else{
-        			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        			respJSON = CommonResponseUtil.getErrorResponseObject("");
         		}
 			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+				respJSON = CommonResponseUtil.getErrorResponseObject("");
 			}
 	    }catch (Exception e) {
 	    	System.out.println(e);
-	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	respJSON = CommonResponseUtil.getErrorResponseObject("Exception");
 		}
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-		return doc;
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
 	@RequestMapping(value = UrlCommonConstant.GET_NON_TRADITIONAL + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
@@ -88,7 +93,7 @@ public class NonTraditionalRS {
 							 nonTraditionalList.add(doc);
 						}
 						int count = new NonTraditionalService().getCount(mongo);
-						respJSON = MzgazineUtil.getAllDetailLists(nonTraditionalList, count);
+						respJSON = CommonResponseUtil.getAllDetailLists(nonTraditionalList, count);
 					}
 				}
 		}catch (Exception e) {

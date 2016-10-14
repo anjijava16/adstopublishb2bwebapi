@@ -8,7 +8,6 @@ public class UrlCommonConstant {
 	
 	//RS NAME
 	
-	
 	public static final String VENDOR = "/vendor";
 	
 	public static final String REGISTER = "/register";
@@ -18,6 +17,8 @@ public class UrlCommonConstant {
 	public static final String UPDATE = "/update";
 	
 	public static final String DELETE = "/delete";
+	
+	public static final String GET_VENDOR = "/getvendor";
 	
 	public static final String FORGET_PASSWORD = "/forgetpassword";
 	
@@ -56,7 +57,7 @@ public class UrlCommonConstant {
 	
 	public static final String RADIO = "/radio";
 	
-	public static final String ADD_RADIO = "/addradio";
+	public static final String ADD_RADIO = "/addradio";    
 	
 	public static final String GET_RADIO = "/getradio";
 	

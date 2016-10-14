@@ -23,7 +23,7 @@ import com.atp.b2bweb.service.NewspaperService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.atp.b2bweb.util.JsonToDB;
-import com.atp.b2bweb.util.MzgazineUtil;
+import com.atp.b2bweb.util.CommonResponseUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -35,7 +35,6 @@ public class NewspaperRS {
         
 	MongoClient mongo;
 	
-	@SuppressWarnings("unused")
 	@RequestMapping(value = UrlCommonConstant.ADD_NEWSPAPER + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
 	public String  addNewspaper(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
@@ -51,30 +50,26 @@ public class NewspaperRS {
 				if(requestObj != null){
 					if(!requestObj.getString("_id").equalsIgnoreCase("")){
 						result = new NewspaperService().findOutdoor(requestObj.getString("_id"), mongo);
-					}
+					}       
         			if(result){
         				System.out.println("adddddd newspaper "+requestObj);
         				doc = DBNewspaperObject.createNewspaperDBObject(requestObj);
         				newspaperList.add(new NewspaperService().addNewspaper(doc, mongo));
-        				respJSON = MzgazineUtil.getAllDetailLists(newspaperList , 1);
+        				respJSON = CommonResponseUtil.getAllDetailLists(newspaperList , 1);
         	    	}else{
         	    		System.out.println("updtae newspaper");
         	    		doc = DBNewspaperObject.createNewspaperDBObject(requestObj);
-        				new NewspaperService().updateNewspaper(requestObj.get("_id").toString(), doc , mongo);
-        	    		//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
+        	    		newspaperList.add(new NewspaperService().updateNewspaper(requestObj.get("_id").toString(), doc , mongo));
+        				respJSON = CommonResponseUtil.getAllDetailLists(newspaperList , 1);
         	    	}
-        		}else{
-        			//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
         		}
 			}else{
-				//respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
+        			respJSON = CommonResponseUtil.getErrorResponseObject("not found");
 			}
 	    }catch (Exception e) {
 	    	System.out.println(e);
-	    	//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+	    	respJSON = CommonResponseUtil.getErrorResponseObject("Exception");
 		}
-		System.out.println("55555");
-		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
@@ -97,7 +92,7 @@ public class NewspaperRS {
 							 newspaperList.add(doc);
 						}
 						int count = new NewspaperService().getCount(mongo);
-						respJSON = MzgazineUtil.getAllDetailLists(newspaperList, count);
+						respJSON = CommonResponseUtil.getAllDetailLists(newspaperList, count);
 					}
 				}
 		}catch (Exception e) {
