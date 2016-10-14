@@ -135,7 +135,22 @@ public class UrlCommonConstant {
 	public static final String UPDATE_OUTDOOR = "/updateoutdoor";
 
 	
+	//orders
 	
+	public static final String ORDERS = "/orders";
+	
+	public static final String ADD_ORDER = "/addorder";
+	
+	public static final String GET_ORDERS = "/getorders";
+	
+	//quotes
+	
+	public static final String QUOTES = "/quotes";
+	
+	public static final String ADD_QUOTE = "/addquote";
+	
+	
+		
 	
 	
 	
