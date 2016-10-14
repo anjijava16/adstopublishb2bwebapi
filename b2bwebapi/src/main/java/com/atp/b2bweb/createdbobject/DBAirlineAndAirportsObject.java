@@ -1,9 +1,11 @@
 package com.atp.b2bweb.createdbobject;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.atp.b2bweb.db.AirlineAndAirportsDB;
+import com.atp.b2bweb.db.DigitalDB;
 import com.mongodb.BasicDBObject;
 
 public class DBAirlineAndAirportsObject {
@@ -31,25 +33,38 @@ public class DBAirlineAndAirportsObject {
 			document.put(AirlineAndAirportsDB.CATEGORY, requestObj.get(AirlineAndAirportsDB.CATEGORY));
 			document.put(AirlineAndAirportsDB.URL_SIUG, requestObj.get(AirlineAndAirportsDB.URL_SIUG));
 			document.put(AirlineAndAirportsDB.NAME, requestObj.get(AirlineAndAirportsDB.NAME));
-		
-			if(requestObj.get(AirlineAndAirportsDB.GEOGRAPHY) != null){
-				//List<String> geography = new ArrayList<>();  
-				//System.out.println(requestObj.get(AirlineAndAirportsDB.GEOGRAPHY));
-				//JSONArray geography = (JSONArray) requestObj.get(AirlineAndAirportsDB.GEOGRAPHY);
-				document.put(AirlineAndAirportsDB.GEOGRAPHY, requestObj.get(AirlineAndAirportsDB.GEOGRAPHY));
-			}
+			document.put(AirlineAndAirportsDB.GEOGRAPHY, requestObj.get(AirlineAndAirportsDB.GEOGRAPHY));
 			
 			document.put(AirlineAndAirportsDB.LOGO, requestObj.get(AirlineAndAirportsDB.LOGO));
 			document.put(AirlineAndAirportsDB.VIEWS, requestObj.get(AirlineAndAirportsDB.VIEWS));
 			document.put(AirlineAndAirportsDB.SERVICE_TAX_PERCENTAGE, requestObj.get(AirlineAndAirportsDB.SERVICE_TAX_PERCENTAGE));
 			document.put(AirlineAndAirportsDB.CARD_RATE, requestObj.get(AirlineAndAirportsDB.CARD_RATE));
 			
-					
-			BasicDBObject mediaOptions = new BasicDBObject();
 				
-				JSONObject mediaOptionsJSON =  (JSONObject) requestObj.get(AirlineAndAirportsDB.MEDIA_OPTIONS);	
+			JSONObject mediaOptionsJSON =  (JSONObject) requestObj.get(AirlineAndAirportsDB.MEDIA_OPTIONS);	
 
-				JSONObject digitalOptionsJSON =  (JSONObject) mediaOptionsJSON.get(AirlineAndAirportsDB.DIGITAL_OPTIONS);
+
+			BasicDBObject mediaOptions = new BasicDBObject();	
+			JSONArray mediaKeys = (JSONArray) mediaOptionsJSON.names();
+			if(mediaOptionsJSON != null){
+				for(int k = 0; k < mediaKeys.length(); k++){
+					JSONObject costPerViewJSON =  (JSONObject) mediaOptionsJSON.get(mediaKeys.get(k).toString());
+					if(costPerViewJSON != null){
+						BasicDBObject costPerView = new BasicDBObject();
+						for(int i = 0; i < costPerViewJSON.length(); i++){  
+							JSONObject jsonObject =  (JSONObject) costPerViewJSON.get(costPerViewJSON.names().get(i).toString());
+							if(jsonObject != null) costPerView.append(costPerViewJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
+						}
+						mediaOptions.append(mediaKeys.get(k).toString(), costPerView);
+					}
+				}
+				document.append(DigitalDB.MEDIA_OPTIONS, mediaOptions);
+			}
+				
+				/*BasicDBObject mediaOptions = new BasicDBObject();
+				 * 
+				 * 
+				 * JSONObject digitalOptionsJSON =  (JSONObject) mediaOptionsJSON.get(AirlineAndAirportsDB.DIGITAL_OPTIONS);
 				BasicDBObject digitalOptions = new BasicDBObject();
 				for(int i = 0; i < digitalOptionsJSON.length(); i++){  
 					JSONObject jsonObject =  (JSONObject) digitalOptionsJSON.get(digitalOptionsJSON.names().get(i).toString());
@@ -80,7 +95,7 @@ public class DBAirlineAndAirportsObject {
 					JSONObject jsonObject =  (JSONObject) popularOptionsJSON.get(popularOptionsJSON.names().get(i).toString());
 					popularOptions.append(popularOptionsJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
 				}
-				mediaOptions.append(AirlineAndAirportsDB.POPULAR_OPTION, popularOptions);
+				mediaOptions.append(AirlineAndAirportsDB.POPULAR_OPTION, popularOptions);*/
 				
 			BasicDBObject attributes = new BasicDBObject();	
 				

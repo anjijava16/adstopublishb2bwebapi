@@ -15,11 +15,12 @@ public class VendorDBObject {
 	public static DBObject vendorRegisterDBObject(JSONObject reqObject) {
 		BasicDBObjectBuilder docBuilder = BasicDBObjectBuilder.start();
 		try {
+			System.out.println("reqObject    "+reqObject);
 		/*docBuilder.append(CommonConstants.USERNAME, reqObject.get(vendorDetailsDB.NAME));*/
 		docBuilder.append(CommonConstants.EMAIL, reqObject.get(vendorDetailsDB.EMAIL));
 		docBuilder.append(CommonConstants.MOBILE, reqObject.get(vendorDetailsDB.PHONE));
 		docBuilder.append(CommonConstants.TOKEN,  reqObject.get(vendorDetailsDB.REGISTERTOKEN));
-		docBuilder.append(CommonConstants.STATUS, reqObject.get(vendorDetailsDB.STATUS));
+		docBuilder.append(CommonConstants.STATUS, "O");
 		/*docBuilder.append(CommonConstants.UPDATEDBY, reqObject.get(vendorDetailsDB.UPDATEDBY));*/
 		docBuilder.append(CommonConstants.UPDATEDON, new Date());
 		} catch (Exception e) {

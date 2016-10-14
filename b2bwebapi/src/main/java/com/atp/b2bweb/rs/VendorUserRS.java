@@ -62,7 +62,7 @@ public class VendorUserRS {
 						
 						if(dbCursor.size() == 0){
 							UUID uniqueKey = UUID.randomUUID();
-							requestObj.put(vendorDetailsDB.REGISTERTOKEN,uniqueKey);
+							requestObj.put(vendorDetailsDB.REGISTERTOKEN, uniqueKey);
 							doc = VendorDBObject.vendorRegisterDBObject(requestObj);
 							DBObject newRegisterdUserInfo = new VendorUserService().vendorRegister(doc, mongo);
 							//EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(newRegisterdUserInfo.get("email").toString()), uniqueKey);
@@ -159,7 +159,6 @@ public class VendorUserRS {
         		if(requestObj != null){   
         			DBCursor dBCursor =  new VendorUserService().retriveUserByEmailOrMobile(requestObj.getString(CommonConstants.EMAIL),requestObj.getString(CommonConstants.PHONE), mongo);
         			System.out.println("dBCursor  "+dBCursor);
-        			System.out.println("dBCursor  "+dBCursor.size());
         			if(dBCursor !=  null){
         				String id = null;
         				while(dBCursor.hasNext()){

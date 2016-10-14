@@ -118,9 +118,11 @@ public class VendorUserDAO {
 	public  DBCursor retriveUserByEmailOrMobile(String email, String mobile){
 		DBCursor dbCursor = null;
 		try {
+			
 				List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 				criteria.add(new BasicDBObject(CommonConstants.EMAIL, new BasicDBObject(TableCommonConstant.EQUALS, email)));
-				criteria.add(new BasicDBObject(CommonConstants.PASSWORD, new BasicDBObject(TableCommonConstant.EQUALS, mobile))); 
+				criteria.add(new BasicDBObject(CommonConstants.MOBILE, new BasicDBObject(TableCommonConstant.EQUALS, mobile))); 
+				System.out.println("criteria  "+criteria);
 				dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria));
 
 		} catch (Exception e) {

@@ -51,10 +51,11 @@ public class DBDigitalObject {
 			document.put(DigitalDB.CATEGORY_ID, requestObj.get(DigitalDB.CATEGORY_ID).toString());
 			
 					
-			BasicDBObject mediaOptions = new BasicDBObject();
+			
 				
 			JSONObject mediaOptionsJSON =  (JSONObject) requestObj.get(DigitalDB.MEDIA_OPTIONS);	
-				
+			
+			BasicDBObject mediaOptions = new BasicDBObject();	
 			JSONArray mediaKeys = (JSONArray) mediaOptionsJSON.names();
 			if(mediaOptionsJSON != null){
 				for(int k = 0; k < mediaKeys.length(); k++){

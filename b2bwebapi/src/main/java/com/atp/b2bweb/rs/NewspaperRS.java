@@ -15,15 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.atp.b2bweb.common.CommonConstants;
-import com.atp.b2bweb.common.ExceptionCommonconstant;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
 import com.atp.b2bweb.createdbobject.DBNewspaperObject;
 import com.atp.b2bweb.service.NewspaperService;
-import com.atp.b2bweb.util.CommonUtil;
-import com.atp.b2bweb.util.CommonWebUtil;
-import com.atp.b2bweb.util.JsonToDB;
 import com.atp.b2bweb.util.CommonResponseUtil;
+import com.atp.b2bweb.util.CommonUtil;
+import com.atp.b2bweb.util.JsonToDB;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -52,12 +50,10 @@ public class NewspaperRS {
 						result = new NewspaperService().findOutdoor(requestObj.getString("_id"), mongo);
 					}       
         			if(result){
-        				System.out.println("adddddd newspaper "+requestObj);
         				doc = DBNewspaperObject.createNewspaperDBObject(requestObj);
         				newspaperList.add(new NewspaperService().addNewspaper(doc, mongo));
         				respJSON = CommonResponseUtil.getAllDetailLists(newspaperList , 1);
         	    	}else{
-        	    		System.out.println("updtae newspaper");
         	    		doc = DBNewspaperObject.createNewspaperDBObject(requestObj);
         	    		newspaperList.add(new NewspaperService().updateNewspaper(requestObj.get("_id").toString(), doc , mongo));
         				respJSON = CommonResponseUtil.getAllDetailLists(newspaperList , 1);
@@ -101,40 +97,6 @@ public class NewspaperRS {
 		}
 		 System.out.println("newspaperList  "+newspaperList.size());
 		 System.out.println("  =======   "+respJSON);
-		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
-	}
-	
-	@SuppressWarnings("unused")
-	@RequestMapping(value = UrlCommonConstant.UPDATE_NEWSPAPER + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
-    @ResponseBody
-   	public String updateNewspaper(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
-		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
-		JSONObject respJSON = null;
-		DBObject doc= null;
-		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
-		try {
-			if(requestParameter != null){
-				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
-				if(requestObj != null){
-        			boolean result = true; /*new VendorUserService().vendorFind(requestObj.getString(CommonConstants.EMAIL), requestObj.getString(CommonConstants.EMAIL), mongo);*/
-        			if(result){
-        				doc = DBNewspaperObject.createNewspaperDBObject(requestObj);
-        				new NewspaperService().updateNewspaper(requestObj.get("_id").toString(), doc , mongo);
-        		    	respJSON = CommonWebUtil.buildSuccessResponse();
-        	    	}else{
-        	    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.ALREADY_REGISTERD);
-        	    	}
-        		}else{
-        			respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
-        		}
-			}else{
-				respJSON = CommonWebUtil.buildErrorResponse(CommonConstants.EMPTY);
-			}
-	    }catch (Exception e) {
-	    	System.out.println(e);
-	    	respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
-		}
-		//return doc;
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	

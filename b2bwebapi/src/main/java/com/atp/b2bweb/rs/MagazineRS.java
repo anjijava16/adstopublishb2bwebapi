@@ -94,9 +94,8 @@ public class MagazineRS {
 				
 		}catch (Exception e) {
 			System.out.println("exception "+e);
-			//respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.EXCEPTION);
+			respJSON = CommonResponseUtil.getErrorResponseObject("Exception");
 		}
-		 System.out.println();
 		 return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	

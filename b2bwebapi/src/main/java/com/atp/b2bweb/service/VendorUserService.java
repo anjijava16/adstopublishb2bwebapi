@@ -37,7 +37,7 @@ public class VendorUserService {
 	}
 	
     public DBCursor retriveUserByEmailOrMobile(String email, String phone, MongoClient mongo){	
-		return new VendorUserDAO().retriveUserByEmailOrMobile(email, phone);
+		return new VendorUserDAO(mongo).retriveUserByEmailOrMobile(email, phone);
 	}
 
 
