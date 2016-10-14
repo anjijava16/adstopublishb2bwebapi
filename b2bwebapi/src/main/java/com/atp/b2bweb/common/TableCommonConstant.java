@@ -32,6 +32,10 @@ public class TableCommonConstant {
     
     public static final String OUTDOOR = "outdoor";
     
+    public static final String ORDER = "orders";
+    
+    public static final String QUOTES = "quotes";
+    
 	
 	//mongodb oparators
 	
