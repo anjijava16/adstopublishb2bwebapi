@@ -152,7 +152,24 @@ public class CommonConstants {
 	public static final String FIND_BY_VENDOR_ID_DETAILS= "VendorDetailDO.retrievebyvendorid";
 	
 	
+	//orders
 	
+	public static final String MEDIATYPE = "mediaType";
+	
+	public static final String MEDIANAME = "mediaName";
+	
+	public static final String MEDIAOPTION = "mediaoption";
+	
+	public static final String CUSTOMERID = "customerID";
+	
+	public static final String PRICE = "price";
+	
+	public static final String ORDERNO = "orderno";
+	
+	public static final String RATE = "rate";
+	
+	public static final String QUOTEID = "quoteid";
+
 	
 	
 	
