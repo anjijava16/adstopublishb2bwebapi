@@ -3,11 +3,7 @@ package com.atp.b2bweb.service;
 
 
 
-import org.json.JSONObject;
-
-import com.atp.b2bweb.dao.OrderDAO;
 import com.atp.b2bweb.dao.OrderQuotesDAO;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 

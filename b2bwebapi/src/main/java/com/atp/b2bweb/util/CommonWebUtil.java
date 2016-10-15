@@ -48,7 +48,6 @@ public final class CommonWebUtil {
 	public static JSONObject buildSuccessResponseMsg(String msg) {
 		JSONObject responseJSON = new JSONObject();
 		JSONObject resultJSON = new JSONObject();
-		JSONObject dataJSON = new JSONObject();
 		try {
 			resultJSON.put(CommonConstants.SUCCESS_FLAG, CommonConstants.TRUE);
 			resultJSON.put(CommonConstants.ERRORS, "");

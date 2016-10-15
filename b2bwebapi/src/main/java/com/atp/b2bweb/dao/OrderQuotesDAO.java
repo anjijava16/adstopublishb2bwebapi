@@ -1,19 +1,7 @@
 package com.atp.b2bweb.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-
-
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.atp.b2bweb.common.TableCommonConstant;
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 

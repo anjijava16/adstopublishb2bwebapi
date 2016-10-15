@@ -5,7 +5,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.HashMap;
-import java.util.Map;
 
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
@@ -40,7 +39,7 @@ public class JwtEncodeandDecode {
 
 	public  void decodeMethod(String jwt) throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException{
 	  final JWTVerifier jwtVerifier = new JWTVerifier("chethan");
-	  final Map<String,Object> claims = jwtVerifier.verify(jwt);				
+	/*  final Map<String,Object> claims =*/ jwtVerifier.verify(jwt);				
 	}	
 
 }
