@@ -82,7 +82,7 @@ public class EmailProxyServlet extends HttpServlet {
 			// Handling Bad Request
 			if(toEmails != null && toEmails.length() > 0 && emailBody != null && emailBody.length() > 0){
 				System.out.println("came inside");
-				boolean mailStatus = EmailProxyUtil.sendEmail( Arrays.asList(ccEmails), Arrays.asList(bccEmails), emailBody, htmlContent, Arrays.asList(toEmails), null); 
+				boolean mailStatus = EmailProxyUtil.sendEmail( Arrays.asList(ccEmails), Arrays.asList(bccEmails), emailBody, htmlContent, Arrays.asList(toEmails), null,request , response); 
 				
 				if(mailStatus){
 					// Redirecting to Return URL on success

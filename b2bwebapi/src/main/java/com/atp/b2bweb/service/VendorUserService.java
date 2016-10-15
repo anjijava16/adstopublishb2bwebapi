@@ -39,6 +39,9 @@ public class VendorUserService {
     public DBCursor retriveUserByEmailOrMobile(String email, String phone, MongoClient mongo){	
 		return new VendorUserDAO(mongo).retriveUserByEmailOrMobile(email, phone);
 	}
-
+    
+    public DBObject getvendorByUUID(String token, MongoClient mongo) {	
+		return new VendorUserDAO(mongo).getvendorByUUID(token);
+	}
 
 }

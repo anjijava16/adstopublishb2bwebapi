@@ -6,7 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.atp.b2bweb.common.CommonConstants;
-import com.atp.b2bweb.db.OrderDB;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 

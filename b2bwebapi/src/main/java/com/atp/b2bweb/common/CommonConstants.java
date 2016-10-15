@@ -4,7 +4,7 @@ public class CommonConstants {
 	
 	//mail body
 	
-	public static final String REGISTER_MAIL_BODY = "hi hello, done done done";
+	public static final String REGISTER_MAIL_BODY = "register";
 	
 	public static final String FORGETPASSWORD_MAIL_BODY = "hi hello, done done done";
 	

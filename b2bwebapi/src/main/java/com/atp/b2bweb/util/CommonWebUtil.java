@@ -1,9 +1,12 @@
 package com.atp.b2bweb.util;
 
+import java.util.Set;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.atp.b2bweb.common.CommonConstants;
+import com.mongodb.DBObject;
 
 public final class CommonWebUtil {
 
@@ -57,6 +60,21 @@ public final class CommonWebUtil {
 			e.printStackTrace();
 		}
 		return responseJSON;
+	}
+	
+	public static JSONObject DBobjectTOJson(DBObject dbobject) {
+		JSONObject resultJSON = new JSONObject();
+		try {
+			Set<String> ads = dbobject.keySet();
+			for (String string : ads) {
+				resultJSON.put(string, dbobject.get(string));
+			}
+			
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return resultJSON;
 	}
 		
 }

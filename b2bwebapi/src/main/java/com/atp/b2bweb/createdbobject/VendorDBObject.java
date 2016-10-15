@@ -5,7 +5,6 @@ import java.util.Date;
 import org.json.JSONObject;
 
 import com.atp.b2bweb.common.CommonConstants;
-import com.atp.b2bweb.db.vendorDetailsDB;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
@@ -13,20 +12,17 @@ import com.mongodb.DBObject;
 public class VendorDBObject {
 
 	public static DBObject vendorRegisterDBObject(JSONObject reqObject) {
-		BasicDBObjectBuilder docBuilder = BasicDBObjectBuilder.start();
+		BasicDBObject basicDBObject = new BasicDBObject();
 		try {
 			System.out.println("reqObject    "+reqObject);
-		/*docBuilder.append(CommonConstants.USERNAME, reqObject.get(vendorDetailsDB.NAME));*/
-		docBuilder.append(CommonConstants.EMAIL, reqObject.get(vendorDetailsDB.EMAIL));
-		docBuilder.append(CommonConstants.MOBILE, reqObject.get(vendorDetailsDB.PHONE));
-		docBuilder.append(CommonConstants.TOKEN,  reqObject.get(vendorDetailsDB.REGISTERTOKEN));
-		docBuilder.append(CommonConstants.STATUS, "O");
-		/*docBuilder.append(CommonConstants.UPDATEDBY, reqObject.get(vendorDetailsDB.UPDATEDBY));*/
-		docBuilder.append(CommonConstants.UPDATEDON, new Date());
+			for(int i = 0; i < reqObject.length(); i++){
+				String key = reqObject.names().get(i).toString();
+				basicDBObject.append(key, reqObject.get(key));
+			}  
 		} catch (Exception e) {
 			System.out.println("exception in vendordb object java "+e);
 		}
-		return docBuilder.get();
+		return basicDBObject;
 	}
 	
 	
@@ -36,17 +32,9 @@ public class VendorDBObject {
 		try {
 			for(int i = 0; i < reqObject.length(); i++){
 				String key = reqObject.names().get(i).toString();
-				String aaaa = reqObject.get(key).toString();
-				if(aaaa.contains(":")){
-					BasicDBObject attObject = new BasicDBObject();
-					JSONObject attJSON = (JSONObject) reqObject.get(key);
-					for(int j = 0; j < attJSON.length(); j++){
-						attObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
-					}
-					basicDBObject.append(key, attObject);
-				 }else{
+				if(!key.equalsIgnoreCase("uniqueKey") && !key.equalsIgnoreCase("_id")){
 					basicDBObject.append(key, reqObject.get(key));
-				 }
+				}
 			}  
 			return basicDBObject;
 		} catch (Exception e) {

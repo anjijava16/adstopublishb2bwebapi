@@ -6,7 +6,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 
-import com.atp.b2bweb.domainobject.VendorUserDO;
+import com.mongodb.DBObject;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -15,7 +15,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JwtTokenGenerator {
 	
-	public String createJWT(VendorUserDO vendorUserDO, HttpServletResponse response) {
+	public String createJWT(DBObject dbObject, HttpServletResponse response) {
     	
 		
 		//The JWT signature algorithm we will be using to sign the token
@@ -27,12 +27,11 @@ public class JwtTokenGenerator {
 		//We will sign our JWT with our ApiKey secret
 		byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("chethan");
 		Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-		 System.out.println(vendorUserDO.getUsername());
 		 //Let's set the JWT Claims
-		JwtBuilder builder = Jwts.builder().setId(String.valueOf(vendorUserDO.getId()))
+		JwtBuilder builder = Jwts.builder().setId(String.valueOf(dbObject.get("_id").toString()))
 		                                .setIssuedAt(now)
-		                                .setSubject(vendorUserDO.getUsername())
-		                                .setIssuer(vendorUserDO.getEmail())
+		                                .setSubject(dbObject.get("username").toString())
+		                                .setIssuer(dbObject.get("email").toString())
 		                                .signWith(signatureAlgorithm, signingKey);
 		 
 		 //if it has been specified, let's add the expiration

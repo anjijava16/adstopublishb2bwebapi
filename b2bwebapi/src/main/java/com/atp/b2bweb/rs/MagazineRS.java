@@ -134,7 +134,7 @@ public class MagazineRS {
 		//return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}*/
 	
-	@RequestMapping(value ="/addmagazinedb" )
+	@RequestMapping(value ="/addtodb" )
 	public void addmagazintodb(){
 		JsonToDB.jsontodb();
 		

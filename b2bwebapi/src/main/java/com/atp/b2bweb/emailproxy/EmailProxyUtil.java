@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;
@@ -24,13 +23,20 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.atp.b2bweb.util.CommonUtil;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 
 public class EmailProxyUtil {
-	public static boolean sendEmail(List<String> ccEmails, List<String> bccEmails, String emailBody, boolean htmlContent,List<String> toEmails, UUID uniqueKey) throws AddressException,
-			MessagingException, IOException, TemplateException {
+	public static boolean sendEmail(List<String> ccEmails, List<String> bccEmails, String emailBody, boolean htmlContent,List<String> toEmails, JSONObject requestObj , final HttpServletRequest request, HttpServletResponse res) throws AddressException,
+			MessagingException, IOException, TemplateException, JSONException {
 		// sets SMTP server properties
 		Properties properties = new Properties();
 		properties.put(CommonConstants.MAIL_SMTP_HOST, CommonConstants.SMTP_GMAIL_COM);
@@ -38,7 +44,9 @@ public class EmailProxyUtil {
 		properties.put(CommonConstants.MAIL_SMTP_PORT, CommonConstants.MAIL_SMTP_PORT_NUMBER);
 		properties.put(CommonConstants.MAIL_SMTP_AUTH, CommonConstants.TRUE);
         properties.put(CommonConstants.MAIL_SMTP_STARTTLS, CommonConstants.TRUE);
-        System.out.println("properties"+properties);
+        
+        Map<String, String> rootMap = new HashMap<String, String>();
+        
 		// creates a new session with an authenticator
 		Authenticator auth = new Authenticator() {						
 			public PasswordAuthentication getPasswordAuthentication() {
@@ -60,23 +68,30 @@ public class EmailProxyUtil {
 		msg.setFrom(new InternetAddress(CommonConstants.FROMEMAIL));
 		msg.setSentDate(new Date());
 		
-		
-		
-		
-		
 		 // Create the message part
         BodyPart messageBodyPart = new MimeBodyPart();
 
         Configuration cfg = new Configuration();
-        cfg.setDirectoryForTemplateLoading(new File("C:/Users/user/Desktop/atpwebapi/adstopublishb2bwebapi/b2bwebapi/src/main/resources/templates"));
-        System.out.println("cfgcfgcfgcfg"+cfg);
-        freemarker.template.Template template = cfg.getTemplate("email_template.ftl");
-        System.out.println("template"+template);
-        Map<String, String> rootMap = new HashMap<String, String>();
+        cfg.setDirectoryForTemplateLoading(new File("C:/Users/SAPTALABS/Documents/GitHub/adstopublishb2bwebapi/b2bwebapi/src/main/webapp/resources/emailTemplates"));
+        freemarker.template.Template template = null;
+        if(emailBody.equalsIgnoreCase("register")){
+        	 template = cfg.getTemplate("email_template.ftl");
+        	 String token = requestObj.get("token").toString();
+        	 String uniqueKey = CommonUtil.encode("{uniqueKey:"+ token +"}");
+        	 rootMap.put("link","http://localhost:8080/b2bweb/vendor/activate/{"+uniqueKey+"}");
+        }else{
+        	template = cfg.getTemplate("email_template1.ftl");
+        	String token = requestObj.get("token").toString();
+        	String oldpassword =  (requestObj.get("_id").toString()).substring(0, 8);
+        	String uniqueKey = CommonUtil.encode("{oldPassword:"+oldpassword+",uniqueKey:"+token+"}");
+        	rootMap.put("link","http://localhost:8080/b2bweb/vendor/update/{"+uniqueKey+"}");
+        }
+        
+        
        // String imagelocation = request.getServletContext().getRealPath("resources/images/logo.png");
         
-        rootMap.put("name","shruthi");
-        rootMap.put("link","http://localhost:8080/b2bweb?token="+uniqueKey);
+        rootMap.put("name","chethan");
+      
         Writer out = new StringWriter();
         template.process(rootMap, out);
 
@@ -88,28 +103,6 @@ public class EmailProxyUtil {
         // Set text message part
         multipart.addBodyPart(messageBodyPart);
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
         msg.setContent(multipart);
 		
 		/*htmlContent = true;
@@ -147,7 +140,7 @@ public class EmailProxyUtil {
 				}
 			}
 		}
-		System.out.println("msg"+msg);
+		
 		// sends the e-mail
 		Transport.send(msg);
 		return true;

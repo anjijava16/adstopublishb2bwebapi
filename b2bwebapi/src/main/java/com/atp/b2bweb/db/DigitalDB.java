@@ -26,5 +26,7 @@ public class DigitalDB {
 	
 	public static final String MEDIA_OPTIONS = "mediaOptions";
 	
+	public static final String ATTRIBUTES = "attributes";
+	
 
 }

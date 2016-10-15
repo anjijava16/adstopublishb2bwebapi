@@ -93,8 +93,12 @@ public class VendorUserDAO {
 			}else{
 				 x = idString[0];
 			}
+			System.out.println("id  "+x);
 			DBObject query = new BasicDBObject("_id", new ObjectId(x));
-			col.update(query, doc);
+			BasicDBObject newDocument = new BasicDBObject();
+			newDocument.append("$set", doc);
+			
+			col.update(query, newDocument);
 			System.out.println("result "+doc);
 		} catch (Exception e) {
 		}
@@ -137,12 +141,23 @@ public class VendorUserDAO {
 		DBObject data = null;
 		try {
 			query = BasicDBObjectBuilder.start().append(CommonConstants._ID, new ObjectId(vendorID)).get();
-			System.out.println(query);
 			data = col.findOne(query);
 		} catch (Exception e) {
 			System.out.println("in DAO   "+e);
 		}
 		return data;
 	}
+	
+	public  DBObject getvendorByUUID(String token){
+		DBObject data = null;
+		try {
+			DBObject query = BasicDBObjectBuilder.start().append("token", token).get();
+			data = col.findOne(query);
+		} catch (Exception e) {
+			System.out.println("in DAO   "+e);
+		}
+		return data;
+	}
+	
 	
 }
