@@ -95,10 +95,10 @@ public class VendorUserDAO {
 			}
 			System.out.println("id  "+x);
 			DBObject query = new BasicDBObject("_id", new ObjectId(x));
-			BasicDBObject newDocument = new BasicDBObject();
-			newDocument.append("$set", doc);
+//			BasicDBObject newDocument = new BasicDBObject();
+//			newDocument.append("$set", doc);
 			
-			col.update(query, newDocument);
+			col.update(query, doc);
 			System.out.println("result "+doc);
 		} catch (Exception e) {
 		}
