@@ -16,5 +16,7 @@ public class ExceptionCommonconstant {
 	
 	public static final String NOT_REGISTERD = "vendor not exits register first ";
 	
-
+	public static final String REQUEST_ERROR	 = "error in request";
+	
+	public static final String DB_OBJECTERROR	 = "record not found to update";
 }

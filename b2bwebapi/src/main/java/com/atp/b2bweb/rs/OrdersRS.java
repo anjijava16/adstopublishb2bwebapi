@@ -74,7 +74,7 @@ public class OrdersRS {
 	
 	@RequestMapping(value = UrlCommonConstant.GET_ORDERS + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
-   	public String getCinemas(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+   	public String getOrders(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
 		org.json.simple.JSONObject respJSON = null;
 		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);

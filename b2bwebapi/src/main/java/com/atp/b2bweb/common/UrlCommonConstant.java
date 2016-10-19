@@ -149,6 +149,10 @@ public class UrlCommonConstant {
 	
 	public static final String ADD_QUOTE = "/addquote";
 	
+	public static final String GET_QUOTE = "/getquotes";
+	
+	public static final String UPDATE_QUOTE = "/updatequote";
+	
 	
 		
 	

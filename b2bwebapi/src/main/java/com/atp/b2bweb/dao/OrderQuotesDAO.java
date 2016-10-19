@@ -1,10 +1,19 @@
 package com.atp.b2bweb.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bson.types.ObjectId;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.atp.b2bweb.common.TableCommonConstant;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-
 public class OrderQuotesDAO {
 	
 	private DBCollection col;
@@ -29,7 +38,7 @@ public class OrderQuotesDAO {
 		return count;
 	} 
 	
-	/*public DBCursor getQuotedOrders(JSONObject requestObj)  {
+	public DBCursor getQuotedOrders(JSONObject requestObj)  {
 		List<DBCursor> dbCursorList = new ArrayList<DBCursor>();
 		DBCursor dbCursor = null;
 		try {
@@ -47,5 +56,37 @@ public class OrderQuotesDAO {
 		}
 		
 		return dbCursor;
-	}*/
+	}
+	
+	public  DBObject getQuotesByQuotID(String quoteId){
+		DBObject data = null;
+		try {
+			DBObject query = BasicDBObjectBuilder.start().append("quoteid", quoteId).get();
+			data = col.findOne(query);
+		} catch (Exception e) {
+			System.out.println("in DAO   "+e);
+		}
+		return data;
+	}
+	
+	public  DBObject quotesUpdate(DBObject doc, String id){
+		try {
+			String[] idString = id.split(":");
+			String x = null;
+			if(idString.length > 1){
+				 x = idString[1].substring(1, idString[1].length() - 2);
+			}else{
+				 x = idString[0];
+			}
+			System.out.println("id  "+x);
+			DBObject query = new BasicDBObject("_id", new ObjectId(x));
+			BasicDBObject newDocument = new BasicDBObject();
+			newDocument.append("$set", doc);
+			
+			col.update(query, newDocument);
+			System.out.println("result "+doc);
+		} catch (Exception e) {
+		}
+		return doc;
+	}
 }

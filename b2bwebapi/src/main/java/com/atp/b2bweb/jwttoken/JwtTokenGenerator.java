@@ -30,7 +30,7 @@ public class JwtTokenGenerator {
 		 //Let's set the JWT Claims
 		JwtBuilder builder = Jwts.builder().setId(String.valueOf(dbObject.get("_id").toString()))
 		                                .setIssuedAt(now)
-		                                .setSubject(dbObject.get("username").toString())
+		                                .setSubject(dbObject.get("name").toString())
 		                                .setIssuer(dbObject.get("email").toString())
 		                                .signWith(signatureAlgorithm, signingKey);
 		 
