@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bson.BSONObject;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,17 +15,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.atp.b2bweb.common.CommonConstants;
-import com.atp.b2bweb.common.ExceptionCommonconstant;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
 import com.atp.b2bweb.createdbobject.DBOrderQuotesObject;
-import com.atp.b2bweb.createdbobject.VendorDBObject;
 import com.atp.b2bweb.db.OrderQuotesDB;
 import com.atp.b2bweb.service.OrderQuotesService;
-import com.atp.b2bweb.service.VendorUserService;
 import com.atp.b2bweb.util.CommonResponseUtil;
 import com.atp.b2bweb.util.CommonUtil;
-import com.atp.b2bweb.util.CommonWebUtil;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -81,7 +76,6 @@ public class QuotesRS {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-					System.out.println("ths s my req"+requestObj);
 					String orderChar =  (String) requestObj.get(CommonConstants.ORDERNO);
 					orderChar = orderChar.substring(0, 6);
 					String vendorChar =  (String) requestObj.get(CommonConstants.VENDORID);
@@ -124,7 +118,7 @@ public class QuotesRS {
 	        				String id = dbObject.get("_id").toString();
 	        				doc = DBOrderQuotesObject.createquotesDBObject(requestObj);
 	        				quotesList.add(new OrderQuotesService().quotesUpdate(doc, id, mongo));
-	        				respJSON = CommonResponseUtil.getAllDetailLists(quotesList, 1);
+	        				respJSON = CommonResponseUtil.getAllDetailLists(quotesList, quotesList.size());
 	    		    	}else
 	    		    		respJSON = CommonResponseUtil.getErrorResponseObject("Record not found to update");
 	        		}else
