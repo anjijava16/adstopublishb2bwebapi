@@ -62,14 +62,16 @@ public class VendorUserRS {
 						System.out.println("dbCursor "+dbCursor.size());
 						if(dbCursor.size() == 0){
 							UUID uniqueKey = UUID.randomUUID();
-							requestObj.put(vendorDetailsDB.REGISTERTOKEN, uniqueKey.toString());
+							requestObj.put(vendorDetailsDB.TOKEN, uniqueKey.toString());
 							doc = VendorDBObject.vendorRegisterDBObject(requestObj);
 							DBObject newRegisterdUserInfo = new VendorUserService().vendorRegister(doc, mongo);
+							System.out.println("requestObj   11 "+requestObj);
 							if(newRegisterdUserInfo != null)
 							EmailProxyUtil.sendEmail(ccEmailList, bccEmailList, CommonConstants.REGISTER_MAIL_BODY, false, Arrays.asList(newRegisterdUserInfo.get("email").toString()), requestObj, request, response );
 							new JwtTokenGenerator().createJWT(newRegisterdUserInfo, response);
 							respJSON = CommonWebUtil.buildSuccessResponseMsg("register");
 						}else{
+							System.out.println("requestObj   222 "+requestObj);
 							String id = null;
 	        				while(dbCursor.hasNext()){
 	        					DBObject dBObject = dbCursor.next();
@@ -200,12 +202,13 @@ public class VendorUserRS {
 		try {
 			if(requestParameter != null ){
         		JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
-        		if(requestObj != null){   
-        			DBObject dbObject =  new VendorUserService().getvendorByUUID(requestObj.get("uniqueKey").toString(), mongo);
+        		System.out.println(requestObj);
+        		if(requestObj != null){
+        			DBCursor dbObject =  new VendorUserService().getvendorDetails(requestObj.get("email").toString(), requestObj.get("phone").toString(), mongo);
         			if(dbObject !=  null){
-        				String id = dbObject.get("_id").toString();
         				doc = VendorDBObject.createUpdateDBObject(requestObj);
-        				new VendorUserService().vendorUpdate(doc, id, mongo);
+        				System.out.println("doc   "+doc);
+        				new VendorUserService().vendorUpdate(doc, requestObj.get("_id").toString(), mongo);
     			    	respJSON = CommonWebUtil.buildSuccessResponse();
     		    	}else
     		    		respJSON = CommonWebUtil.buildErrorResponse(ExceptionCommonconstant.USER_NOT_EXITS);

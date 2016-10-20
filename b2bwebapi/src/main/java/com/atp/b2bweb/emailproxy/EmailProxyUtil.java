@@ -48,7 +48,7 @@ public class EmailProxyUtil {
         Map<String, String> rootMap = new HashMap<String, String>();
         
 		// creates a new session with an authenticator
-		Authenticator auth = new Authenticator() {						
+		Authenticator auth = new Authenticator() {			
 			public PasswordAuthentication getPasswordAuthentication() {
 				PasswordAuthentication passwordAuthentication = null;
 				try {					

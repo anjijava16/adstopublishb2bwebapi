@@ -48,11 +48,11 @@ public class VendorBusinessDetailsRS {
 			//new JwtTokenDecoder().parseJWT(new JwtTokenGenerator().createJWT("100101", name, email, 9000000));
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
+				System.out.println("requestObj   "+requestObj);
 				if(requestObj != null){
 					DBObject dbObject  =  new VendorUserService().retriveByID(requestObj.getString(CommonConstants.VENDORID), mongo);
 				    	if(dbObject != null && dbObject.get(CommonConstants.ACCOUNTSTATUS) != CommonConstants.INACTIVE){
 				    		DBObject dbBusinessDetailObject =  new VendorBusinessDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
-				    	   System.out.println(dbBusinessDetailObject);
 				    		if(dbBusinessDetailObject == null){		
 				    	    	doc = VendorDBObject.createVendorBusinessDetailDBObject(requestObj);				    	    	
 					    		/*VendorBusinessDetailDO vendorBusinessDetail = new VendorBusinessDetailDO();
