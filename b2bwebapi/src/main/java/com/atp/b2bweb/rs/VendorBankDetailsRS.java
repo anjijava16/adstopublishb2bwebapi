@@ -1,11 +1,16 @@
 package com.atp.b2bweb.rs;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.DatatypeConverter;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.ExceptionCommonconstant;
@@ -20,12 +27,14 @@ import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
 import com.atp.b2bweb.createdbobject.VendorDBObject;
 import com.atp.b2bweb.service.VendorBankDetailsService;
+import com.atp.b2bweb.service.VendorBusinessDetailsService;
 import com.atp.b2bweb.service.VendorUserService;
 import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.atp.b2bweb.util.CommonResponseUtil;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.gridfs.GridFSDBFile;
 
 @Controller
 @RequestMapping(value = UrlCommonConstant.VENDOR_BANK)
@@ -86,6 +95,7 @@ public class VendorBankDetailsRS {
 		org.json.simple.JSONObject respJSON = null;
 		List<DBObject> bankList = new ArrayList<>();
 		try {
+			System.out.println("bank bank ban k ");
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				System.out.println(requestObj.toString());
@@ -109,4 +119,58 @@ public class VendorBankDetailsRS {
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 
+	
+	@RequestMapping(value="/newDocument", method = RequestMethod.POST)
+	@ResponseBody
+	public String UploadFile(MultipartHttpServletRequest request, HttpServletResponse response) throws IOException, JSONException { 
+		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
+		MultipartFile file = null; 
+		JSONObject responseJSON = null;
+		 
+		if(request.getFile("file") != null && request.getParameter("type") != null){			
+			file = request.getFile("file");
+			String fileName = request.getParameter("vendorid")+"_"+request.getParameter("typename")+"_"+request.getParameter("type")+"url";
+			List<GridFSDBFile> imageFiles = new VendorBankDetailsService().getImage(fileName, mongo);
+			byte[] imageBytes = file.getBytes();
+			new VendorBankDetailsService().addImage(imageBytes, fileName, mongo);
+			new VendorBankDetailsService().updatebankImageURL(request.getParameter("type")+"url", fileName, request.getParameter("vendorid"), mongo);
+			responseJSON = CommonWebUtil.buildSuccessImgResponse("Image added success fully");
+		}else{
+			responseJSON = CommonWebUtil.buildErrorResponse("");
+		}
+		
+		/*
+		    FileOutputStream outputImage = new FileOutputStream("C:/Users/SAPTALABS/Documents/GitHub/adstopublishb2bweb/b2bweb/src/main/webapp/pages/ui/images/user/bearCopy.bmp");
+		    aaa.writeTo( outputImage );
+	        outputImage.close();*/
+		 return responseJSON != null ? responseJSON.toString() : CommonConstants.EMPTY;
+	}
+	
+	@RequestMapping(value="/getimage/{requestParameter}", method = RequestMethod.GET)
+	@ResponseBody
+	public String getImage(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response) throws IOException, JSONException { 
+		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
+		ByteArrayOutputStream out = null;
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		if(requestParameter != null){
+			JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
+			if(requestObj != null){
+				List<GridFSDBFile> aaa = new VendorBankDetailsService().getImage(requestObj.get("name").toString(), mongo);
+				if(aaa != null ){
+					InputStream in = aaa.get(0).getInputStream();
+				     out = new ByteArrayOutputStream();
+				    int data = in.read();
+				    while (data >= 0) {
+				      out.write((char) data);
+				      data = in.read();
+				    }
+				    out.flush();
+				}
+			}
+		}
+		JSONObject respJSON = new JSONObject();
+		respJSON.put("image",  DatatypeConverter.printBase64Binary(out.toByteArray()));
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
+	}
+	
 }

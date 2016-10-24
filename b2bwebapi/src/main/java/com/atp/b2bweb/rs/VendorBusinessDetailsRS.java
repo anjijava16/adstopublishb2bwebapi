@@ -1,11 +1,16 @@
 package com.atp.b2bweb.rs;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.DatatypeConverter;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.ExceptionCommonconstant;
@@ -26,6 +33,9 @@ import com.atp.b2bweb.util.CommonUtil;
 import com.atp.b2bweb.util.CommonWebUtil;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.gridfs.GridFSDBFile;
+import org.apache.commons.codec.binary.Base64;
+
 
 @Controller
 @RequestMapping(value = UrlCommonConstant.VENDOR_BUSINESS)
@@ -48,38 +58,18 @@ public class VendorBusinessDetailsRS {
 			//new JwtTokenDecoder().parseJWT(new JwtTokenGenerator().createJWT("100101", name, email, 9000000));
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
-				System.out.println("requestObj   "+requestObj);
 				if(requestObj != null){
 					DBObject dbObject  =  new VendorUserService().retriveByID(requestObj.getString(CommonConstants.VENDORID), mongo);
 				    	if(dbObject != null && dbObject.get(CommonConstants.ACCOUNTSTATUS) != CommonConstants.INACTIVE){
 				    		DBObject dbBusinessDetailObject =  new VendorBusinessDetailsService().retriveByVendorID(requestObj.getString(CommonConstants.VENDORID), mongo);
 				    		if(dbBusinessDetailObject == null){		
 				    	    	doc = VendorDBObject.createVendorBusinessDetailDBObject(requestObj);				    	    	
-					    		/*VendorBusinessDetailDO vendorBusinessDetail = new VendorBusinessDetailDO();
-					    		vendorBusinessDetail.setVendorid(requestObj.getString(CommonConstants.VENDORID));
-					    		vendorBusinessDetail.setBusinessname(requestObj.getString(CommonConstants.BUSINESSNAME));
-					    		vendorBusinessDetail.setBusinesstype(requestObj.getString(CommonConstants.BUSSINESSTYPE));
-					    		vendorBusinessDetail.setPan(requestObj.getString(CommonConstants.PERSONALPAN));
-					    		//vendorBusinessDetail.setPanurl(requestObj.getString(CommonConstants.PANURL));
-					    		vendorBusinessDetail.setTinvat(requestObj.getString(CommonConstants.TINVAT));
-					    		vendorBusinessDetail.setTan(requestObj.getString(CommonConstants.TAN));
-					    		//vendorBusinessDetail.setTinvaturl(requestObj.getString(CommonConstants.TINVATURL));
-					    		//vendorBusinessDetail.setServicetax(requestObj.getString(CommonConstants.SERVICETAX));
-					    		//vendorBusinessDetail.setServicetaxurl(requestObj.getString(CommonConstants.TINVATURL));
-					    		vendorBusinessDetail.setBusinesspan(requestObj.getString(CommonConstants.BUSINESSPAN));
-					    		//vendorBusinessDetail.setBusinesspanurl(requestObj.getString("businesspanurl"));
-*/					    		
-					    		
 					    		//FtpFileUpdate.sadsa(); save image in FTP location 
 					    		new VendorBusinessDetailsService().addBusinessDetails(doc, mongo);
-					    		System.out.println("created");
 					    		respJSON = CommonWebUtil.buildSuccessResponse();
 					    	}else{
-					    		System.out.println(requestObj);
 					    		doc = VendorDBObject.createVendorBusinessDetailDBObject(requestObj);
-					    		System.out.println("doc "+doc);
 					    		new VendorBusinessDetailsService().updateBusinessDetails(doc, dbBusinessDetailObject.get("_id").toString(), mongo);
-					    		System.out.println("updated");
 			        	    	respJSON = CommonWebUtil.buildSuccessResponse();
 					    	}	
 				    	}else
@@ -95,7 +85,6 @@ public class VendorBusinessDetailsRS {
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	
-
 	@RequestMapping(value = UrlCommonConstant.GET_BY_VENDOR_DETAIL + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
    	public String  retriveByVendorID(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
@@ -111,7 +100,6 @@ public class VendorBusinessDetailsRS {
 			       	  if(dbObject != null ){
 			       		businessList.add(dbObject);
 		       	    	respJSON = CommonResponseUtil.getAllDetailLists(businessList , 1);
-		       	    	System.out.println("respJSON   "+respJSON);
 			       	  }else{
 			       		respJSON = CommonResponseUtil.getErrorResponseObject("not found");
 				      }
@@ -126,4 +114,63 @@ public class VendorBusinessDetailsRS {
        return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
    	}
 
+	@RequestMapping(value="/newDocument", method = RequestMethod.POST)
+	@ResponseBody
+	public String UploadFile(MultipartHttpServletRequest request, HttpServletResponse response) throws IOException, JSONException { 
+		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
+		MultipartFile file = null; 
+		JSONObject responseJSON = null;
+		 System.out.println("asdsadsadsa");
+		if(request.getFile("file") != null && request.getParameter("type") != null){			
+			file = request.getFile("file");
+			String fileName = request.getParameter("vendorid")+"_"+request.getParameter("typename")+"_"+request.getParameter("type")+"url";
+			List<GridFSDBFile> imageFiles = new VendorBusinessDetailsService().getImage(fileName, mongo);
+			byte[] imageBytes = file.getBytes();
+			
+			new VendorBusinessDetailsService().addImage(imageBytes, fileName, mongo);
+			new VendorBusinessDetailsService().updateBusinessDetailsImageURL(request.getParameter("type")+"url", fileName, request.getParameter("vendorid"), mongo);
+			responseJSON = CommonWebUtil.buildSuccessImgResponse("Image added success fully");
+		}else{
+			responseJSON = CommonWebUtil.buildErrorResponse("");
+		}
+		System.out.println("888888888888");
+		
+		/*
+		    FileOutputStream outputImage = new FileOutputStream("C:/Users/SAPTALABS/Documents/GitHub/adstopublishb2bweb/b2bweb/src/main/webapp/pages/ui/images/user/bearCopy.bmp");
+		    aaa.writeTo( outputImage );
+	        outputImage.close();*/
+		 return responseJSON != null ? responseJSON.toString() : CommonConstants.EMPTY;
+	}
+	
+	@RequestMapping(value="/getimage/{requestParameter}", method = RequestMethod.GET)
+	@ResponseBody
+	public String getImage(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response) throws IOException, JSONException { 
+	System.out.println("ininininnini");
+		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
+		ByteArrayOutputStream out = null;
+		mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		if(requestParameter != null){
+			JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
+			if(requestObj != null){
+				List<GridFSDBFile> aaa = new VendorBusinessDetailsService().getImage(requestObj.get("name").toString(), mongo);
+				System.out.println(aaa.size());
+				if(aaa != null ){
+					InputStream in = aaa.get(0).getInputStream();
+				     out = new ByteArrayOutputStream();
+				    int data = in.read();
+				    while (data >= 0) {
+				      out.write((char) data);
+				      data = in.read();
+				    }
+				    out.flush();
+				}
+			}
+		}
+		//System.out.println(DatatypeConverter.printBase64Binary(out.toByteArray()));
+		JSONObject respJSON = new JSONObject();
+		respJSON.put("image",  DatatypeConverter.printBase64Binary(out.toByteArray()));
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
+	}
+	
+	
 }

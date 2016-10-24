@@ -1,21 +1,30 @@
 package com.atp.b2bweb.dao;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
 
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.WriteResult;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
+import com.mongodb.gridfs.GridFSInputFile;
 
 public class VendorBankDetailsDAO {
 	
 	private DBCollection col;
+	private DB db;
 	
 	public VendorBankDetailsDAO(MongoClient  mongo){
-		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.VENDOR_BANK_DETAIL);
+		db = mongo.getDB(TableCommonConstant.SCHEMA_NAME);
+		this.col = db.getCollection(TableCommonConstant.VENDOR_BANK_DETAIL);
 	}
 	
 	public  DBObject addBankDetails(DBObject doc){
@@ -53,5 +62,41 @@ public class VendorBankDetailsDAO {
 	    }
 		return data;
 	}
+	
+	public  boolean updateBankDetailsImageURL(String key, String value, String vendorId){
+		boolean result = false;
+		System.out.println("--------key--"+key+"  value "+value+"  vendorId  "+vendorId);
+		try {
+			BasicDBObject updateQuery = new BasicDBObject();
+			updateQuery.append("$set", new BasicDBObject().append(key, value));
+
+			BasicDBObject searchQuery = new BasicDBObject();
+			searchQuery.append("vendorid", vendorId);
+
+			WriteResult doc = col.update(searchQuery, updateQuery);
+			System.out.println(doc);
+			if(doc != null ) result = true;
+			System.out.println(result);
+		} catch (Exception e) {	}
+		return result;
+	}
+	
+	public  GridFSInputFile addImage(byte[] imageBytes, String filename){
+		
+		GridFS fs = new GridFS( db , "photo");
+        //Save image into database
+        GridFSInputFile in = fs.createFile( imageBytes );
+        in.setFilename(filename);
+        in.save();
+        
+		return in;
+            
+	}
+	
+	public List<GridFSDBFile> getImage(String filename){
+		GridFS gfsPhoto = new GridFS(db, "photo");
+        return gfsPhoto.find(filename);
+	}
+	
 	
 }

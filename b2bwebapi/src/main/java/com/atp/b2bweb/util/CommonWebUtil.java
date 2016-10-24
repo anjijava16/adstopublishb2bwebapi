@@ -61,6 +61,32 @@ public final class CommonWebUtil {
 		return responseJSON;
 	}
 	
+	public static JSONObject buildSuccessImgResponse(String msg) {
+		JSONObject responseJSON = new JSONObject();
+		JSONObject resultJSON = new JSONObject();
+		JSONObject dataJSON = new JSONObject();
+		try {
+			resultJSON.put(CommonConstants.SUCCESS_FLAG, CommonConstants.TRUE);
+			resultJSON.put(CommonConstants.ERRORS, "");
+			resultJSON.put(CommonConstants.RESULTS, msg);
+			responseJSON.put(CommonConstants.RESPONSE, resultJSON);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return responseJSON;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public static JSONObject DBobjectTOJson(DBObject dbobject) {
 		JSONObject resultJSON = new JSONObject();
 		try {
