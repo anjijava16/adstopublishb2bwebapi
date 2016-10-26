@@ -90,16 +90,16 @@ public class RadioDAO {
 			String sortBy = requestObj.get("sortBy").toString();
 			int skip      = Integer.valueOf(requestObj.get("offset").toString());
 			JSONObject jsonObject =  (JSONObject) requestObj.get("filters"); 
-
+			System.out.println("1111");
 			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
 			JSONArray geographiesArray = (JSONArray) jsonObject.get("geographies");
 			JSONArray stationArray = (JSONArray) jsonObject.get("station");
-
+System.out.println("123");
 			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
-			else if(sortBy.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
+			else if(sortBy.equalsIgnoreCase("fullpageprice")) sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
 			else if(sortBy.equalsIgnoreCase("circulation"))	sortBy= "attributes.circulation.value";
 			else if(sortBy.equalsIgnoreCase("")) sortBy= "views";
-
+			System.out.println("2222");
 			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 				for (int i = 0;i < geographiesArray.length();i++) {
 					criteria.add(new BasicDBObject("attributes.city.value", geographiesArray.get(i))); 

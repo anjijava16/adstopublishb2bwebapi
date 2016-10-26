@@ -119,7 +119,7 @@ public class MagazineDAO {
 					criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
 				}
 				for (int i = 0; i < targetGroupsArray.length();i++) {
-					criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
+					//criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
 				}
 			if(criteria != null && criteria.size() > 0){
 				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);

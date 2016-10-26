@@ -107,7 +107,7 @@ public class AirlineAndAirportsDAO {
 					criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 
 				}   
 				for (int i = 0;i < categoriesArray.length();i++) {
-					criteria.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
+					criteria.add(new BasicDBObject("category", categoriesArray.get(i))); 
 				}
 				
 			if(criteria != null && criteria.size() > 0){

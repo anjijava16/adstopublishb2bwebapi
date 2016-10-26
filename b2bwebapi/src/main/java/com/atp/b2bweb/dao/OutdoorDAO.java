@@ -116,7 +116,7 @@ public class OutdoorDAO {
 					System.out.println( mediaTypeArray.get(i));
 					criteria.add(new BasicDBObject("attributes.mediaType.value", mediaTypeArray.get(i))); 
 				}
-			
+			System.out.println(criteria);
 			if(criteria != null && criteria.size() > 0){
 				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
 				}else{

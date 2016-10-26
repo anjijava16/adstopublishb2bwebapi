@@ -100,6 +100,7 @@ private DBCollection col;
 			JSONArray prisingmodelArray = (JSONArray) jsonObject.get("prisingmodel");
 			JSONArray mediumArray = (JSONArray) jsonObject.get("medium");
 			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
+			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
 			
 			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
 			else if(sortBy.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
@@ -113,10 +114,14 @@ private DBCollection col;
 				for (int i = 0;i < categoriesArray.length();i++) {
 					criteria.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
 				}
+				for (int i = 0;i < languagesArray.length();i++) {
+					criteria.add(new BasicDBObject("attributes.language.value", mediumArray.get(i))); 
+				}
 				for (int i = 0;i < mediumArray.length();i++) {
 					System.out.println( mediumArray.get(i));
 					criteria.add(new BasicDBObject("attributes.language.value", mediumArray.get(i))); 
 				}
+				
 				
 			
 			System.out.println("criteria.size()   "+criteria.size() );

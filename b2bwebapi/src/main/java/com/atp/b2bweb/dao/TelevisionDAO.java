@@ -102,7 +102,7 @@ public class TelevisionDAO {
 			
 			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 				for (int i = 0;i < geographiesArray.length();i++) {
-					criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 
+					criteria.add(new BasicDBObject("state", geographiesArray.get(i))); 
 				}   
 				for (int i = 0;i < channelgenreArray.length();i++) {
 					criteria.add(new BasicDBObject("channelgenre", channelgenreArray.get(i))); 
