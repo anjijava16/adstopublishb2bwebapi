@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
-import com.atp.b2bweb.createdbobject.DBOrderQuotesObject;
-import com.atp.b2bweb.db.OrderQuotesDB;
-import com.atp.b2bweb.service.OrderQuotesService;
+import com.atp.b2bweb.createdbobject.DBVendorQuotesObject;
+import com.atp.b2bweb.db.VendorQuotesDB;
+import com.atp.b2bweb.service.VendorQuotesService;
 import com.atp.b2bweb.util.CommonResponseUtil;
 import com.atp.b2bweb.util.CommonUtil;
 import com.mongodb.DBCursor;
@@ -27,13 +27,13 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 @Controller
-@RequestMapping(value = UrlCommonConstant.QUOTES)
+@RequestMapping(value = UrlCommonConstant.VENDORQUOTES)
 @SessionAttributes(UrlCommonConstant.SESSION)
-public class QuotesRS {
+public class VendorQuotesRS {
 	
 	MongoClient mongo;
 	
-	@RequestMapping(value = UrlCommonConstant.GET_QUOTE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
+	@RequestMapping(value = UrlCommonConstant.GET_VENDORQUOTE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
    	public String getQuotes(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
@@ -46,7 +46,7 @@ public class QuotesRS {
 					JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 					 System.out.println(requestObj);
 					if(requestObj != null){
-						DBCursor dbCursor =  new OrderQuotesService().getQuotes(requestObj, mongo);
+						DBCursor dbCursor =  new VendorQuotesService().getQuotes(requestObj, mongo);
 						while(dbCursor.hasNext()){
 							 doc = dbCursor.next();
 							 quotesList.add(doc);
@@ -63,7 +63,7 @@ public class QuotesRS {
 	
 	
 	@SuppressWarnings("unused")
-	@RequestMapping(value = UrlCommonConstant.ADD_QUOTE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
+	@RequestMapping(value = UrlCommonConstant.ADD_VENDORQUOTES + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
 	public String  addQuotes(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
@@ -79,12 +79,12 @@ public class QuotesRS {
 					String orderChar =  (String) requestObj.get(CommonConstants.ORDERNO);
 					orderChar = orderChar.substring(0, 6);
 					String vendorChar =  (String) requestObj.get(CommonConstants.VENDORID);
-					int recordCount = new OrderQuotesService().getRecordCount(mongo);
+					int recordCount = new VendorQuotesService().getRecordCount(mongo);
 					String recordIdCount = String.valueOf(recordCount);
 					String orderNumber = orderChar.concat(vendorChar).concat(recordIdCount);
-					requestObj.put(OrderQuotesDB.QUOTEID,orderNumber);
-					doc = DBOrderQuotesObject.createquotesDBObject(requestObj);
-					quotesList.add(new OrderQuotesService().addQuote(doc, mongo));
+					requestObj.put(VendorQuotesDB.QUOTEID,orderNumber);
+					doc = DBVendorQuotesObject.createquotesDBObject(requestObj);
+					quotesList.add(new VendorQuotesService().addQuote(doc, mongo));
     				respJSON = CommonResponseUtil.getAllDetailLists(quotesList , 1); 
         		}else{
         			respJSON = CommonResponseUtil.getErrorResponseObject("request is null");
@@ -101,7 +101,7 @@ public class QuotesRS {
 	}
 	
 	 @SuppressWarnings("unused")
-		@RequestMapping(value = UrlCommonConstant.UPDATE_QUOTE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
+		@RequestMapping(value = UrlCommonConstant.UPDATE_VENDORQUOTE + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
 	    @ResponseBody
 		public String updateQuotes(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response) {	
 	    	response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
@@ -113,11 +113,11 @@ public class QuotesRS {
 				if(requestParameter != null ){
 	        		JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 	        		if(requestObj != null){   
-	        			DBObject dbObject =  new OrderQuotesService().getQuotesByQuotID(requestObj.get("quoteid").toString(), mongo);
+	        			DBObject dbObject =  new VendorQuotesService().getQuotesByQuotID(requestObj.get("quoteid").toString(), mongo);
 	        			if(dbObject !=  null){
 	        				String id = dbObject.get("_id").toString();
-	        				doc = DBOrderQuotesObject.createquotesDBObject(requestObj);
-	        				quotesList.add(new OrderQuotesService().quotesUpdate(doc, id, mongo));
+	        				doc = DBVendorQuotesObject.createquotesDBObject(requestObj);
+	        				quotesList.add(new VendorQuotesService().quotesUpdate(doc, id, mongo));
 	        				respJSON = CommonResponseUtil.getAllDetailLists(quotesList, quotesList.size());
 	    		    	}else
 	    		    		respJSON = CommonResponseUtil.getErrorResponseObject("Record not found to update");

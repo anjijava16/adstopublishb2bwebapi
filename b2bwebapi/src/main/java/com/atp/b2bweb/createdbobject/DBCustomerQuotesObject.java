@@ -9,7 +9,7 @@ import com.atp.b2bweb.common.CommonConstants;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 
-public class DBOrderObject {
+public class DBCustomerQuotesObject {
 	
 	
 	

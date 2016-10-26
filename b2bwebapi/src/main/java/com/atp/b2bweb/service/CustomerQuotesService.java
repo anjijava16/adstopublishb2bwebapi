@@ -5,23 +5,23 @@ package com.atp.b2bweb.service;
 
 import org.json.JSONObject;
 
-import com.atp.b2bweb.dao.OrderDAO;
+import com.atp.b2bweb.dao.CustomerQuotesDAO;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-public class OrderService {
+public class CustomerQuotesService {
 	
 	public DBObject addOrder(DBObject doc, MongoClient mongo){
-		return new OrderDAO(mongo).addOrder(doc);
+		return new CustomerQuotesDAO(mongo).addOrder(doc);
 	}
 	
 	public int getRecordCount(MongoClient mongo){
-		return new OrderDAO(mongo).getRecordCount();
+		return new CustomerQuotesDAO(mongo).getRecordCount();
 	}
 	
 	public DBCursor getOrders(JSONObject requestObj, MongoClient mongo){
-		return new OrderDAO(mongo).getOrders(requestObj);
+		return new CustomerQuotesDAO(mongo).getOrders(requestObj);
 	}
 	
 	

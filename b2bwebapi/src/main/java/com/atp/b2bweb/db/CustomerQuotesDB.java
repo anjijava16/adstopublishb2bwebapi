@@ -1,6 +1,6 @@
 package com.atp.b2bweb.db;
 
-public class OrderDB {
+public class CustomerQuotesDB {
 	
 public static final String MEDIATYPE = "mediaType";
 	

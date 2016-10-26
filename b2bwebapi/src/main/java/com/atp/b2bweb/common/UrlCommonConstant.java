@@ -137,21 +137,23 @@ public class UrlCommonConstant {
 	
 	//orders
 	
-	public static final String ORDERS = "/orders";
+	public static final String CUSTOMERQUOTES = "/customerquotes";
 	
-	public static final String ADD_ORDER = "/addorder";
+	public static final String ADD_CUSTOMERQUOTES = "/addcustomerquotes";
 	
-	public static final String GET_ORDERS = "/getorders";
+	public static final String GET_NEWCUSTOMERQUOTES = "/getnewcustomerquotes";
+	
+	public static final String  GET_CUSTOMER_ORDERDQUOTES = "/getcustomerorderdquotes";
 	
 	//quotes
 	
-	public static final String QUOTES = "/quotes";
+	public static final String VENDORQUOTES = "/vendorquotes";
 	
-	public static final String ADD_QUOTE = "/addquote";
+	public static final String ADD_VENDORQUOTES = "/addvendorquotes";
 	
-	public static final String GET_QUOTE = "/getquotes";
+	public static final String GET_VENDORQUOTE = "/getvendorquotes";
 	
-	public static final String UPDATE_QUOTE = "/updatequote";
+	public static final String UPDATE_VENDORQUOTE = "/updatevendorquotes";
 	
 	
 		
