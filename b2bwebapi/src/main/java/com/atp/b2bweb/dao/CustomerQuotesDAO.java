@@ -17,14 +17,14 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-public class OrderDAO {
+public class CustomerQuotesDAO {
 	
 	private DBCollection col;
 	
-	public OrderDAO(){ }
+	public CustomerQuotesDAO(){ }
 	
-	public OrderDAO(MongoClient mongo){
-		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.ORDER);
+	public CustomerQuotesDAO(MongoClient mongo){
+		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.CUSTOMERQUOTES);
 	}
 	
 	public  DBObject addOrder(DBObject doc){

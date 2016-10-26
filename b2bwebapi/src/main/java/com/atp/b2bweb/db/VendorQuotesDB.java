@@ -1,6 +1,6 @@
 package com.atp.b2bweb.db;
 
-public class OrderQuotesDB {
+public class VendorQuotesDB {
 	
 	public static final String QUOTEID = "quoteid";
 	

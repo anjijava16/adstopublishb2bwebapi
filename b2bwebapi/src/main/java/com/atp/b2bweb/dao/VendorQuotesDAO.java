@@ -14,14 +14,14 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-public class OrderQuotesDAO {
+public class VendorQuotesDAO {
 	
 	private DBCollection col;
 	
-	public OrderQuotesDAO(){ }
+	public VendorQuotesDAO(){ }
 	
-	public OrderQuotesDAO(MongoClient mongo){
-		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.QUOTES);
+	public VendorQuotesDAO(MongoClient mongo){
+		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.VENDORQUOTES);
 	}
 	
 	public  DBObject addQuotes(DBObject doc){
@@ -88,5 +88,25 @@ public class OrderQuotesDAO {
 		} catch (Exception e) {
 		}
 		return doc;
+	}
+	
+	public DBCursor getCustomerOrderQuotes(JSONObject requestObj)  {
+		List<DBCursor> dbCursorList = new ArrayList<DBCursor>();
+		DBCursor dbCursor = null;
+		try {
+			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>();
+			JSONArray a = requestObj.names();
+			for(int i = 0 ; i < a.length(); i++){
+				criteria.add(new BasicDBObject(a.get(i).toString(), requestObj.get(a.get(i).toString())));
+			}
+			if(criteria != null && criteria.size() > 0){
+				dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR,criteria));
+			}
+			dbCursorList.add(dbCursor);
+		} catch (Exception e) {	
+			System.out.println(e);
+		}
+		
+		return dbCursor;
 	}
 }

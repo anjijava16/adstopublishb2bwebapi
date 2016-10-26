@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.atp.b2bweb.common.UrlCommonConstant;
-import com.atp.b2bweb.createdbobject.DBOrderObject;
-import com.atp.b2bweb.db.OrderDB;
-import com.atp.b2bweb.service.OrderService;
+import com.atp.b2bweb.createdbobject.DBCustomerQuotesObject;
+import com.atp.b2bweb.db.CustomerQuotesDB;
+import com.atp.b2bweb.service.CustomerQuotesService;
+import com.atp.b2bweb.service.VendorQuotesService;
 import com.atp.b2bweb.util.CommonResponseUtil;
 import com.atp.b2bweb.util.CommonUtil;
 import com.mongodb.DBCursor;
@@ -27,14 +28,14 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 @Controller
-@RequestMapping(value = UrlCommonConstant.ORDERS)
+@RequestMapping(value = UrlCommonConstant.CUSTOMERQUOTES)
 @SessionAttributes(UrlCommonConstant.SESSION)
-public class OrdersRS {
+public class CustomerQuotesRS {
 	
 	MongoClient mongo;
 	
 	@SuppressWarnings("unused")
-	@RequestMapping(value = UrlCommonConstant.ADD_ORDER + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
+	@RequestMapping(value = UrlCommonConstant.ADD_CUSTOMERQUOTES + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
 	public String  addOrder(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
@@ -51,12 +52,12 @@ public class OrdersRS {
 					mediaTypeChar = mediaTypeChar.substring(0, 3);
 					String mediaNameChar =  (String) requestObj.get("mediaName");
 					mediaNameChar = mediaNameChar.substring(0, 3);
-					int recordCount = new OrderService().getRecordCount(mongo);
+					int recordCount = new CustomerQuotesService().getRecordCount(mongo);
 					String recordIdCount = String.valueOf(recordCount);
 					String orderNumber = mediaTypeChar.concat(mediaNameChar).concat(recordIdCount);
-					requestObj.put(OrderDB.ORDERID,orderNumber);
-					doc = DBOrderObject.createOrderDBObject(requestObj);
-					orderList.add(new OrderService().addOrder(doc, mongo));
+					requestObj.put(CustomerQuotesDB.ORDERID,orderNumber);
+					doc = DBCustomerQuotesObject.createOrderDBObject(requestObj);
+					orderList.add(new CustomerQuotesService().addOrder(doc, mongo));
     				respJSON = CommonResponseUtil.getAllDetailLists(orderList , 1); 
         		}else{
         			respJSON = CommonResponseUtil.getErrorResponseObject("request is null");
@@ -72,7 +73,7 @@ public class OrdersRS {
 		
 	}
 	
-	@RequestMapping(value = UrlCommonConstant.GET_ORDERS + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
+	@RequestMapping(value = UrlCommonConstant.GET_NEWCUSTOMERQUOTES + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
     @ResponseBody
    	public String getOrders(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
 		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
@@ -84,7 +85,7 @@ public class OrdersRS {
 				if(requestParameter != null){
 					JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 					if(requestObj != null){
-						DBCursor dbCursor =  new OrderService().getOrders(requestObj, mongo);
+						DBCursor dbCursor =  new CustomerQuotesService().getOrders(requestObj, mongo);
 						while(dbCursor.hasNext()){
 							 doc = dbCursor.next();
 							 OrderList.add(doc);
@@ -99,5 +100,36 @@ public class OrdersRS {
 		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
 	}
 	
+	
+	@RequestMapping(value = UrlCommonConstant.GET_CUSTOMER_ORDERDQUOTES + UrlCommonConstant.REQUEST_PARAMETER, method = RequestMethod.GET)
+    @ResponseBody
+   	public String getCustomerOrderQuotes(@PathVariable String requestParameter, HttpServletRequest request, HttpServletResponse response){
+		response.setHeader(CommonConstants.RESPONSE_HEADER, CommonConstants.STAR);
+		System.out.println("i came here");
+		org.json.simple.JSONObject respJSON = null;
+		 mongo = (MongoClient) request.getServletContext().getAttribute(TableCommonConstant.MONGO_CLIENT);
+		 DBObject doc = null;
+		 List<DBObject> vendorratequotesList = new ArrayList<>();
+		 try {
+				if(requestParameter != null){
+					JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
+					 System.out.println(requestObj);
+					if(requestObj != null){
+						DBCursor dbCursor =  new VendorQuotesService().getCustomerOrderQuotes(requestObj, mongo);
+						System.out.println("ths s result"+dbCursor);
+						while(dbCursor.hasNext()){
+							 doc = dbCursor.next();
+							 vendorratequotesList.add(doc);
+							 System.out.println("quotesList"+vendorratequotesList);
+						}
+						respJSON = CommonResponseUtil.getAllDetailLists(vendorratequotesList, vendorratequotesList.size());
+					}
+				}
+		}catch (Exception e) {
+			System.out.println("exception "+e);
+			respJSON = CommonResponseUtil.getErrorResponseObject(e.toString());
+		}
+		return respJSON != null ? respJSON.toString() : CommonConstants.EMPTY;
+	}
 	
 }
