@@ -100,7 +100,7 @@ MongoClient mongo;
 	@RequestMapping(value = "/addtodb")
     @ResponseBody
 	public void addrecordtodb(){
-		JsonToDB.addAirlineAndAirporttodb();
+		new JsonToDB().addAirlineAndAirporttodb();
 	}
 
 }

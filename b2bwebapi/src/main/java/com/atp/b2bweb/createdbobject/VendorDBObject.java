@@ -32,11 +32,12 @@ public class VendorDBObject {
 		try {
 			for(int i = 0; i < reqObject.length(); i++){
 				String key = reqObject.names().get(i).toString();
-				if(!key.equalsIgnoreCase("uniqueKey") && !key.equalsIgnoreCase("_id") && !key.equalsIgnoreCase("updatedon")){
+				if(!key.equalsIgnoreCase("_id") && !key.equalsIgnoreCase("updatedon")){
 					basicDBObject.append(key, reqObject.get(key));
 				}
-			}  
+			}   
 			basicDBObject.append(CommonConstants.UPDATEDON, new Date());
+			basicDBObject.append(CommonConstants.PASSWORD, "123123123");
 			return basicDBObject;
 		} catch (Exception e) {
 			System.out.println("exception in vendordb object java "+e);

@@ -40,6 +40,10 @@ public class VendorUserService {
 		return new VendorUserDAO(mongo).retriveUserByEmailOrMobile(email, phone);
 	}
     
+    public DBObject getvendorDetailsByEmail(String email, MongoClient mongo){	
+		return new VendorUserDAO(mongo).getvendorDetailsByEmail(email);
+	}
+    
     public DBObject getvendorByUUID(String token, MongoClient mongo) {	
 		return new VendorUserDAO(mongo).getvendorByUUID(token);
 	}

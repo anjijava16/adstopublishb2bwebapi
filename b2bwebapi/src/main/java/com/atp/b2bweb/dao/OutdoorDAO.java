@@ -96,12 +96,9 @@ public class OutdoorDAO {
 			int skip      = Integer.valueOf(requestObj.get("offset").toString());
 			JSONObject jsonObject =  (JSONObject) requestObj.get("filters"); 
 			
-			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
 			JSONArray geographiesArray = (JSONArray) jsonObject.get("geographies");
-			/*JSONArray targetGroupsArray = (JSONArray) jsonObject.get("targetGroups");
-			JSONArray mediaOptionsArray = (JSONArray) jsonObject.get("mediaOptions");*/
-			JSONArray frequenciesArray = (JSONArray) jsonObject.get("frequencies");
-			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
+			JSONArray mediaTypeArray = (JSONArray) jsonObject.get("mediaType");
+			JSONArray sizeArray = (JSONArray) jsonObject.get("size");
 			
 			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
 			else if(sortBy.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
@@ -110,20 +107,16 @@ public class OutdoorDAO {
 			
 			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
 				for (int i = 0;i < geographiesArray.length();i++) {
-					criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 
+					criteria.add(new BasicDBObject("city", geographiesArray.get(i))); 
 				}   
-				for (int i = 0;i < categoriesArray.length();i++) {
-					criteria.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
+				for (int i = 0;i < sizeArray.length();i++) {
+					criteria.add(new BasicDBObject("attributes.dimensions.value", sizeArray.get(i))); 
 				}
-				for (int i = 0;i < languagesArray.length();i++) {
-					System.out.println( languagesArray.get(i));
-					criteria.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
-				}
-				for (int i = 0; i < frequenciesArray.length();i++) {
-					criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
+				for (int i = 0;i < mediaTypeArray.length();i++) {
+					System.out.println( mediaTypeArray.get(i));
+					criteria.add(new BasicDBObject("attributes.mediaType.value", mediaTypeArray.get(i))); 
 				}
 			
-			System.out.println("criteria.size()   "+criteria.size() );
 			if(criteria != null && criteria.size() > 0){
 				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
 				}else{

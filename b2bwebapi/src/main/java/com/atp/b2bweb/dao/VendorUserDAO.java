@@ -99,12 +99,11 @@ public class VendorUserDAO {
 //			newDocument.append("$set", doc);
 			
 			col.update(query, doc);
-			System.out.println("result "+doc);
 		} catch (Exception e) {
 		}
 		return doc;
 	}
-	            
+	
 	
 	public  String vendorDelete(VendorUserDO vendorUserDO){
 		try {
@@ -116,6 +115,18 @@ public class VendorUserDAO {
 			// TODO: handle exception
 		} 
 		return "";
+	}
+	
+	public  DBObject getvendorDetailsByEmail(String email){
+		DBObject query = null;
+		DBObject data = null;
+		try {
+			query = BasicDBObjectBuilder.start().append(CommonConstants.EMAIL, email).get();
+			data = col.findOne(query);
+		} catch (Exception e) {
+			System.out.println("in DAO   "+e);
+		}
+		return data;
 	}
 	
 	

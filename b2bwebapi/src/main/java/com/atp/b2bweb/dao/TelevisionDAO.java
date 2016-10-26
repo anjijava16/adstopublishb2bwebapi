@@ -93,10 +93,7 @@ public class TelevisionDAO {
 			
 			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
 			JSONArray geographiesArray = (JSONArray) jsonObject.get("geographies");
-			/*JSONArray targetGroupsArray = (JSONArray) jsonObject.get("targetGroups");
-			JSONArray mediaOptionsArray = (JSONArray) jsonObject.get("mediaOptions");*/
-			JSONArray frequenciesArray = (JSONArray) jsonObject.get("frequencies");
-			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
+			JSONArray channelgenreArray = (JSONArray) jsonObject.get("channelgenre");
 			
 			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
 			else if(sortBy.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
@@ -107,16 +104,14 @@ public class TelevisionDAO {
 				for (int i = 0;i < geographiesArray.length();i++) {
 					criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 
 				}   
-				for (int i = 0;i < categoriesArray.length();i++) {
-					criteria.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
+				for (int i = 0;i < channelgenreArray.length();i++) {
+					criteria.add(new BasicDBObject("channelgenre", channelgenreArray.get(i))); 
 				}
 				for (int i = 0;i < languagesArray.length();i++) {
 					System.out.println( languagesArray.get(i));
 					criteria.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
 				}
-				for (int i = 0; i < frequenciesArray.length();i++) {
-					criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
-				}
+				
 			
 			System.out.println("criteria.size()   "+criteria.size() );
 			if(criteria != null && criteria.size() > 0){

@@ -33,7 +33,7 @@ public class JwtTokenGenerator {
 		                                .setSubject(dbObject.get("name").toString())
 		                                .setIssuer(dbObject.get("email").toString())
 		                                .signWith(signatureAlgorithm, signingKey);
-		 
+		 System.out.println(dbObject.get("name").toString());
 		 //if it has been specified, let's add the expiration
 		int ttlMillis = 9000000;
 		if (ttlMillis >= 0) {

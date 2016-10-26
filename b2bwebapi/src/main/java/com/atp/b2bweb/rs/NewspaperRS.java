@@ -103,6 +103,6 @@ public class NewspaperRS {
 	@RequestMapping(value = "/addtodb")
     @ResponseBody
 	public void addrecordtodb(){
-		JsonToDB.addnespaperrecordtodb();
+		new JsonToDB().addnespaperrecordtodb();
 	}
 }

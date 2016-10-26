@@ -104,7 +104,7 @@ MongoClient mongo;
 	@RequestMapping(value = "/addtodb")
     @ResponseBody
 	public void addrecordtodb(){
-		JsonToDB.addRadiotodb();
+		new JsonToDB().addRadiotodb();
 	}
 	
 

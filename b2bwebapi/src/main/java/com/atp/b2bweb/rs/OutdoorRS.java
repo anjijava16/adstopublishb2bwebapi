@@ -103,6 +103,6 @@ public class OutdoorRS {
 	@RequestMapping(value = "/addtodb")
     @ResponseBody
 	public void addrecordtodb(){
-		JsonToDB.addOutdoortodb();
+		new JsonToDB().addOutdoortodb();
 	}
 }

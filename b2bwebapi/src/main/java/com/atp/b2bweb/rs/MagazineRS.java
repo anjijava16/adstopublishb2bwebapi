@@ -136,7 +136,7 @@ public class MagazineRS {
 	
 	@RequestMapping(value ="/addtodb" )
 	public void addmagazintodb(){
-		JsonToDB.jsontodb();
+		new JsonToDB().jsontodb();
 		
 	}
 

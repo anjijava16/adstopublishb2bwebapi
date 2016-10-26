@@ -97,11 +97,10 @@ public class CinemasDAO {
 			int skip      = Integer.valueOf(requestObj.get("offset").toString());
 			JSONObject jsonObject =  (JSONObject) requestObj.get("filters"); 
 			
-			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
+			JSONArray mallNameArray = (JSONArray) jsonObject.get("mallName");
 			JSONArray geographiesArray = (JSONArray) jsonObject.get("geographies");
-			/*JSONArray targetGroupsArray = (JSONArray) jsonObject.get("targetGroups");
-			JSONArray mediaOptionsArray = (JSONArray) jsonObject.get("mediaOptions");*/
-			JSONArray frequenciesArray = (JSONArray) jsonObject.get("frequencies");
+			JSONArray cinemaChainArray = (JSONArray) jsonObject.get("cinemaChain");
+			JSONArray mediaOptionsArray = (JSONArray) jsonObject.get("mediaOptions");
 			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
 			
 			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
@@ -113,18 +112,20 @@ public class CinemasDAO {
 				for (int i = 0;i < geographiesArray.length();i++) {
 					criteria.add(new BasicDBObject("city", geographiesArray.get(i))); 
 				}   
-				for (int i = 0;i < categoriesArray.length();i++) {
-					criteria.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
+				for (int i = 0;i < mallNameArray.length();i++) {
+					criteria.add(new BasicDBObject("mallName", mallNameArray.get(i))); 
 				}
-				for (int i = 0;i < languagesArray.length();i++) {
-					System.out.println( languagesArray.get(i));
-					criteria.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
+				for (int i = 0;i < cinemaChainArray.length();i++) {
+					System.out.println( cinemaChainArray.get(i));
+					criteria.add(new BasicDBObject("cinemaChain", cinemaChainArray.get(i))); 
 				}
-				for (int i = 0; i < frequenciesArray.length();i++) {
-					criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
+				for (int i = 0; i < mediaOptionsArray.length();i++) {
+					criteria.add(new BasicDBObject("mediaOptions", mediaOptionsArray.get(i))); 
+				}
+				for (int i = 0; i < categoriesArray.length();i++) {
+					criteria.add(new BasicDBObject("attributes.frequency.value", categoriesArray.get(i))); 
 				}
 			
-			System.out.println("criteria.size()   "+criteria.size() );
 			if(criteria != null && criteria.size() > 0){
 				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
 				}else{

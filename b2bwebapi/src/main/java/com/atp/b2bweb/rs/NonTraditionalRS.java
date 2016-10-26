@@ -141,7 +141,7 @@ public class NonTraditionalRS {
 	@RequestMapping(value = "/addtodb")
     @ResponseBody
 	public void addrecordtodb(){  
-		JsonToDB.addnontraditionaltodb();
+		new JsonToDB().addnontraditionaltodb();
 	}
 }
 

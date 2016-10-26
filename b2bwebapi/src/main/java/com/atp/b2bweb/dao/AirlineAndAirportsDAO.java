@@ -94,11 +94,7 @@ public class AirlineAndAirportsDAO {
 			String sortBy = "";
 			int skip      = Integer.valueOf(requestObj.get("offset").toString());
 			JSONObject jsonObject =  (JSONObject) requestObj.get("filters"); 
-			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
 			JSONArray geographiesArray = (JSONArray) jsonObject.get("geographies");
-			/*JSONArray targetGroupsArray = (JSONArray) jsonObject.get("targetGroups");
-			JSONArray mediaOptionsArray = (JSONArray) jsonObject.get("mediaOptions");*/
-			JSONArray frequenciesArray = (JSONArray) jsonObject.get("frequencies");
 			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
 			
 			if(sortByParm.equalsIgnoreCase("topserch"))		sortBy= "views";
@@ -113,15 +109,7 @@ public class AirlineAndAirportsDAO {
 				for (int i = 0;i < categoriesArray.length();i++) {
 					criteria.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
 				}
-				for (int i = 0;i < languagesArray.length();i++) {
-					criteria.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
-				}
-				for (int i = 0; i < frequenciesArray.length();i++) {
-					criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
-				}
-			
-			System.out.println("criteria.size()   "+criteria.size() );
-			System.out.println(sortBy);
+				
 			if(criteria != null && criteria.size() > 0){
 				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy, -1)).skip(skip).limit(30);
 				}else{

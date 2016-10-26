@@ -106,7 +106,7 @@ public class TelevisionRS {
 	@RequestMapping(value = "/addtodb")
     @ResponseBody
 	public void addrecordtodb(){
-		JsonToDB.addTVtodb();
+		new JsonToDB().addTVtodb();
 	}
 }
 	

@@ -72,19 +72,21 @@ public class EmailProxyUtil {
         BodyPart messageBodyPart = new MimeBodyPart();
 
         Configuration cfg = new Configuration();
+        
         cfg.setDirectoryForTemplateLoading(new File("C:/Users/SAPTALABS/Documents/GitHub/adstopublishb2bwebapi/b2bwebapi/src/main/webapp/resources/emailTemplates"));
         freemarker.template.Template template = null;
         if(emailBody.equalsIgnoreCase("register")){
         	 template = cfg.getTemplate("email_template.ftl");
         	 String token = requestObj.get("token").toString();
         	 String uniqueKey = CommonUtil.encode("{uniqueKey:"+ token +"}");
-        	 rootMap.put("link","http://localhost:8080/b2bweb/vendor/activate/{"+uniqueKey+"}");
+        	 rootMap.put("link","http://"+CommonConstants.IP+":8080/b2bweb/vendor/activate/{"+uniqueKey+"}");
         }else{
         	template = cfg.getTemplate("email_template1.ftl");
         	String token = requestObj.get("token").toString();
+        	String email = requestObj.get("email").toString();
         	String oldpassword =  (requestObj.get("_id").toString()).substring(0, 8);
-        	String uniqueKey = CommonUtil.encode("{oldPassword:"+oldpassword+",uniqueKey:"+token+"}");
-        	rootMap.put("link","http://localhost:8080/b2bweb/vendor/update/{"+uniqueKey+"}");
+        	String uniqueKey = CommonUtil.encode("{oldPassword:"+oldpassword+",uniqueKey:"+token+",email:"+email+"}");
+        	rootMap.put("link","http://"+CommonConstants.IP+":8080/b2bweb/vendor/update/{"+uniqueKey+"}");
         }
         
         

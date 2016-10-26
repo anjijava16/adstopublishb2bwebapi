@@ -1,5 +1,6 @@
 package com.atp.b2bweb.util;
 
+import java.io.File;
 import java.io.FileReader;
 
 import org.json.JSONException;
@@ -15,14 +16,18 @@ import com.mongodb.DBCollection;
 
 public class JsonToDB {
 	
-	public static void jsontodb(){
+	public  void jsontodb(){
 		JSONParser parser = new JSONParser();
 		try {
 			
 			DB db = ConnectToMongoDB.connect();
 			DBCollection table = db.getCollection("magazine");
 			
-			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Downloads/Magazine1.txt"));
+			ClassLoader classLoader = getClass().getClassLoader();
+			File file = new File(classLoader.getResource("json/Magazine.json").getFile());			
+			Object obj = parser.parse(new FileReader(file.getAbsolutePath()));
+			
+			
 			JSONObject jsonObject =  (JSONObject) obj;				
 			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");			
 			for (Object object : jsonArray) {
@@ -55,14 +60,17 @@ public class JsonToDB {
 		}
 	}
 	
-	public static void addnespaperrecordtodb(){
+	public  void addnespaperrecordtodb(){
 		JSONParser parser = new JSONParser();
 		try {
 			
 			DB db = ConnectToMongoDB.connect();
 			DBCollection table = db.getCollection("newspaper");
 
-			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Documents/GitHub/adstopublish/Master Data/Newspaper/Newspaper.txt"));
+			ClassLoader classLoader = getClass().getClassLoader();
+			File file = new File(classLoader.getResource("json/Newspaper.json").getFile());			
+			Object obj = parser.parse(new FileReader(file.getAbsolutePath()));
+			
 			JSONObject jsonObject =  (JSONObject) obj;
 			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");			
 			
@@ -97,14 +105,17 @@ public class JsonToDB {
 		}
 	}
 	
-	public static void addAirlineAndAirporttodb(){
+	public void addAirlineAndAirporttodb(){
 		JSONParser parser = new JSONParser();
 		try {
 			
 			DB db = ConnectToMongoDB.connect();
 			DBCollection table = db.getCollection("airlineandairports");
-
-			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Documents/GitHub/adstopublish/Master Data/AirlineAndAirports/AirlineAndAirports.txt"));
+			ClassLoader classLoader = getClass().getClassLoader();
+			
+			File file = new File(classLoader.getResource("json/AirlineAndAirports.json").getFile());
+			
+			Object obj = parser.parse(new FileReader(file.getAbsolutePath()));
 			JSONObject jsonObject =  (JSONObject) obj;
 			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");			
 			for (Object object : jsonArray) {
@@ -139,14 +150,15 @@ public class JsonToDB {
 		
 	}
 
-	public static void addcinematodb(){
+	public  void addcinematodb(){
 		JSONParser parser = new JSONParser();
 		try {
 			
 			DB db = ConnectToMongoDB.connect();
 			DBCollection table = db.getCollection("cinemas");
-
-			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Documents/GitHub/adstopublish/Master Data/Cinemas/Cinemas.txt"));
+			ClassLoader classLoader = getClass().getClassLoader();
+			File file = new File(classLoader.getResource("json/Cinemas.json").getFile());			
+			Object obj = parser.parse(new FileReader(file.getAbsolutePath()));
 			JSONObject jsonObject =  (JSONObject) obj;
 			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");			
 			for (Object object : jsonArray) {
@@ -179,14 +191,17 @@ public class JsonToDB {
 		
 	}
 	
-	public static void addnontraditionaltodb(){
+	public  void addnontraditionaltodb(){
 		JSONParser parser = new JSONParser();
 		try {
 			
 			DB db = ConnectToMongoDB.connect();
 			DBCollection table = db.getCollection("nontraditional");
-
-			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Documents/GitHub/adstopublish/Master Data/NonTraditional/Nontraditional.txt"));
+			
+			ClassLoader classLoader = getClass().getClassLoader();
+			File file = new File(classLoader.getResource("json/Nontraditional.json").getFile());			
+			Object obj = parser.parse(new FileReader(file.getAbsolutePath()));		
+			
 			JSONObject jsonObject =  (JSONObject) obj;
 			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");			
 			for (Object object : jsonArray) {
@@ -249,14 +264,17 @@ public class JsonToDB {
 				}catch(Exception e){ System.out.println(e);	}
 		}
 	
-	public static void addOutdoortodb(){
+	public  void addOutdoortodb(){
 		JSONParser parser = new JSONParser();
 		try {
 			
 			DB db = ConnectToMongoDB.connect();
 			DBCollection table = db.getCollection("outdoor");
-
-			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Documents/GitHub/adstopublish/Master Data/Outdoor/Outdoor.txt"));
+			
+			ClassLoader classLoader = getClass().getClassLoader();
+			File file = new File(classLoader.getResource("json/Outdoor.json").getFile());			
+			Object obj = parser.parse(new FileReader(file.getAbsolutePath()));
+			
 			JSONObject jsonObject =  (JSONObject) obj;
 			
 			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");		
@@ -292,14 +310,17 @@ public class JsonToDB {
 		
 	}
 
-	public static void addRadiotodb(){
+	public  void addRadiotodb(){
 		JSONParser parser = new JSONParser();
 		try {
 			
 			DB db = ConnectToMongoDB.connect();
 			DBCollection table = db.getCollection("radio");
 
-			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Documents/GitHub/adstopublish/Master Data/Radio/Radio.txt"));
+			ClassLoader classLoader = getClass().getClassLoader();
+			File file = new File(classLoader.getResource("json/Radio.json").getFile());			
+			Object obj = parser.parse(new FileReader(file.getAbsolutePath()));
+			
 			JSONObject jsonObject =  (JSONObject) obj;
 			
 			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");		
@@ -335,14 +356,17 @@ public class JsonToDB {
 		
 	}
 
-	public static void addTVtodb(){
+	public  void addTVtodb(){
 		JSONParser parser = new JSONParser();
 		try {
 			
 			DB db = ConnectToMongoDB.connect();
 			DBCollection table = db.getCollection("television");
 
-			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Documents/GitHub/adstopublish/Master Data/Television/Television.txt"));
+			ClassLoader classLoader = getClass().getClassLoader();
+			File file = new File(classLoader.getResource("json/Television.json").getFile());			
+			Object obj = parser.parse(new FileReader(file.getAbsolutePath()));
+			
 			JSONObject jsonObject =  (JSONObject) obj;
 			
 			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");		
@@ -376,12 +400,16 @@ public class JsonToDB {
 		}catch(Exception e){ System.out.println(e);	}
 	}
 	
-	public static void addDigitaltodb(){
+	public  void addDigitaltodb(){
 		JSONParser parser = new JSONParser();
 		try {
 			DB db = ConnectToMongoDB.connect();
 			DBCollection table = db.getCollection("digital");
-			Object obj = parser.parse(new FileReader("C:/Users/SAPTALABS/Documents/GitHub/adstopublish/Master Data/Digital/Digital.txt"));
+			
+			ClassLoader classLoader = getClass().getClassLoader();
+			File file = new File(classLoader.getResource("json/Digital.json").getFile());			
+			Object obj = parser.parse(new FileReader(file.getAbsolutePath()));
+			
 			JSONObject jsonObject =  (JSONObject) obj;
 			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");		
 		

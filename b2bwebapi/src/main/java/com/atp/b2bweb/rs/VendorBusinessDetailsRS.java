@@ -34,7 +34,6 @@ import com.atp.b2bweb.util.CommonWebUtil;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.gridfs.GridFSDBFile;
-import org.apache.commons.codec.binary.Base64;
 
 
 @Controller

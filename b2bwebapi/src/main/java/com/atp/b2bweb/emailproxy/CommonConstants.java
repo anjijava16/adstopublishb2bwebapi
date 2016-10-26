@@ -5,7 +5,7 @@ public class CommonConstants {
 	private CommonConstants() {
 
 	}
-	
+	public static final String IP = "192.168.2.16";
 	//mail common constant
 	
 	public static final String MAIL_SMTP_HOST = "mail.smtp.host";

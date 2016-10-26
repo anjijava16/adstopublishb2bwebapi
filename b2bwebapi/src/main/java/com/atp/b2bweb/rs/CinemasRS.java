@@ -145,6 +145,6 @@ public class CinemasRS {
 	@RequestMapping(value = "/addtodb")
     @ResponseBody
 	public void addrecordtodb(){
-		JsonToDB.addcinematodb();
+		new JsonToDB().addcinematodb();
 	}
 }

@@ -104,7 +104,7 @@ MongoClient mongo;
 	@RequestMapping(value = "/addtodb")
     @ResponseBody
 	public void addDigitaltodb(){
-		JsonToDB.addDigitaltodb();
+		new JsonToDB().addDigitaltodb();
 	}
 
 }

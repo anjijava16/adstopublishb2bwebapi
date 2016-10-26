@@ -99,10 +99,10 @@ public class NewspaperDAO {
 			
 			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
 			JSONArray geographiesArray = (JSONArray) jsonObject.get("geographies");
-			/*JSONArray targetGroupsArray = (JSONArray) jsonObject.get("targetGroups");
-			JSONArray mediaOptionsArray = (JSONArray) jsonObject.get("mediaOptions");*/
 			JSONArray frequenciesArray = (JSONArray) jsonObject.get("frequencies");
 			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
+			JSONArray publicationsArray = (JSONArray) jsonObject.get("publications");
+			
 			if(sortByparm.equalsIgnoreCase("topserch")) sortBy= "views";
 			else if(sortByparm.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
 			else if(sortByparm.equalsIgnoreCase("circulation"))	sortBy= "attributes.circulation.value";
@@ -119,6 +119,9 @@ public class NewspaperDAO {
 				}
 				for (int i = 0; i < frequenciesArray.length();i++) {
 					criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
+				}
+				for (int i = 0; i < publicationsArray.length();i++) {
+					criteria.add(new BasicDBObject("attributes.frequency.value", publicationsArray.get(i))); 
 				}
 			
 			if(criteria != null && criteria.size() > 0){
