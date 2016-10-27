@@ -101,7 +101,7 @@ public class CinemasDAO {
 			JSONArray geographiesArray = (JSONArray) jsonObject.get("geographies");
 			JSONArray cinemaChainArray = (JSONArray) jsonObject.get("cinemaChain");
 			JSONArray mediaOptionsArray = (JSONArray) jsonObject.get("mediaOptions");
-			JSONArray categoriesArray = (JSONArray) jsonObject.get("categories");
+			JSONArray screentypeArray = (JSONArray) jsonObject.get("screentype");
 			
 			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
 			else if(sortBy.equalsIgnoreCase("fullpageprice"))	sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
@@ -122,8 +122,8 @@ public class CinemasDAO {
 				for (int i = 0; i < mediaOptionsArray.length();i++) {
 					criteria.add(new BasicDBObject("mediaOptions", mediaOptionsArray.get(i))); 
 				}
-				for (int i = 0; i < categoriesArray.length();i++) {
-					criteria.add(new BasicDBObject("attributes.frequency.value", categoriesArray.get(i))); 
+				for (int i = 0; i < screentypeArray.length();i++) {
+					criteria.add(new BasicDBObject("attributes.frequency.value", screentypeArray.get(i))); 
 				}
 			
 			if(criteria != null && criteria.size() > 0){

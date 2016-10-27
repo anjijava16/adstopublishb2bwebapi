@@ -12,6 +12,7 @@ import com.atp.b2bweb.common.CommonConstants;
 import com.atp.b2bweb.common.TableCommonConstant;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -19,9 +20,10 @@ import com.mongodb.MongoClient;
 
 public class RadioDAO {
 	private DBCollection col;
-
+	DB db;
 	public RadioDAO(MongoClient mongo){
-		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.RADIO);
+		db= mongo.getDB(TableCommonConstant.SCHEMA_NAME);
+		this.col = db.getCollection(TableCommonConstant.RADIO);
 	}
 	
 	public  DBObject addRadio(DBObject doc){
@@ -90,32 +92,51 @@ public class RadioDAO {
 			String sortBy = requestObj.get("sortBy").toString();
 			int skip      = Integer.valueOf(requestObj.get("offset").toString());
 			JSONObject jsonObject =  (JSONObject) requestObj.get("filters"); 
-			System.out.println("1111");
+
 			JSONArray languagesArray = (JSONArray) jsonObject.get("languages");
 			JSONArray geographiesArray = (JSONArray) jsonObject.get("geographies");
 			JSONArray stationArray = (JSONArray) jsonObject.get("station");
-System.out.println("123");
+
 			if(sortBy.equalsIgnoreCase("topserch")) sortBy= "views";
 			else if(sortBy.equalsIgnoreCase("fullpageprice")) sortBy= "mediaOptions.regularOptions.fullPage.cardRate";
 			else if(sortBy.equalsIgnoreCase("circulation"))	sortBy= "attributes.circulation.value";
 			else if(sortBy.equalsIgnoreCase("")) sortBy= "views";
-			System.out.println("2222");
-			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
-				for (int i = 0;i < geographiesArray.length();i++) {
-					criteria.add(new BasicDBObject("attributes.city.value", geographiesArray.get(i))); 
-				}   
-				for (int i = 0;i < stationArray.length();i++) {
-					criteria.add(new BasicDBObject("station", stationArray.get(i))); 
+			
+			BasicDBObject query = new BasicDBObject();
+			List<BasicDBObject> criterias = new ArrayList<BasicDBObject>();
+			BasicDBObject query1 = new BasicDBObject();
+			BasicDBObject query2 = new BasicDBObject();
+			BasicDBObject query3 = new BasicDBObject();
+				if(geographiesArray != null && geographiesArray.length() > 0){
+					List<BasicDBObject> criteria = new ArrayList<BasicDBObject>();
+					for (int i = 0;i < geographiesArray.length();i++) {
+						criteria.add(new BasicDBObject("attributes.city.value", geographiesArray.get(i))); 						
+					} 
+					query1.append(TableCommonConstant.OR, criteria);
+					criterias.add(query1);
+					
 				}
-				for (int i = 0;i < languagesArray.length();i++) {
-					System.out.println( languagesArray.get(i));
-					criteria.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
+				if(stationArray != null && stationArray.length() > 0){
+					List<BasicDBObject> criteria1 = new ArrayList<BasicDBObject>();
+					for (int i = 0;i < stationArray.length();i++) {
+						criteria1.add(new BasicDBObject("station", stationArray.get(i))); 
+					}
+					query2.append(TableCommonConstant.OR, criteria1);
+					criterias.add(query2);
+					
+				}
+				if(languagesArray != null && languagesArray.length() > 0){
+					List<BasicDBObject> criteria2 = new ArrayList<BasicDBObject>();
+					for (int i = 0;i < languagesArray.length();i++) {
+						criteria2.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
+					}
+					query3.append(TableCommonConstant.OR, criteria2);
+					criterias.add(query3);
 				}
 				
-			
-			System.out.println("criteria.size()   "+criteria.size() );
-			if(criteria != null && criteria.size() > 0){
-				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
+			if(query != null && query.size() > 0){
+				 dbCursor = col.find(query.append(TableCommonConstant.AND, criterias));
+//				 .sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30)
 				}else{
 				 dbCursor = col.find().sort(new BasicDBObject("sortBy",1)).sort(new BasicDBObject(sortBy,1)).skip(skip).limit(30);
 			}

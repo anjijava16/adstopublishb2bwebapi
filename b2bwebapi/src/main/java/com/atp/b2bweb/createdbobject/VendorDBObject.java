@@ -61,27 +61,29 @@ public class VendorDBObject {
 	}
 	
 	public static DBObject createVendorBankDetailDBObject(JSONObject reqObject) {
-		BasicDBObjectBuilder docBuilder = BasicDBObjectBuilder.start();
-		try {							
-		//docBuilder.append("_id", vendorUserDO.getId());
-			docBuilder.append(CommonConstants.VENDORID, reqObject.get(CommonConstants.VENDORID));
-			docBuilder.append(CommonConstants.ACCOUNTHOLDERNAME, reqObject.get(CommonConstants.ACCOUNTHOLDERNAME));
-			docBuilder.append(CommonConstants.ACCOUNTNUMBER, reqObject.get(CommonConstants.ACCOUNTNUMBER));
-			docBuilder.append(CommonConstants.IFSC, reqObject.get(CommonConstants.IFSC));
-			docBuilder.append(CommonConstants.BANKNAME, reqObject.get(CommonConstants.BANKNAME));
-			docBuilder.append(CommonConstants.STATE, reqObject.get(CommonConstants.STATE));
-			docBuilder.append(CommonConstants.CITY, reqObject.get(CommonConstants.CITY));
-			docBuilder.append(CommonConstants.BRANCH, reqObject.get(CommonConstants.BRANCH));
-			docBuilder.append(CommonConstants.ADDRESSPROOFTYPE, reqObject.get(CommonConstants.ADDRESSPROOFTYPE));
-			docBuilder.append(CommonConstants.ADDRESSPROOFURL, reqObject.get(CommonConstants.ADDRESSPROOFURL));
-			docBuilder.append(CommonConstants.CANCELLEDCHEQUEURL, reqObject.get(CommonConstants.CANCELLEDCHEQUEURL));
+		BasicDBObject basicDBObject = new BasicDBObject();	
+		try {
+			for(int i = 0; i < reqObject.length(); i++){
+				String key = reqObject.names().get(i).toString();
+				String aaaa = reqObject.get(key).toString();
+				if(!key.equalsIgnoreCase("_id")){
+					if(aaaa.contains(":")){
+						BasicDBObject attObject = new BasicDBObject();
+						JSONObject attJSON = (JSONObject) reqObject.get(key);
+						for(int j = 0; j < attJSON.length(); j++){
+							attObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
+						}
+						basicDBObject.append(key, attObject);
+					 }else{
+						basicDBObject.append(key, reqObject.get(key));
+					 }
+				}
+			}  
 			
-			docBuilder.append(CommonConstants.UPDATEDBY, reqObject.get(CommonConstants.UPDATEDBY));
-			docBuilder.append(CommonConstants.UPDATEDON, new Date());
-		}catch(Exception e){
-			
+		} catch (Exception e) {
+			System.out.println("exception in vendordb object java "+e);
 		}
-		return docBuilder.get();
+		return basicDBObject;
 	}
 	
 	
@@ -91,18 +93,20 @@ public class VendorDBObject {
 			for(int i = 0; i < reqObject.length(); i++){
 				String key = reqObject.names().get(i).toString();
 				String aaaa = reqObject.get(key).toString();
-				if(aaaa.contains(":")){
-					BasicDBObject attObject = new BasicDBObject();
-					JSONObject attJSON = (JSONObject) reqObject.get(key);
-					for(int j = 0; j < attJSON.length(); j++){
-						attObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
-					}
-					basicDBObject.append(key, attObject);
-				 }else{
-					basicDBObject.append(key, reqObject.get(key));
-				 }
+				if(!key.equalsIgnoreCase("_id")){
+					if(aaaa.contains(":")){
+						BasicDBObject attObject = new BasicDBObject();
+						JSONObject attJSON = (JSONObject) reqObject.get(key);
+						for(int j = 0; j < attJSON.length(); j++){
+							attObject.append(attJSON.names().get(j).toString(), attJSON.get(attJSON.names().get(j).toString()));
+						}
+						basicDBObject.append(key, attObject);
+					 }else{
+						basicDBObject.append(key, reqObject.get(key));
+					 }
+				}
 			}  
-			return basicDBObject;
+			System.out.println("basicDBObject "+basicDBObject);
 		} catch (Exception e) {
 			System.out.println("exception in vendordb object java "+e);
 		}

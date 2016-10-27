@@ -54,8 +54,11 @@ MongoClient mongo;
         				airlineList.add(new AirlineAndAirportsService().addAirlineAndAirportsService(doc, mongo));
         				respJSON = CommonResponseUtil.getAllDetailLists(airlineList , 1);
         	    	}else{
+        	    		System.out.println("update");
         	    		doc = DBAirlineAndAirportsObject.createAirlineAndAirportsDBObject(requestObj);  
+        	    		System.out.println("updat1 "+doc);
         	    		airlineList.add(new AirlineAndAirportsService().updateAirlineAndAirportsService(requestObj.get("_id").toString(), doc , mongo));
+        	    		
         	    		respJSON = CommonResponseUtil.getAllDetailLists(airlineList , 1);
         	    	}
         		}

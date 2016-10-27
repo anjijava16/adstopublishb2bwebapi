@@ -44,6 +44,7 @@ public class VendorBusinessDetailsDAO {
 				 x = idString[0];
 			}
 			System.out.println("DAO DOC "+doc);
+			System.out.println("_id "+x);
 			DBObject query = new BasicDBObject("_id", new ObjectId(x));
 			 col.update(query, doc);
 		} catch (Exception e) {	}

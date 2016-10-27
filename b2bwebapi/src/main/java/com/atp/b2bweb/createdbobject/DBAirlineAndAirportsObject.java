@@ -33,14 +33,11 @@ public class DBAirlineAndAirportsObject {
 			document.put(AirlineAndAirportsDB.CATEGORY, requestObj.get(AirlineAndAirportsDB.CATEGORY));
 			document.put(AirlineAndAirportsDB.URL_SIUG, requestObj.get(AirlineAndAirportsDB.URL_SIUG));
 			document.put(AirlineAndAirportsDB.NAME, requestObj.get(AirlineAndAirportsDB.NAME));
-			document.put(AirlineAndAirportsDB.GEOGRAPHY, requestObj.get(AirlineAndAirportsDB.GEOGRAPHY));
-			
+			document.put(AirlineAndAirportsDB.GEOGRAPHY, requestObj.get(AirlineAndAirportsDB.GEOGRAPHY).toString());
 			document.put(AirlineAndAirportsDB.LOGO, requestObj.get(AirlineAndAirportsDB.LOGO));
 			document.put(AirlineAndAirportsDB.VIEWS, requestObj.get(AirlineAndAirportsDB.VIEWS));
 			document.put(AirlineAndAirportsDB.SERVICE_TAX_PERCENTAGE, requestObj.get(AirlineAndAirportsDB.SERVICE_TAX_PERCENTAGE));
 			document.put(AirlineAndAirportsDB.CARD_RATE, requestObj.get(AirlineAndAirportsDB.CARD_RATE));
-			
-				
 			JSONObject mediaOptionsJSON =  (JSONObject) requestObj.get(AirlineAndAirportsDB.MEDIA_OPTIONS);	
 
 
@@ -60,7 +57,6 @@ public class DBAirlineAndAirportsObject {
 				}
 				document.append(DigitalDB.MEDIA_OPTIONS, mediaOptions);
 			}
-				
 				/*BasicDBObject mediaOptions = new BasicDBObject();
 				 * 
 				 * 
@@ -98,16 +94,13 @@ public class DBAirlineAndAirportsObject {
 				mediaOptions.append(AirlineAndAirportsDB.POPULAR_OPTION, popularOptions);*/
 				
 			BasicDBObject attributes = new BasicDBObject();	
-				
 				JSONObject attributesJSON =  (JSONObject) requestObj.get(AirlineAndAirportsDB.ATTRIBUTES);
 				for(int i = 0; i < attributesJSON.length(); i++){  
 					JSONObject jsonObject =  (JSONObject) attributesJSON.get(attributesJSON.names().get(i).toString());
 					attributes.append(attributesJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
 				}
-				
 			document.append(AirlineAndAirportsDB.ATTRIBUTES, attributes);	
-			document.append(AirlineAndAirportsDB.MEDIA_OPTIONS, mediaOptions);
-			System.out.println(document);
+			
 		}catch(Exception e){ System.out.println(e);	}
 		
 		return document;
