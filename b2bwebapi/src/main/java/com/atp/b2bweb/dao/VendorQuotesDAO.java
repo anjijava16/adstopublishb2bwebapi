@@ -100,7 +100,7 @@ public class VendorQuotesDAO {
 				criteria.add(new BasicDBObject(a.get(i).toString(), requestObj.get(a.get(i).toString())));
 			}
 			if(criteria != null && criteria.size() > 0){
-				dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR,criteria));
+				dbCursor = col.find(new BasicDBObject(TableCommonConstant.AND,criteria));
 			}
 			dbCursorList.add(dbCursor);
 		} catch (Exception e) {	
