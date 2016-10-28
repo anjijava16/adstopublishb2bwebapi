@@ -114,7 +114,7 @@ public class RadioDAO {
 					} 
 					query1.append(TableCommonConstant.OR, criteria);
 					criterias.add(query1);
-					
+					query.append(TableCommonConstant.AND, criterias);
 				}
 				if(stationArray != null && stationArray.length() > 0){
 					List<BasicDBObject> criteria1 = new ArrayList<BasicDBObject>();
@@ -123,7 +123,7 @@ public class RadioDAO {
 					}
 					query2.append(TableCommonConstant.OR, criteria1);
 					criterias.add(query2);
-					
+					query.append(TableCommonConstant.AND, criterias);
 				}
 				if(languagesArray != null && languagesArray.length() > 0){
 					List<BasicDBObject> criteria2 = new ArrayList<BasicDBObject>();
@@ -132,10 +132,11 @@ public class RadioDAO {
 					}
 					query3.append(TableCommonConstant.OR, criteria2);
 					criterias.add(query3);
+					query.append(TableCommonConstant.AND, criterias);
 				}
 				
 			if(query != null && query.size() > 0){
-				 dbCursor = col.find(query.append(TableCommonConstant.AND, criterias));
+				 dbCursor = col.find(query);
 //				 .sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30)
 				}else{
 				 dbCursor = col.find().sort(new BasicDBObject("sortBy",1)).sort(new BasicDBObject(sortBy,1)).skip(skip).limit(30);

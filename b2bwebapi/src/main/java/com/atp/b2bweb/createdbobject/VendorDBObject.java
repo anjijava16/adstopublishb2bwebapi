@@ -19,6 +19,7 @@ public class VendorDBObject {
 				String key = reqObject.names().get(i).toString();
 				basicDBObject.append(key, reqObject.get(key));
 			}  
+			basicDBObject.append("name","username");
 		} catch (Exception e) {
 			System.out.println("exception in vendordb object java "+e);
 		}
@@ -36,6 +37,7 @@ public class VendorDBObject {
 					basicDBObject.append(key, reqObject.get(key));
 				}
 			}   
+			basicDBObject.append(CommonConstants.NAME,"username");
 			basicDBObject.append(CommonConstants.UPDATEDON, new Date());
 			basicDBObject.append(CommonConstants.PASSWORD, "123123123");
 			return basicDBObject;

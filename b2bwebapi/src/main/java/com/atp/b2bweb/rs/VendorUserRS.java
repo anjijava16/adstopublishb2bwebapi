@@ -56,10 +56,8 @@ public class VendorUserRS {
 			if(requestParameter != null){
 				JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
 				if(requestObj != null){
-					System.out.println("requestObj"+requestObj);
 					if(requestObj.get(vendorDetailsDB.EMAIL).toString() != "" && requestObj.get(vendorDetailsDB.PHONE).toString() != ""){
 						DBCursor dbCursor =  new VendorUserService().getvendorDetails(requestObj.get(vendorDetailsDB.EMAIL).toString(), requestObj.get(vendorDetailsDB.PHONE).toString(),mongo);
-						System.out.println("dbCursor "+dbCursor.size());
 						if(dbCursor.size() == 0){
 							UUID uniqueKey = UUID.randomUUID();
 							requestObj.put(vendorDetailsDB.TOKEN, uniqueKey.toString());
@@ -71,21 +69,7 @@ public class VendorUserRS {
 							
 							respJSON = CommonWebUtil.buildSuccessResponseMsg("register");
 						}else{
-							respJSON = CommonWebUtil.buildErrorResponse("Plz Login..already registerd");
-							
-							/*System.out.println("requestObj   222 "+requestObj);
-							String id = null;
-	        				while(dbCursor.hasNext()){
-	        					DBObject dBObject = dbCursor.next();
-	        					id = dBObject.get("_id").toString();
-	        				}
-	        				System.out.println("doc11  ");
-							doc = VendorDBObject.createUpdateDBObject(requestObj);
-							System.out.println("doc11  "+doc);
-							DBObject newRegisterdUserInfo = new VendorUserService().vendorUpdate(doc, id, mongo);
-							newRegisterdUserInfo.put("_id", id);
-	        				new JwtTokenGenerator().createJWT(newRegisterdUserInfo, response);
-							respJSON = CommonWebUtil.buildSuccessResponseMsg("register");*/
+							respJSON = CommonWebUtil.buildErrorResponse("already registerd");
 						}
 					}
         		}else{
@@ -191,6 +175,7 @@ public class VendorUserRS {
     		if(requestParameter != null ){
         		JSONObject requestObj = new JSONObject(CommonUtil.decode(requestParameter));
         		if(requestObj != null){
+        			System.out.println("dbObject "+requestObj);
         			DBObject dbObject = new VendorUserService().vendorLogin(requestObj.getString(CommonConstants.USERNAME), requestObj.getString(CommonConstants.PASSWORD), mongo);
         			System.out.println("dbObject "+dbObject);
         			if(dbObject != null){
