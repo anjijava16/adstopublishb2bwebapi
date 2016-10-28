@@ -36,7 +36,7 @@ public class VendorQuotesService {
 	
 	 public DBCursor getCustomerOrderQuotes(JSONObject requestObj, MongoClient mongo){
 			return new VendorQuotesDAO(mongo).getCustomerOrderQuotes(requestObj);
-		}
+	}
 	
 	/*public DBObject getByID(DBObject doc, MongoClient mongo){
 		return new MagazineDAO(mongo).getByID(doc);

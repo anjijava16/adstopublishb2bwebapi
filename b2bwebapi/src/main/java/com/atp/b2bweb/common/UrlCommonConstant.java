@@ -145,6 +145,11 @@ public class UrlCommonConstant {
 	
 	public static final String  GET_CUSTOMER_ORDERDQUOTES = "/getcustomerorderdquotes";
 	
+	public static final String  ADDORDERSUMMARY = "/addordersummary";
+	
+	public static final String GET_PROCCEDORDERS = "/getproccedorders";
+	
+	
 	//quotes
 	
 	public static final String VENDORQUOTES = "/vendorquotes";

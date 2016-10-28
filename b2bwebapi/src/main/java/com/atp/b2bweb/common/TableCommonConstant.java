@@ -36,6 +36,8 @@ public class TableCommonConstant {
     
     public static final String VENDORQUOTES = "vendorquotes";
     
+    public static final String ORDERPROCCERD = "orderprocced";
+    
 	
 	//mongodb oparators
 	

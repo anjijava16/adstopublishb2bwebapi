@@ -16,7 +16,7 @@ public class VendorDetailDAO {
 	
 	
 	public VendorDetailDAO( MongoClient  mongo){
-		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.VENDOR_DETAIL);
+		this.col = mongo.getDB(TableCommonConstant.SCHEMA_NAME).getCollection(TableCommonConstant.VENDOR_);
 	}
 	
 	public  DBObject addVendorDetails(DBObject doc){
