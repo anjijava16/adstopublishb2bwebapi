@@ -105,24 +105,53 @@ public class MagazineDAO {
 			else if(sortBy.equalsIgnoreCase("circulation"))	sortBy= "attributes.circulation.value";
 			else if(sortBy.equalsIgnoreCase("")) sortBy= "views";
 			
-			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
+			BasicDBObject query = new BasicDBObject();
+			List<BasicDBObject> criterias = new ArrayList<BasicDBObject>();
+			if(geographiesArray != null && geographiesArray.length() > 0){
+				List<BasicDBObject> criteria = new ArrayList<BasicDBObject>();
 				for (int i = 0;i < geographiesArray.length();i++) {
-					criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 
-				}   
-				for (int i = 0;i < categoriesArray.length();i++) {
-					criteria.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
-				}
+					criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 						
+				} 
+				criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria));
+				query.append(TableCommonConstant.AND, criterias);
+			}
+			if(languagesArray != null && languagesArray.length() > 0){
+				List<BasicDBObject> criteria2 = new ArrayList<BasicDBObject>();
 				for (int i = 0;i < languagesArray.length();i++) {
-					criteria.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
+					criteria2.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
 				}
-				for (int i = 0; i < frequenciesArray.length();i++) {
-					criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
+				criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria2));
+				query.append(TableCommonConstant.AND, criterias);
+			}
+			if(targetGroupsArray != null && targetGroupsArray.length() > 0){
+				List<BasicDBObject> criteria1 = new ArrayList<BasicDBObject>();
+				for (int i = 0;i < targetGroupsArray.length();i++) {
+					criteria1.add(new BasicDBObject("", targetGroupsArray.get(i))); 
 				}
-				for (int i = 0; i < targetGroupsArray.length();i++) {
-					//criteria.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
+				criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria1));
+				query.append(TableCommonConstant.AND, criterias);
+			}
+			if(frequenciesArray != null && frequenciesArray.length() > 0){
+				List<BasicDBObject> criteria1 = new ArrayList<BasicDBObject>();
+				for (int i = 0;i < frequenciesArray.length();i++) {
+					criteria1.add(new BasicDBObject("attributes.frequency.value", frequenciesArray.get(i))); 
 				}
-			if(criteria != null && criteria.size() > 0){
-				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
+				criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria1));
+				query.append(TableCommonConstant.AND, criterias);
+			}
+			if(categoriesArray != null && categoriesArray.length() > 0){
+				List<BasicDBObject> criteria1 = new ArrayList<BasicDBObject>();
+				for (int i = 0;i < categoriesArray.length();i++) {
+					criteria1.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
+				}
+				criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria1));
+				query.append(TableCommonConstant.AND, criterias);
+			}
+			
+			
+			if(query != null && query.size() > 0){
+				 dbCursor = col.find(query);
+//				 .sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
 				}else{
 				 dbCursor = col.find().sort(new BasicDBObject("sortBy",1)).sort(new BasicDBObject(sortBy,1)).skip(skip).limit(30);
 			}

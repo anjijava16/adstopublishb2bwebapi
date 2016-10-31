@@ -104,16 +104,12 @@ public class RadioDAO {
 			
 			BasicDBObject query = new BasicDBObject();
 			List<BasicDBObject> criterias = new ArrayList<BasicDBObject>();
-			BasicDBObject query1 = new BasicDBObject();
-			BasicDBObject query2 = new BasicDBObject();
-			BasicDBObject query3 = new BasicDBObject();
 				if(geographiesArray != null && geographiesArray.length() > 0){
 					List<BasicDBObject> criteria = new ArrayList<BasicDBObject>();
 					for (int i = 0;i < geographiesArray.length();i++) {
 						criteria.add(new BasicDBObject("attributes.city.value", geographiesArray.get(i))); 						
 					} 
-					query1.append(TableCommonConstant.OR, criteria);
-					criterias.add(query1);
+					criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria));
 					query.append(TableCommonConstant.AND, criterias);
 				}
 				if(stationArray != null && stationArray.length() > 0){
@@ -121,8 +117,7 @@ public class RadioDAO {
 					for (int i = 0;i < stationArray.length();i++) {
 						criteria1.add(new BasicDBObject("station", stationArray.get(i))); 
 					}
-					query2.append(TableCommonConstant.OR, criteria1);
-					criterias.add(query2);
+					criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria1));
 					query.append(TableCommonConstant.AND, criterias);
 				}
 				if(languagesArray != null && languagesArray.length() > 0){
@@ -130,8 +125,7 @@ public class RadioDAO {
 					for (int i = 0;i < languagesArray.length();i++) {
 						criteria2.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
 					}
-					query3.append(TableCommonConstant.OR, criteria2);
-					criterias.add(query3);
+					criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria2));
 					query.append(TableCommonConstant.AND, criterias);
 				}
 				

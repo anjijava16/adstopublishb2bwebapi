@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import com.atp.b2bweb.db.NewspaperDB;
 import com.atp.b2bweb.db.RadionDB;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -28,8 +29,12 @@ public class DBRadioObject {
 					basicDBObject.append(jsonObj.names().get(i).toString(), attObject);
 				}
 				if(aaaa.contains("[")){
-					JSONArray attJSON =  (JSONArray) jsonObj.get(jsonObj.names().get(i).toString());				
-					basicDBObject.append(jsonObj.names().get(i).toString(), attJSON.toString());
+					JSONArray attJSON =  (JSONArray) jsonObj.get(jsonObj.names().get(i).toString());
+					BasicDBList basicDBList = new BasicDBList();
+					for(int j=0; j< attJSON.length() ;j++){
+						basicDBList.add(attJSON.get(j));
+					}
+					basicDBObject.append(jsonObj.names().get(i).toString(), basicDBList);
 				}
 			 }else{
 				basicDBObject.append(jsonObj.names().get(i).toString(), jsonObj.get(jsonObj.names().get(i).toString()));
@@ -55,6 +60,31 @@ public class DBRadioObject {
 				
 				JSONObject mediaOptionsJSON =  (JSONObject) requestObj.get(RadionDB.MEDIA_OPTIONS);	
 
+				for(int z = 0; z < mediaOptionsJSON.length(); z++){
+					JSONObject mediaJSON =  (JSONObject) mediaOptionsJSON.get(mediaOptionsJSON.names().get(z).toString());
+					BasicDBObject basicDBObject = new BasicDBObject();
+					for(int i = 0; i < mediaJSON.length(); i++){
+						JSONObject mediaoptionJSON =  (JSONObject) mediaJSON.get(mediaJSON.names().get(i).toString());
+						if(mediaoptionJSON != null) basicDBObject.append(mediaJSON.names().get(i).toString(), getBasicDBObject(mediaoptionJSON));
+					}
+					mediaOptions.append(mediaOptionsJSON.names().get(z).toString(), basicDBObject);
+				}
+				document.append(RadionDB.MEDIA_OPTIONS, mediaOptions);	
+				
+				
+				JSONObject attributesJSON =  (JSONObject) requestObj.get(NewspaperDB.ATTRIBUTES);
+				if(attributesJSON != null){
+					BasicDBObject attributes = new BasicDBObject();
+					for(int i = 0; i < attributesJSON.length(); i++){
+						JSONObject jsonObject =  (JSONObject) attributesJSON.get(attributesJSON.names().get(i).toString());
+						if(jsonObject != null) attributes.append(attributesJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
+					}
+					document.append(NewspaperDB.ATTRIBUTES, attributes);
+				}
+				
+				
+				
+				/*
 				JSONObject otherOptionsJSON =  (JSONObject) mediaOptionsJSON.get(RadionDB.OTHER_OPTIONS);
 				
 				if(otherOptionsJSON != null){
@@ -97,7 +127,7 @@ public class DBRadioObject {
 					attributes.append(attributesJSON.names().get(i).toString(), getBasicDBObject(jsonObject));
 				}
 				document.append(NewspaperDB.ATTRIBUTES, attributes);
-			}
+			}*/
 		}catch(Exception e){ System.out.println(e);	}
 		
 		return document;

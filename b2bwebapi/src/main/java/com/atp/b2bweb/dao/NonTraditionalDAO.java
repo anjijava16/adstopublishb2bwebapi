@@ -103,20 +103,31 @@ public class NonTraditionalDAO {
 			else if(sortBy.equalsIgnoreCase("circulation"))	sortBy= "attributes.circulation.value";
 			else if(sortBy.equalsIgnoreCase("")) sortBy= "views";
 			
-			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
-				for (int i = 0;i < geographiesArray.length();i++) {
-					criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 
-				}   
-				for (int i = 0;i < categoriesArray.length();i++) {
-					criteria.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
+			BasicDBObject query = new BasicDBObject();
+			List<BasicDBObject> criterias = new ArrayList<BasicDBObject>();
+				if(geographiesArray != null && geographiesArray.length() > 0){
+					List<BasicDBObject> criteria = new ArrayList<BasicDBObject>();
+					for (int i = 0;i < geographiesArray.length();i++) {
+						criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 						
+					} 
+					criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria));
+					query.append(TableCommonConstant.AND, criterias);
 				}
-			
-			System.out.println("criteria.size()   "+criteria.size() );
-			if(criteria != null && criteria.size() > 0){
-				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
-				}else{
-				 dbCursor = col.find().sort(new BasicDBObject("sortBy",1)).sort(new BasicDBObject(sortBy,1)).skip(skip).limit(30);
-			}
+				if(categoriesArray != null && categoriesArray.length() > 0){
+					List<BasicDBObject> criteria1 = new ArrayList<BasicDBObject>();
+					for (int i = 0;i < categoriesArray.length();i++) {
+						criteria1.add(new BasicDBObject("categoryName", categoriesArray.get(i))); 
+					}
+					criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria1));
+					query.append(TableCommonConstant.AND, criterias);
+				}
+					
+				if(query != null && query.size() > 0){
+					 dbCursor = col.find(query);
+//					 .sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
+					}else{
+					 dbCursor = col.find().sort(new BasicDBObject("sortBy",1)).sort(new BasicDBObject(sortBy,1)).skip(skip).limit(30);
+				}
 			
 		} catch (JSONException e) {	}
 

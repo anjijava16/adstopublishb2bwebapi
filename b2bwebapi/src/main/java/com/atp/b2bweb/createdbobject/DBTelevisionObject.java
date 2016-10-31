@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import com.atp.b2bweb.db.NewspaperDB;
 import com.atp.b2bweb.db.TelevisionDB;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -27,8 +28,12 @@ public class DBTelevisionObject {
 					basicDBObject.append(jsonObj.names().get(i).toString(), attObject);
 				}
 				if(aaaa.contains("[")){
-					JSONArray attJSON =  (JSONArray) jsonObj.get(jsonObj.names().get(i).toString());				
-					basicDBObject.append(jsonObj.names().get(i).toString(), attJSON.toString());
+					JSONArray attJSON =  (JSONArray) jsonObj.get(jsonObj.names().get(i).toString());
+					BasicDBList basicDBList = new BasicDBList();
+					for(int j=0; j< attJSON.length() ;j++){
+						basicDBList.add(attJSON.get(j));
+					}
+					basicDBObject.append(jsonObj.names().get(i).toString(), basicDBList);
 				}
 			 }else{
 				basicDBObject.append(jsonObj.names().get(i).toString(), jsonObj.get(jsonObj.names().get(i).toString()));
@@ -53,6 +58,7 @@ public class DBTelevisionObject {
 			document.put(TelevisionDB.RATE, requestObj.get(TelevisionDB.RATE));
 			document.put(TelevisionDB.TOOL_NAME, requestObj.get(TelevisionDB.TOOL_NAME));
 			document.put(TelevisionDB.CARDRATE, requestObj.get(TelevisionDB.CARDRATE));
+			document.put("views", requestObj.get("views"));
 			
 					
 			BasicDBObject mediaOptions = new BasicDBObject();

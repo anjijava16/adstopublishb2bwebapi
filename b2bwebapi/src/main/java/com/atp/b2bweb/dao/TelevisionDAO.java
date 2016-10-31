@@ -100,22 +100,39 @@ public class TelevisionDAO {
 			else if(sortBy.equalsIgnoreCase("cardRate"))	sortBy= "cardRate";
 			else if(sortBy.equalsIgnoreCase("")) sortBy= "views";
 			
-			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
-				for (int i = 0;i < geographiesArray.length();i++) {
-					criteria.add(new BasicDBObject("state", geographiesArray.get(i))); 
-				}   
-				for (int i = 0;i < channelgenreArray.length();i++) {
-					criteria.add(new BasicDBObject("channelgenre", channelgenreArray.get(i))); 
+				
+			BasicDBObject query = new BasicDBObject();
+			List<BasicDBObject> criterias = new ArrayList<BasicDBObject>();
+				if(geographiesArray != null && geographiesArray.length() > 0){
+					List<BasicDBObject> criteria = new ArrayList<BasicDBObject>();
+					for (int i = 0;i < geographiesArray.length();i++) {
+						criteria.add(new BasicDBObject("state", geographiesArray.get(i))); 						
+					} 
+					criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria));
+					query.append(TableCommonConstant.AND, criterias);
 				}
-				for (int i = 0;i < languagesArray.length();i++) {
-					System.out.println( languagesArray.get(i));
-					criteria.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
+				if(channelgenreArray != null && channelgenreArray.length() > 0){
+					List<BasicDBObject> criteria1 = new ArrayList<BasicDBObject>();
+					for (int i = 0;i < channelgenreArray.length();i++) {
+						criteria1.add(new BasicDBObject("channelgenreArray", channelgenreArray.get(i))); 
+					}
+					criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria1));
+					query.append(TableCommonConstant.AND, criterias);
+				}
+				if(languagesArray != null && languagesArray.length() > 0){
+					List<BasicDBObject> criteria2 = new ArrayList<BasicDBObject>();
+					for (int i = 0;i < languagesArray.length();i++) {
+						criteria2.add(new BasicDBObject("attributes.language.value", languagesArray.get(i))); 
+					}
+					criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria2));
+					query.append(TableCommonConstant.AND, criterias);
 				}
 				
-			
-			System.out.println("criteria.size()   "+criteria.size() );
-			if(criteria != null && criteria.size() > 0){
-				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
+				
+			System.out.println("criteria.size()   "+query.size() );
+			if(query != null && query.size() > 0){
+				 dbCursor = col.find(query);
+//				 .sort(new BasicDBObject(sortBy,-1)).skip(skip).limit(30);
 				}else{
 				 dbCursor = col.find().sort(new BasicDBObject(sortBy, -1)).skip(skip).limit(30);
 			}

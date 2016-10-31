@@ -27,7 +27,6 @@ public class JsonToDB {
 			File file = new File(classLoader.getResource("json/Magazine.json").getFile());			
 			Object obj = parser.parse(new FileReader(file.getAbsolutePath()));
 			
-			
 			JSONObject jsonObject =  (JSONObject) obj;				
 			JSONArray jsonArray = (JSONArray) jsonObject.get("medias");			
 			for (Object object : jsonArray) {
@@ -80,6 +79,7 @@ public class JsonToDB {
 				if(requestObj != null){
 					Object[] allKeys = requestObj.keySet().toArray();
 					for(int x = 0; x < allKeys.length; x++){
+						document.append("views",0);
 						if(!allKeys[x].toString().equalsIgnoreCase("_id") &&!allKeys[x].toString().equalsIgnoreCase("mediaOptions") && !allKeys[x].toString().equalsIgnoreCase("attributes")){
 							document.append(allKeys[x].toString(), requestObj.get(allKeys[x]));
 						}
@@ -394,6 +394,7 @@ public class JsonToDB {
 						}
 					}
 				}
+				document.append("views", 0);
 				table.insert(document);   
 				
 			}

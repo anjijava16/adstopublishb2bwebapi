@@ -37,6 +37,7 @@ public class VendorDBObject {
 					basicDBObject.append(key, reqObject.get(key));
 				}
 			}   
+			if(basicDBObject.get("name").toString() == null || basicDBObject.get("name").toString() == "undefined" )
 			basicDBObject.append(CommonConstants.NAME,"username");
 			basicDBObject.append(CommonConstants.UPDATEDON, new Date());
 			basicDBObject.append(CommonConstants.PASSWORD, "123123123");

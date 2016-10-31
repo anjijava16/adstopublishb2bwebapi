@@ -23,5 +23,7 @@ public class NewspaperDB {
 	public static final String REGULAR_OPTION = "regularOptions";
 	
 	public static final String ATTRIBUTES = "attributes";
+	
+	public static final String VIEWS = "views";
 
 }

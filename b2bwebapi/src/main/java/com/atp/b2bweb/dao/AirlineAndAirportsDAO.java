@@ -102,16 +102,28 @@ public class AirlineAndAirportsDAO {
 			else if(sortByParm.equalsIgnoreCase("reach"))	sortBy= "attributes.reach.value";
 			else if(sortByParm.equalsIgnoreCase(""))		sortBy= "views";
 			   
-			List<BasicDBObject> criteria = new ArrayList<BasicDBObject>(); 
+			BasicDBObject query = new BasicDBObject();
+			List<BasicDBObject> criterias = new ArrayList<BasicDBObject>();
+			if(geographiesArray != null && geographiesArray.length() > 0){
+				List<BasicDBObject> criteria = new ArrayList<BasicDBObject>();
 				for (int i = 0;i < geographiesArray.length();i++) {
-					criteria.add(new BasicDBObject("geography", geographiesArray.get(i))); 
-				}   
+					criteria.add(new BasicDBObject("attributes.city.value", geographiesArray.get(i))); 						
+				} 
+				criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria));
+				query.append(TableCommonConstant.AND, criterias);
+			}
+			if(categoriesArray != null && categoriesArray.length() > 0){
+				List<BasicDBObject> criteria1 = new ArrayList<BasicDBObject>();
 				for (int i = 0;i < categoriesArray.length();i++) {
-					criteria.add(new BasicDBObject("category", categoriesArray.get(i))); 
+					criteria1.add(new BasicDBObject("category", categoriesArray.get(i))); 
 				}
+				criterias.add(new BasicDBObject().append(TableCommonConstant.OR, criteria1));
+				query.append(TableCommonConstant.AND, criterias);
+			}
 				
-			if(criteria != null && criteria.size() > 0){
-				 dbCursor = col.find(new BasicDBObject(TableCommonConstant.OR, criteria)).sort(new BasicDBObject(sortBy, -1)).skip(skip).limit(30);
+			if(query != null && query.size() > 0){
+				 dbCursor = col.find(query);
+				 /*sort(new BasicDBObject(sortBy, -1)).skip(skip).limit(30);*/
 				}else{
 				 dbCursor = col.find().sort(new BasicDBObject(sortBy, -1)).skip(skip).limit(30);
 			}
